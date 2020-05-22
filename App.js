@@ -4,10 +4,8 @@ import SignUpContainer from './container/SignUpContainer';
 
 export default function App() {
   return (
-    <SafeAreaView>
-      style = {styles.container}
-      <SignUpContainer>
-      </SignUpContainer>
+    <SafeAreaView style = {styles.container}>
+      <SignUpContainer/>
     </SafeAreaView>
   );
 }
@@ -15,7 +13,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     // alignItems: 'center',
     // justifyContent: 'center',
   },
