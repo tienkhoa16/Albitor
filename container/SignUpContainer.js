@@ -32,7 +32,6 @@ export default class SignUpContainer extends React.Component{
                     onChangeText = {this.handleUpdatePassword}
                     value = {password}
                 />
-                {/* <PasswordTextbox icon='lock' label='Password' onChange={(v) => this._updateState('new', v)} /> */}
                 <BlueButton 
                     style = {styles.button}
                     onPress = {() => {
