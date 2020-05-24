@@ -1,20 +1,73 @@
 import React from 'react';
-import { TextInput, View, StyleSheet, Image, Text, KeyboardAvoidingView } from 'react-native';
+import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView } from 'react-native';
 import BlueButton from '../component/BlueButton';
+import axios from 'axios';
+import querystring from 'querystring';
+
+axios.defaults.headers.common['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36";
+axios.defaults.withCredentials = true;
+const instance = axios.create();
+instance.defaults.timeout = 20000;
+
+async function auth(username, password){
+    // Login request wouldn't work without MSIS auth cookies
+    console.log("[AUTH]")
+
+    // Log out url
+    const log_out_url =  'https://vafs.nus.edu.sg/adfs/ls/?wa=wsignout1.0'
+
+    // Log in url
+    const auth_url = 'https://vafs.nus.edu.sg/adfs/oauth2/authorize'
+    const CLIENT_ID = "97F0D1CACA7D41DE87538F9362924CCB-184318"
+
+    const config = {
+        maxRedirects: 0,
+        headers : {
+            'Content-Type': 'application/x-www-form-urlencoded',  
+        },
+        params: {
+            'response_type': 'code',
+            'client_id': CLIENT_ID,
+            'resource': 'sg_edu_nus_oauth',
+            'redirect_uri': 'https://myaces.nus.edu.sg:443/htd/htd',
+        }
+    }
+
+    const data = querystring.stringify({
+        'UserName': 'nusstu\\' + username,
+        'Password': password,
+        'AuthMethod': "FormsAuthentication"
+    })
+
+    // Log out first if there were any successful sign in earlier
+    const log_out = await axios.get(log_out_url)
+
+    const MSISAuthCookie = await axios.post(auth_url, data, config)
+        .then((response) => response)
+        .catch((err) => {err.response.headers['set-cookie'][0].split(";")[0]}) // should reach here due to 302
+
+    const resp = await axios.post(auth_url, data, config)
+        .then((response) => response)
+        .catch((err) => err.response)
+    return ((resp.status == 200)&&(resp.headers['set-cookie']))? true:false
+}
 
 export default class SignUpContainer extends React.Component{
     state = {
         username: '',
         password: '',
+        firstTime: true,
+        typing: false,
+        authenticating: false,
         signInSuccesful: false,
     };
 
-    handleUpdateUsername = (username) => this.setState({username});
+    handleUpdateUsername = (username, typing) => this.setState({username, typing: true, firstTime: false});
 
-    handleUpdatePassword = (password) => this.setState({password});
+    handleUpdatePassword = (password, typing) => this.setState({password, typing: true, firstTime: false});
 
     render(){
-        const {username, password, signInSuccesful} = this.state
+        const {username, password, firstTime, typing, authenticating, signInSuccesful} = this.state
 
         return(
             <KeyboardAvoidingView style = {styles.container}>
@@ -36,21 +89,26 @@ export default class SignUpContainer extends React.Component{
                     style = {styles.button}
                     onPress = {() => {
                         if(
-                            username.length &&
-                            password.length
+                            username &&
+                            password
                         ){
+                            (async () => {
+                                this.setState({authenticating:true})
+                                const code_url = await auth(username, password)
+                                code_url ? (this.setState({signInSuccesful:true, authenticating:false})):(this.setState({signInSuccesful:false, authenticating:false}))
+                            })()
                             this.setState({
-                                username:'',
+                                username: '',
                                 password: '',
-                                signInSuccesful: true,
-                            });
+                                typing: false,
+                            })
                         }
                     }}
                 >
                     Log In
                 </BlueButton>
                 {
-                    signInSuccesful ? (<Text style = {styles.text}>Log In Successful</Text>) : null
+                    (firstTime || typing)? null : ((authenticating)? (<Text style = {styles.text}>Authenticating...</Text>)  : (signInSuccesful ? (<Text style = {styles.text}>Log In Successful</Text>) : (<Text style = {styles.err_text}>Wrong NUSNET or Password</Text>)))
                 }
             </KeyboardAvoidingView>
         );
@@ -88,6 +146,11 @@ const styles = StyleSheet.create({
     text:{
         fontSize: 20,
         color: 'green',
+        marginTop: 40,
+    },
+    err_text:{
+        fontSize: 20,
+        color: 'red',
         marginTop: 40,
     },
 });
