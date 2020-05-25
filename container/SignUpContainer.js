@@ -10,7 +10,6 @@ const instance = axios.create();
 instance.defaults.timeout = 20000;
 
 async function auth(username, password){
-    // Login request wouldn't work without MSIS auth cookies
     console.log("[AUTH]")
 
     // Log out url
@@ -41,10 +40,6 @@ async function auth(username, password){
 
     // Log out first if there were any successful sign in earlier
     const log_out = await axios.get(log_out_url)
-
-    const MSISAuthCookie = await axios.post(auth_url, data, config)
-        .then((response) => response)
-        .catch((err) => {err.response.headers['set-cookie'][0].split(";")[0]}) // should reach here due to 302
 
     const resp = await axios.post(auth_url, data, config)
         .then((response) => response)
