@@ -131,10 +131,14 @@ export default class SignUpContainer extends React.Component{
                     Log In
                 </BlueButton>
                 {
-                    (firstTime || typing)? null : ((authenticating)? (<Text style = {styles.text}>Authenticating...</Text>)  : (signInSuccesful ? (<Text style = {styles.text}>Log In Successful</Text>) : (<Text style = {styles.err_text}>Wrong NUSNET or Password</Text>)))
+                    (firstTime || typing) ? null : 
+                        (authenticating ? (<Text style = {styles.text}>Authenticating...</Text>)  : 
+                        (signInSuccesful ? (<Text style = {styles.text}>Log In Successful</Text>) : 
+                        (<Text style = {styles.err_text}>Wrong NUSNET or Password</Text>)))
                 }
                 {
-                    (name) ? (<Text style = {styles.text}>Welcome {name}</Text>) : null
+                    (signInSuccesful && !typing && !authenticating) ? 
+                        (<Text style = {styles.text}>Welcome {name}</Text>) : null
                 }
             </KeyboardAvoidingView>
         );
