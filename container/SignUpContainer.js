@@ -9,9 +9,13 @@ axios.defaults.withCredentials = true;
 const instance = axios.create();
 instance.defaults.timeout = 20000;
 
-async function auth(username, password){
+async function authAndGetCookie(username, password){
     console.log("[AUTH]")
 
+    // Basic check first
+    if (username[0] != 'E' && username[0] != 'e' || username.length != 8)
+        return false
+        
     // Log out url
     const log_out_url =  'https://vafs.nus.edu.sg/adfs/ls/?wa=wsignout1.0'
 
@@ -44,7 +48,7 @@ async function auth(username, password){
     const resp = await axios.post(auth_url, data, config)
         .then((response) => response)
         .catch((err) => err.response)
-    return ((resp.status == 200)&&(resp.headers['set-cookie']))? true:false
+    return resp.headers['set-cookie']
 }
 
 export default class SignUpContainer extends React.Component{
@@ -89,7 +93,7 @@ export default class SignUpContainer extends React.Component{
                         ){
                             (async () => {
                                 this.setState({authenticating:true})
-                                const code_url = await auth(username, password)
+                                const code_url = await authAndGetCookie(username, password)
                                 code_url ? (this.setState({signInSuccesful:true, authenticating:false})):(this.setState({signInSuccesful:false, authenticating:false}))
                             })()
                             this.setState({
