@@ -114,10 +114,18 @@ export default class SignUpContainer extends React.Component{
                                 const resp = await auth(username, password)
 
                                 if ('set-cookie' in resp.headers){
-                                    this.setState({signInSuccesful:true, authenticating:false, name: getName(resp.data)})
+                                    this.setState({
+                                        signInSuccesful:true, 
+                                        authenticating:false, 
+                                        name: getName(resp.data),
+                                    })
                                 }
                                 else{
-                                    this.setState({signInSuccesful:false, authenticating:false})
+                                    this.setState({
+                                        signInSuccesful:false, 
+                                        authenticating:false,
+                                        name: '',
+                                    })
                                 }
                             })()
                             this.setState({
