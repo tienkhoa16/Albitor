@@ -119,6 +119,7 @@ export default class SignUpContainer extends React.Component{
                                         authenticating:false, 
                                         name: getName(resp.data),
                                     })
+                                    this.props.navigation.navigate('Declare')
                                 }
                                 else{
                                     this.setState({
@@ -144,10 +145,10 @@ export default class SignUpContainer extends React.Component{
                         (signInSuccesful ? (<Text style = {styles.text}>Log In Successful</Text>) : 
                         (<Text style = {styles.err_text}>Wrong NUSNET or Password</Text>)))
                 }
-                {
+                {/* {
                     (signInSuccesful && !typing && !authenticating) ? 
                         (<Text style = {styles.text}>Welcome {name}</Text>) : null
-                }
+                } */}
             </KeyboardAvoidingView>
         );
     }
