@@ -1,5 +1,6 @@
 import React from 'react';
 // import { StyleSheet, SafeAreaView } from 'react-native';
+// alo alo
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator, createAppContainer } from '@react-navigation/stack';
 
