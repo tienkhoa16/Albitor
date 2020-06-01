@@ -1,8 +1,12 @@
 import React from 'react';
 import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView } from 'react-native';
-import BlueButton from '../component/BlueButton';
 import axios from 'axios';
 import querystring from 'querystring';
+
+import BlueButton from '../component/BlueButton';
+import DeclareTempContainer from './DeclareTempContainer';
+import store from '../store';
+
 
 axios.defaults.headers.common['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36";
 axios.defaults.withCredentials = true;
@@ -55,7 +59,8 @@ async function auth(username, password){
     return resp
 }
 
-function getName(data){
+async function getName(data){
+    console.log('[GETTING NAME]')
     // Start position of name
     let startPos = data.indexOf('Login User') + 18
 
@@ -69,27 +74,29 @@ function getName(data){
 }
 
 export default class SignUpContainer extends React.Component{
-    state = {
-        username: '',
-        password: '',
-        firstTime: true,
-        typing: false,
-        authenticating: false,
-        signInSuccesful: false,
-        name: '',
-    };
+    // state = {
+    //     username: 'e0426339',
+    //     password: 'Cody@16012001',
+    //     firstTime: true,
+    //     typing: false,
+    //     authenticating: false,
+    //     signInSuccesful: false,
+    //     name: '',
+    //     cookie: '',
+    // };
+    // state = store.getState();
 
-    handleUpdateUsername = (username, typing) => this.setState({username, typing: true, firstTime: false});
+    // handleUpdateUsername = (username, typing) => this.setState({username, typing: true, firstTime: false});
 
-    handleUpdatePassword = (password, typing) => this.setState({password, typing: true, firstTime: false});
+    // handleUpdatePassword = (password, typing) => this.setState({password, typing: true, firstTime: false});
 
     render(){
-        const {username, password, firstTime, typing, authenticating, signInSuccesful, name} = this.state
+        // const {username, password, firstTime, typing, authenticating, signInSuccesful, name, cookie} = this.state
 
         return(
             <KeyboardAvoidingView style = {styles.container}>
                 <Image style = {styles.image} source = {require('../assets/nus_logo.png')} />
-                <TextInput
+                {/* <TextInput
                     style = {styles.textInput}
                     placeholder = "NUSNET (e...)"
                     onChangeText = {this.handleUpdateUsername}
@@ -109,30 +116,33 @@ export default class SignUpContainer extends React.Component{
                             username &&
                             password
                         ){
-                            (async () => {
-                                this.setState({authenticating:true})
-                                const resp = await auth(username, password)
+                            // (async () => {
+                            //     this.setState({authenticating:true})
+                            //     const resp = await auth(username, password)
 
-                                if ('set-cookie' in resp.headers){
-                                    this.setState({
-                                        signInSuccesful:true, 
-                                        authenticating:false, 
-                                        name: getName(resp.data),
-                                    })
-                                    this.props.navigation.navigate('Declare')
-                                }
-                                else{
-                                    this.setState({
-                                        signInSuccesful:false, 
-                                        authenticating:false,
-                                        name: '',
-                                    })
-                                }
-                            })()
+                            //     if ('set-cookie' in resp.headers){
+                            //         this.setState({
+                            //             signInSuccesful:true, 
+                            //             authenticating:false, 
+                            //             name: await getName(resp.data),
+                            //             cookie: await (resp.headers['set-cookie'][0].split(";")[0]),
+                            //         })
+                            //     }
+                            //     else{
+                            //         this.setState({
+                            //             signInSuccesful:false, 
+                            //             authenticating:false,
+                            //             name: '',
+                            //             cookie: '',
+                            //         })
+                            //     }
+                            // })()
                             this.setState({
                                 username: '',
                                 password: '',
                                 typing: false,
+                                authenticating:false,
+                                signInSuccesful: true,
                             })
                         }
                     }}
@@ -145,10 +155,15 @@ export default class SignUpContainer extends React.Component{
                         (signInSuccesful ? (<Text style = {styles.text}>Log In Successful</Text>) : 
                         (<Text style = {styles.err_text}>Wrong NUSNET or Password</Text>)))
                 }
-                {/* {
-                    (signInSuccesful && !typing && !authenticating) ? 
-                        (<Text style = {styles.text}>Welcome {name}</Text>) : null
+                {
+                    // (signInSuccesful && !typing && !authenticating) ? 
+                    //     (<Text style = {styles.text}>Welcome {name}</Text>) : null
+                }
+                {
+                    // (signInSuccesful && !typing && !authenticating) ? 
+                    //     this.props.navigation.navigate('Declare') : null
                 } */}
+                {/* <Text style = {styles.text}>{store.getState().username}</Text> */}
             </KeyboardAvoidingView>
         );
     }

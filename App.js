@@ -2,18 +2,20 @@ import React from 'react';
 // import { StyleSheet, SafeAreaView } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator, createAppContainer } from '@react-navigation/stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import SignUpContainer from './container/SignUpContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
+
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    // <SafeAreaView style = {styles.container}>
+    // <Provider store = {store}>
       <NavigationContainer theme = {styles}>
         <Stack.Navigator 
-          // initialRouteName='Login'
+          initialRouteName='Login'
           screenOptions={{
             headerShown: false
           }}
@@ -22,7 +24,6 @@ export default function App() {
           <Stack.Screen name="Declare" component={DeclareTempContainer} /> 
         </Stack.Navigator>
       </NavigationContainer>
-    // </SafeAreaView>
   );
 }
 
