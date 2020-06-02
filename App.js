@@ -7,23 +7,22 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SignUpContainer from './container/SignUpContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
 
+
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    // <SafeAreaProvider>
-      <NavigationContainer theme = {styles}>
-        <Stack.Navigator 
-          initialRouteName='Login'
-          screenOptions={{
-            headerShown: false
-          }}
-        >
-          <Stack.Screen name="Login" component={SignUpContainer} />
-          <Stack.Screen name="Declare" component={DeclareTempContainer} /> 
-        </Stack.Navigator>
-      </NavigationContainer>
-    // </SafeAreaProvider>
+    <NavigationContainer theme = {styles}>
+      <Stack.Navigator 
+        initialRouteName='Login'
+        screenOptions={{
+          headerShown: false
+        }}
+      >
+        <Stack.Screen name="Login" component={SignUpContainer} />
+        <Stack.Screen name="Declare" component={DeclareTempContainer} /> 
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 

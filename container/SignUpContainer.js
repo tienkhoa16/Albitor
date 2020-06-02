@@ -69,21 +69,21 @@ async function getName(data){
         name += data[startPos]
         startPos++
     }
-    // console.log(name)
+    
     return name
 }
 
 export default class SignUpContainer extends React.Component{
     state = {
-        username: 'e0426339',
-        password: 'Cody@16012001',
+        username: '',
+        password: '',
         firstTime: true,
         typing: false,
         authenticating: false,
         signInSuccesful: false,
         name: '',
         cookie: '',
-    };2
+    };
 
     handleUpdateUsername = (username, typing) => this.setState({username, typing: true, firstTime: false});
 
@@ -116,21 +116,21 @@ export default class SignUpContainer extends React.Component{
                             password
                         ){
                             (async () => {
-                                this.setState({authenticating:true})
+                                this.setState({authenticating: true})
                                 const resp = await auth(username, password)
 
                                 if ('set-cookie' in resp.headers){
                                     this.setState({
-                                        signInSuccesful:true, 
-                                        authenticating:false, 
+                                        signInSuccesful: true, 
+                                        authenticating: false, 
                                         name: await getName(resp.data),
                                         cookie: await (resp.headers['set-cookie'][0].split(";")[0]),
                                     })
                                 }
                                 else{
                                     this.setState({
-                                        signInSuccesful:false, 
-                                        authenticating:false,
+                                        signInSuccesful: false, 
+                                        authenticating: false,
                                         name: '',
                                         cookie: '',
                                     })
