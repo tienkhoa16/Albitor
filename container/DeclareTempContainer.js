@@ -10,7 +10,7 @@ import BlueButton from '../component/BlueButton';
 export default class DeclareTempContainer extends React.Component{
     render(){
         return(
-            <Text>Hello</Text>
+            <Text style = {styles.text}>Hello</Text>
         )
     }
 }

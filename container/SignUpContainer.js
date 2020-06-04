@@ -1,6 +1,5 @@
 import React from 'react';
 import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView } from 'react-native';
-// import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import querystring from 'querystring';
 
@@ -152,12 +151,12 @@ export default class SignUpContainer extends React.Component{
                         (<Text style = {styles.err_text}>Wrong NUSNET or Password</Text>)))
                 }
                 {
-                    // (signInSuccesful && !typing && !authenticating) ? 
-                    //     (<Text style = {styles.text}>Welcome {name}</Text>) : null
+                    (signInSuccesful && !typing && !authenticating) ? 
+                        (<Text style = {styles.text}>Welcome {name}</Text>) : null
                 }
                 {
-                    // (signInSuccesful && !typing && !authenticating) ? 
-                    //     this.props.navigation.navigate('Declare') : null
+                    (signInSuccesful && !typing && !authenticating) ? 
+                        this.props.navigation.navigate('Declare') : null
                 }
             </KeyboardAvoidingView>
         );
