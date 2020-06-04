@@ -1,9 +1,16 @@
-const usernameReducer (state = initialState, action) => {
+const initialState = {
+    name: '',
+    cookie: '',
+};
+
+const logInReducer = (state = initialState, action) => {
     switch(action.type){
-        case "UPDATE_USERNAME":
+        case "UPDATE":
+            console.log('[UPDATED NAME]');
             return{
                 ...state,
-                username: action.payload,
+                name: action.payload.updateName,
+                cookie: action.payload.updateCookie,
             };
         
         default:
@@ -11,4 +18,4 @@ const usernameReducer (state = initialState, action) => {
     }
 }
 
-export default usernameReducer
+export default logInReducer

@@ -4,13 +4,13 @@ import React from 'react';
 import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView } from 'react-native';
 
 import BlueButton from '../component/BlueButton';
-
+import store from '../store';
 
 
 export default class DeclareTempContainer extends React.Component{
     render(){
         return(
-            <Text style = {styles.text}>Hello</Text>
+            <Text style = {styles.text}>{store.getState().logIn.name}</Text>
         )
     }
 }

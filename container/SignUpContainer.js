@@ -4,7 +4,7 @@ import axios from 'axios';
 import querystring from 'querystring';
 
 import BlueButton from '../component/BlueButton';
-import DeclareTempContainer from './DeclareTempContainer';
+import store from '../store';
 
 
 axios.defaults.headers.common['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36";
@@ -58,7 +58,7 @@ async function auth(username, password){
     return resp
 }
 
-async function getName(data){
+function getName(data){
     console.log('[GETTING NAME]')
     // Start position of name
     let startPos = data.indexOf('Login User') + 18
@@ -121,8 +121,16 @@ export default class SignUpContainer extends React.Component{
                                     this.setState({
                                         signInSuccesful: true, 
                                         authenticating: false, 
-                                        name: await getName(resp.data),
-                                        cookie: await (resp.headers['set-cookie'][0].split(";")[0]),
+                                        name: getName(resp.data),
+                                        cookie: resp.headers['set-cookie'][0].split(";")[0],
+                                    })
+                                    
+                                    store.dispatch({
+                                        type: 'UPDATE',
+                                        payload: {
+                                            updateName: getName(resp.data),
+                                            updateCookie: resp.headers['set-cookie'][0].split(";")[0],
+                                        }
                                     })
                                 }
                                 else{
@@ -158,6 +166,7 @@ export default class SignUpContainer extends React.Component{
                     (signInSuccesful && !typing && !authenticating) ? 
                         this.props.navigation.navigate('Declare') : null
                 }
+                
             </KeyboardAvoidingView>
         );
     }
