@@ -79,8 +79,6 @@ export default class SignUpContainer extends React.Component{
         typing: false,
         authenticating: false,
         signInSuccesful: false,
-        name: '',
-        cookie: '',
     };
 
     handleUpdateUsername = (username, typing) => this.setState({username, typing: true, firstTime: false});
@@ -88,7 +86,7 @@ export default class SignUpContainer extends React.Component{
     handleUpdatePassword = (password, typing) => this.setState({password, typing: true, firstTime: false});
 
     render(){
-        const {username, password, firstTime, typing, authenticating, signInSuccesful, name, cookie} = this.state
+        const {username, password, firstTime, typing, authenticating, signInSuccesful} = this.state
 
         return(
             <KeyboardAvoidingView style = {styles.container}>
@@ -118,19 +116,16 @@ export default class SignUpContainer extends React.Component{
                                 const resp = await auth(username, password)
 
                                 if ('set-cookie' in resp.headers){
-                                    this.setState({
-                                        signInSuccesful: true, 
-                                        authenticating: false, 
-                                        name: getName(resp.data),
-                                        cookie: resp.headers['set-cookie'][0].split(";")[0],
-                                    })
-                                    
                                     store.dispatch({
                                         type: 'UPDATE',
                                         payload: {
                                             updateName: getName(resp.data),
                                             updateCookie: resp.headers['set-cookie'][0].split(";")[0],
                                         }
+                                    })
+                                    this.setState({
+                                        signInSuccesful: true, 
+                                        authenticating: false, 
                                     })
                                 }
                                 else{
@@ -156,17 +151,12 @@ export default class SignUpContainer extends React.Component{
                     (firstTime || typing) ? null : 
                         (authenticating ? (<Text style = {styles.text}>Authenticating...</Text>)  : 
                         (signInSuccesful ? (<Text style = {styles.text}>Log In Successful</Text>) : 
-                        (<Text style = {styles.err_text}>Wrong NUSNET or Password</Text>)))
-                }
-                {
-                    (signInSuccesful && !typing && !authenticating) ? 
-                        (<Text style = {styles.text}>Welcome {name}</Text>) : null
+                        (alert('Wrong NUSNET or Password'))))
                 }
                 {
                     (signInSuccesful && !typing && !authenticating) ? 
                         this.props.navigation.navigate('Declare') : null
-                }
-                
+                }                
             </KeyboardAvoidingView>
         );
     }
@@ -187,9 +177,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         width: 250,
         height: 40,
-        // borderTopColor: 'white',
-        // borderRightColor: 'white',
-        // borderLeftColor: 'white',
         borderColor: 'black',
         paddingHorizontal: 10,
         paddingVertical: 3,
@@ -203,11 +190,6 @@ const styles = StyleSheet.create({
     text:{
         fontSize: 20,
         color: 'green',
-        marginTop: 40,
-    },
-    err_text:{
-        fontSize: 20,
-        color: 'red',
         marginTop: 40,
     },
 });
