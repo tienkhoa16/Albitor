@@ -2,7 +2,10 @@ import axios from 'axios';
 import querystring from 'querystring';
 import React from 'react';
 import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView } from 'react-native';
+
 import BlueButton from '../component/BlueButton';
+
+
 
 export default class DeclareTempContainer extends React.Component{
     render(){

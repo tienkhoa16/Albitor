@@ -10,19 +10,17 @@ const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    // <SafeAreaView style = {styles.container}>
-      <NavigationContainer theme = {styles}>
-        <Stack.Navigator 
-          // initialRouteName='Login'
-          screenOptions={{
-            headerShown: false
-          }}
-        >
-          <Stack.Screen name="Login" component={SignUpContainer} />
-          <Stack.Screen name="Declare" component={DeclareTempContainer} /> 
-        </Stack.Navigator>
-      </NavigationContainer>
-    // </SafeAreaView>
+    <NavigationContainer theme = {styles}>
+      <Stack.Navigator 
+        initialRouteName='Login'
+        screenOptions={{
+          headerShown: false
+        }}
+      >
+        <Stack.Screen name="Login" component={SignUpContainer} />
+        <Stack.Screen name="Declare" component={DeclareTempContainer} /> 
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
