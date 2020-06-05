@@ -1,8 +1,8 @@
 import axios from 'axios';
 import querystring from 'querystring';
-import React, {useState} from 'react';
+import React from 'react';
 import moment from 'moment';
-import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, View, Dimensions } from 'react-native';
+import { TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions } from 'react-native';
 import {Picker} from '@react-native-community/picker'
 
 import BlueButton from '../component/BlueButton';
@@ -81,7 +81,7 @@ export default class DeclareTempContainer extends React.Component{
                     alert('Failed to declare temperature. HTTP Error Code: ' + resp_code)
                 }
                 else{
-                    alert('Declare for '+this.state.timeOfDay+'M on '+this.state.date+' successful!')
+                    alert('Declare '+floatTemp+' \u2103 for '+this.state.timeOfDay+'M on '+this.state.date+' successful!')
                 }
             })()
         }   
@@ -112,7 +112,7 @@ export default class DeclareTempContainer extends React.Component{
                 </KeyboardAvoidingView>
 
                 <KeyboardAvoidingView style = {styles.options}>
-                    <Text style = {styles.text}>Temperature</Text>
+                    <Text style = {styles.text}>Temperature ({'\u2103'})</Text>
                     <TextInput 
                         style = {styles.textInput}
                         placeholder = "Your temperature"
@@ -206,6 +206,7 @@ const styles = StyleSheet.create({
         color: 'black',
         marginTop: 40,
         textAlign: 'center',
+        fontWeight: 'bold',
     },
     heading:{
         fontSize: 25,
