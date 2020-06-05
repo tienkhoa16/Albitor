@@ -127,6 +127,7 @@ export default class SignUpContainer extends React.Component{
                                         signInSuccesful: true, 
                                         authenticating: false, 
                                     })
+                                    this.props.navigation.navigate('Declare')
                                 }
                                 else{
                                     this.setState({
@@ -153,10 +154,6 @@ export default class SignUpContainer extends React.Component{
                         (signInSuccesful ? (<Text style = {styles.text}>Log In Successful</Text>) : 
                         (alert('Wrong NUSNET or Password'))))
                 }
-                {
-                    (signInSuccesful && !typing && !authenticating) ? 
-                        this.props.navigation.navigate('Declare') : null
-                }                
             </KeyboardAvoidingView>
         );
     }

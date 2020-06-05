@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         fontStyle: 'italic',
         textAlign: 'left',
+        fontWeight: 'bold',
     },
     text:{
         fontSize: 15,
