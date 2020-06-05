@@ -20,7 +20,35 @@ function getDateTime(){
     return date
 }
 
+async function submitTemp(temp, date, timeOfDay, symptoms, famSymptoms){
+    const sessionId = store.getState().logIn.cookie
+    console.log('[SUBMIT_TEMP] '+ sessionId)
 
+    console.log('Submitting '+temp+' for '+timeOfDay+'M on '+date)
+  
+    const htd_url = "https://myaces.nus.edu.sg/htd/htd";
+  
+    const config = {
+        headers : {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': sessionId
+        }
+    }
+    const data = querystring.stringify({
+        'actionName': 'dlytemperature',
+        'tempDeclOn': date,
+        'declFrequency': timeOfDay,
+        'temperature': temp,
+        'symptomsFlag': symptoms,
+        'familySymptomsFlag': famSymptoms,
+    })
+
+    const resp =  await axios.post(htd_url, data, config)
+        .then(response => response)
+        .catch(err => err.response)
+
+    return resp.status
+}
 
 export default class DeclareTempContainer extends React.Component{
     state = {
@@ -46,8 +74,17 @@ export default class DeclareTempContainer extends React.Component{
             })
         }
         else{
-
-        }
+            (async() =>{
+                const resp_code = await submitTemp(floatTemp,this.state.date,this.state.timeOfDay,
+                                                this.state.symptoms,this.state.famSymptoms)
+                if(resp_code != 200){
+                    alert('Failed to declare temperature. HTTP Error Code: ' + resp_code)
+                }
+                else{
+                    alert('Declare for '+this.state.timeOfDay+'M on '+this.state.date+' successful!')
+                }
+            })()
+        }   
     }
 
     render(){
@@ -92,7 +129,7 @@ export default class DeclareTempContainer extends React.Component{
                         selectedValue = {symptoms}
                         style={styles.picker}
                         onValueChange={(itemValue, itemIndex) =>
-                            this.setState({timeOfDay: itemValue})
+                            this.setState({symptoms: itemValue})
                         }
                     >
                         <Picker.Item label="No" value="N" />
@@ -107,7 +144,7 @@ export default class DeclareTempContainer extends React.Component{
                         selectedValue = {famSymptoms}
                         style={{...styles.picker, marginTop: 0}}
                         onValueChange={(itemValue, itemIndex) =>
-                            this.setState({timeOfDay: itemValue})
+                            this.setState({famSymptoms: itemValue})
                         }
                     >
                         <Picker.Item label="No" value="N" />
