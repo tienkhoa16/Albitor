@@ -59,7 +59,7 @@ async function auth(username, password){
 }
 
 function getName(data){
-    console.log('[GETTING NAME]')
+    console.log('[GETTING NAME AND COOKIE]')
     // Start position of name
     let startPos = data.indexOf('Login User') + 18
 
