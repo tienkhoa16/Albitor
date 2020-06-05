@@ -1,7 +1,6 @@
 import React from 'react';
-// import { StyleSheet, SafeAreaView } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import { createStackNavigator, createAppContainer } from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from 'react-redux';
 
 import SignUpContainer from './container/SignUpContainer';
