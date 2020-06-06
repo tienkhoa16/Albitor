@@ -32,7 +32,7 @@ async function getHistoryHtml(){
     let resp =  await axios.post(url, data, config)
         .then(response => response)
         .catch(err => err.response)
-        
+
     resp = resp.data
     resp = resp.substr(resp.indexOf('<table id'))
     resp = resp.substr(0, resp.indexOf('</table>')+8)
@@ -137,6 +137,7 @@ export default class DeclareTempContainer extends React.Component{
                                 text: "See Declare History",
                                 onPress: () => {
                                     console.log("See Declare History Pressed")
+                                    while(!store.getState().history.htmlTable){};
                                     this.props.navigation.navigate('History')
                                 }
                             },
