@@ -1,4 +1,5 @@
 import React from 'react';
+import { UIManager, Platform } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
@@ -8,6 +9,8 @@ import SignUpContainer from './container/SignUpContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
 import store from './store';
 import PastDeclareContainer from './container/PastDeclareContainer';
+
+
 
 const SwitchNavigator = createSwitchNavigator(
   {
@@ -20,7 +23,14 @@ const SwitchNavigator = createSwitchNavigator(
   }
 );
 
+
+if (Platform.OS === 'android') {
+  UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
 const AppContainer = createAppContainer(SwitchNavigator)
+
+
 
 export default function App() {
   return (
