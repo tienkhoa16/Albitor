@@ -7,11 +7,13 @@ import { Provider } from 'react-redux';
 import SignUpContainer from './container/SignUpContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
 import store from './store';
+import PastDeclareContainer from './container/PastDeclareContainer';
 
 const SwitchNavigator = createSwitchNavigator(
   {
     Login: SignUpContainer,
     Declare: DeclareTempContainer,
+    History: PastDeclareContainer,
   },
   {
     initialRouteName: 'Login',

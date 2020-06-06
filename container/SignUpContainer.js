@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView } from 'react-native';
+import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert } from 'react-native';
 import axios from 'axios';
 import querystring from 'querystring';
 
@@ -152,7 +152,14 @@ export default class SignUpContainer extends React.Component{
                     (firstTime || typing) ? null : 
                         (authenticating ? (<Text style = {styles.text}>Authenticating...</Text>)  : 
                         (signInSuccesful ? (<Text style = {styles.text}>Log In Successful</Text>) : 
-                        (alert('Wrong NUSNET or Password'))))
+                        (Alert.alert(
+                            'Log in failed',
+                            'Invalid NUSNET or Password',
+                            [
+                                { text: "Try again" }
+                            ],
+                            { cancelable: false }
+                        ))))
                 }
             </KeyboardAvoidingView>
         );

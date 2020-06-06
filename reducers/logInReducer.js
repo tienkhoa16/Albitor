@@ -1,6 +1,7 @@
 const initialState = {
     name: '',
     cookie: '',
+    htmlTable: '',
 };
 
 const logInReducer = (state = initialState, action) => {

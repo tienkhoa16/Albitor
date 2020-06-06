@@ -2,7 +2,7 @@ import axios from 'axios';
 import querystring from 'querystring';
 import React from 'react';
 import moment from 'moment';
-import { TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions } from 'react-native';
+import { TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert} from 'react-native';
 import {Picker} from '@react-native-community/picker'
 
 import BlueButton from '../component/BlueButton';
@@ -12,6 +12,32 @@ import store from '../store';
 const screenWidth = Math.round(Dimensions.get('window').width);
 const dateTime = getDateTime();
 
+
+
+async function getHistoryHtml(){
+    const sessionId = store.getState().logIn.cookie;
+
+    const url = 'https://myaces.nus.edu.sg/htd/htd?loadPage=viewtemperature&actionToDo=NUS';
+
+    const config = {
+        headers : {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': sessionId
+        }
+    }
+    const data = querystring.stringify({
+        'actionName': 'viewtemperature',
+    })
+
+    let resp =  await axios.post(url, data, config)
+        .then(response => response)
+        .catch(err => err.response)
+        
+    resp = resp.data
+    resp = resp.substr(resp.indexOf('<table id'))
+    resp = resp.substr(0, resp.indexOf('</table>')+8)
+    return resp;
+}
 
 function getDateTime(){
     const date = moment()
@@ -68,7 +94,14 @@ export default class DeclareTempContainer extends React.Component{
         const floatTemp = parseFloat(this.state.temp)
 
         if(!(34 <= floatTemp && floatTemp <= 40)){
-            alert('Temperature must be between 34 and 40')
+            Alert.alert(
+                "Declare Failed",    //Alert Title
+                'Temperature must be between 34\u2103 and 40\u2103', //Alert Message
+                [
+                    { text: "OK" }
+                ],
+                { cancelable: false }
+            )
             this.setState({
                 temp: ''
             })
@@ -77,11 +110,42 @@ export default class DeclareTempContainer extends React.Component{
             (async() =>{
                 const resp_code = await submitTemp(floatTemp,this.state.date,this.state.timeOfDay,
                                                 this.state.symptoms,this.state.famSymptoms)
+
                 if(resp_code != 200){
-                    alert('Failed to declare temperature. HTTP Error Code: ' + resp_code)
+                    Alert.alert(
+                        "Declare Failed",    //Alert Title
+                        'Failed to declare temperature. HTTP Error Code: ' + resp_code, //Alert Message
+                        [
+                            { text: "OK"}
+                        ],
+                        { cancelable: false }
+                    )
                 }
                 else{
-                    alert('Declare '+floatTemp+' \u2103 for '+this.state.timeOfDay+'M on '+this.state.date+' successful!')
+                    store.dispatch({
+                        type: 'GET_HISTORY',
+                        payload:{
+                            updateHtmlTable: await getHistoryHtml()
+                        }
+                    })
+
+                    Alert.alert(
+                        "Declare Succesful",    //Alert Title
+                        'Declared '+floatTemp+'\u2103 for '+this.state.timeOfDay+'M on '+this.state.date,    // Alert Message
+                        [
+                            {
+                                text: "See Declare History",
+                                onPress: () => {
+                                    console.log("See Declare History Pressed")
+                                    this.props.navigation.navigate('History')
+                                }
+                            },
+                            { text: "OK", onPress: () => console.log("OK Pressed") }
+                        ],
+                        { cancelable: false }
+                      );
+
+                    // this.props.navigation.navigate('History')
                 }
             })()
         }   
