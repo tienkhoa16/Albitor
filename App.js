@@ -13,21 +13,9 @@ import store from './store';
 import PastDeclareContainer from './container/PastDeclareContainer';
 
 
-// const SwitchNavigator = createBottomTabNavigator(
-// // const SwitchNavigator = createSwitchNavigator(
-//   {
-//     Login: SignUpContainer,
-//     Declare: DeclareTempContainer,
-//     History: PastDeclareContainer,
-//   },
-//   {
-//     initialRouteName: 'Login',
-//   }
-// );
-
 const Stack = createStackNavigator();
 
-function MyStack() {
+function MainScreenStack() {
   return (
     <Stack.Navigator
       initialRouteName='Login'
@@ -41,6 +29,19 @@ function MyStack() {
     </Stack.Navigator>
   );
 }
+
+// const SwitchNavigator = createBottomTabNavigator(
+// const SwitchNavigator = createSwitchNavigator(
+//   {
+//     Login: SignUpContainer,
+//     MainScreen: MainScreenStack,
+//   },
+//   {
+//     initialRouteName: 'Login',
+//   }
+// );
+
+
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);

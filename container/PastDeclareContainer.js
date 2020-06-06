@@ -7,7 +7,6 @@ import Snackbar from 'react-native-snackbar-component';
 
 import store from '../store';
 
-const htmlTable = store.getState().history.htmlTable
 
 const renderers = {
     table: makeTableRenderer({
@@ -35,7 +34,7 @@ export default class PastDeclareContainer extends PureComponent {
             <ScrollView contentContainerStyle={{ paddingHorizontal: 5 }} style={{ marginTop:40 ,backgroundColor: 'white' }}>
                 <Text style = {styles.heading}>Declaration History of</Text>
                 <Text style = {styles.heading}>{store.getState().logIn.name}</Text>
-                <HTML html={htmlTable} {...htmlConfig}/>
+                <HTML html={store.getState().history.htmlTable} {...htmlConfig}/>
             </ScrollView>
         )
     }
