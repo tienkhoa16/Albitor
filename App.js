@@ -20,7 +20,7 @@ const Stack = createStackNavigator();
 const SwitchNavigator = createSwitchNavigator(
   {
     Login: SignUpContainer,
-    MainScreen: MainScreenStack(),
+    MainScreen: MainScreenStack,
   },
   {
     initialRouteName: 'Login',
