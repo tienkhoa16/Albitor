@@ -145,8 +145,6 @@ export default class DeclareTempContainer extends React.Component{
                         ],
                         { cancelable: false }
                       );
-
-                    // this.props.navigation.navigate('History')
                 }
             })()
         }   

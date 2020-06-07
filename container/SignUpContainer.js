@@ -127,7 +127,7 @@ export default class SignUpContainer extends React.Component{
                                         signInSuccesful: true, 
                                         authenticating: false, 
                                     })
-                                    this.props.navigation.navigate('Declare')
+                                    this.props.navigation.navigate('MainScreen')
                                 }
                                 else{
                                     this.setState({

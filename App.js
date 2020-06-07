@@ -15,39 +15,37 @@ import PastDeclareContainer from './container/PastDeclareContainer';
 
 const Stack = createStackNavigator();
 
+
+// const SwitchNavigator = createBottomTabNavigator(
+const SwitchNavigator = createSwitchNavigator(
+  {
+    Login: SignUpContainer,
+    MainScreen: MainScreenStack(),
+  },
+  {
+    initialRouteName: 'Login',
+  }
+);
+
 function MainScreenStack() {
   return (
     <Stack.Navigator
-      initialRouteName='Login'
+      initialRouteName='Declare'
       screenOptions={{
         headerShown: false
       }}
     >
-      <Stack.Screen name="Login" component={SignUpContainer} />
       <Stack.Screen name="Declare" component={DeclareTempContainer} />
       <Stack.Screen name="History" component={PastDeclareContainer} />
     </Stack.Navigator>
   );
 }
 
-// const SwitchNavigator = createBottomTabNavigator(
-// const SwitchNavigator = createSwitchNavigator(
-//   {
-//     Login: SignUpContainer,
-//     MainScreen: MainScreenStack,
-//   },
-//   {
-//     initialRouteName: 'Login',
-//   }
-// );
-
-
-
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-// const AppContainer = createAppContainer(SwitchNavigator)
+const AppContainer = createAppContainer(SwitchNavigator)
 
 
 
@@ -55,7 +53,7 @@ export default function App() {
   return (
     <Provider store = {store}>
       <NavigationContainer theme = {styles}>
-        <MyStack/>
+        <AppContainer/>
       </NavigationContainer>
     </Provider>
   );
