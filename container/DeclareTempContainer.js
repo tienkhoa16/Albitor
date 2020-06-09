@@ -8,37 +8,13 @@ import {Picker} from '@react-native-community/picker'
 
 import BlueButton from '../component/BlueButton';
 import store from '../store';
+import getHistoryHtml from './GetHistoryHtml';
 
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const dateTime = getDateTime();
 
 
-
-async function getHistoryHtml(){
-    const sessionId = store.getState().logIn.cookie;
-
-    const url = 'https://myaces.nus.edu.sg/htd/htd?loadPage=viewtemperature&actionToDo=NUS';
-
-    const config = {
-        headers : {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Cookie': sessionId
-        }
-    }
-    const data = querystring.stringify({
-        'actionName': 'viewtemperature',
-    })
-
-    let resp =  await axios.post(url, data, config)
-        .then(response => response)
-        .catch(err => err.response)
-
-    resp = resp.data
-    resp = resp.substr(resp.indexOf('<table id'))
-    resp = resp.substr(0, resp.indexOf('</table>')+8)
-    return resp;
-}
 
 function getDateTime(){
     const date = moment()
@@ -91,7 +67,7 @@ export default class DeclareTempContainer extends React.Component{
     handleTimeOfDay = (symptoms) => this.setState({symptoms});
     handleTimeOfDay = (famSymptoms) => this.setState({famSymptoms});
 
-    handlePressButton = () => {
+    handlePressSubmitButton = () => {
         const floatTemp = parseFloat(this.state.temp)
 
         if(!(34 <= floatTemp && floatTemp <= 40)){
@@ -150,6 +126,8 @@ export default class DeclareTempContainer extends React.Component{
             })()
         }   
     }
+
+    handlePressHistoryButton = () => {this.props.navigation.navigate('History')}
 
     render(){
         const {temp, date, timeOfDay, symptoms, famSymptoms} = this.state
@@ -219,9 +197,16 @@ export default class DeclareTempContainer extends React.Component{
                     
                     <BlueButton
                         style = {styles.button}
-                        onPress = {this.handlePressButton}
+                        onPress = {this.handlePressSubmitButton}
                     >
                         Submit
+                    </BlueButton>
+
+                    <BlueButton
+                        style = {styles.button}
+                        onPress = {this.handlePressHistoryButton}
+                    >
+                        History
                     </BlueButton>
                     
                 </KeyboardAvoidingView>
@@ -232,6 +217,7 @@ export default class DeclareTempContainer extends React.Component{
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         flexDirection: 'column',
     },
     options: {
@@ -247,7 +233,7 @@ const styles = StyleSheet.create({
         paddingVertical: 3,
         fontSize: 14,
         marginBottom: 10,
-        marginTop: 40,
+        marginTop: 20,
         alignSelf: 'center',
         textAlign: 'center',
         borderTopColor: 'white',
@@ -255,7 +241,7 @@ const styles = StyleSheet.create({
         borderLeftColor: 'white',
     },
     button:{
-        marginTop: 42,
+        marginTop: 20,
         borderRadius: 5,
         width: 150,
         alignSelf: 'center',
@@ -272,7 +258,7 @@ const styles = StyleSheet.create({
     text:{
         fontSize: 15,
         color: 'black',
-        marginTop: 40,
+        marginTop: 20,
         textAlign: 'center',
         fontWeight: 'bold',
     },
@@ -286,6 +272,6 @@ const styles = StyleSheet.create({
     picker:{
         height: 50,
         width: 100,
-        marginTop: 40,
+        marginTop: 20,
     }
 });

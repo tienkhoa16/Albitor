@@ -6,7 +6,17 @@ import { WebView } from 'react-native-webview';
 import Snackbar from 'react-native-snackbar-component';
 
 import store from '../store';
+import getHistoryHtml from './GetHistoryHtml';
 
+
+(async() =>{
+    store.dispatch({
+        type: 'GET_HISTORY',
+        payload:{
+            updateHtmlTable: await getHistoryHtml()
+        }
+    })
+})()
 
 const renderers = {
     table: makeTableRenderer({
