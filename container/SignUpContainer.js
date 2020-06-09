@@ -1,5 +1,6 @@
 import React from 'react';
-import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert } from 'react-native';
+import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, Keyboard, 
+    TouchableWithoutFeedback } from 'react-native';
 import axios from 'axios';
 import querystring from 'querystring';
 
@@ -89,79 +90,81 @@ export default class SignUpContainer extends React.Component{
         const {username, password, firstTime, typing, authenticating, signInSuccesful} = this.state
 
         return(
-            <KeyboardAvoidingView style = {styles.container}>
-                <Image style = {styles.image} source = {require('../assets/nus_logo.png')} />
-                <TextInput
-                    style = {styles.textInput}
-                    placeholder = "NUSNET (e...)"
-                    onChangeText = {this.handleUpdateUsername}
-                    value = {username}
-                />
-                <TextInput
-                    style = {styles.textInput}
-                    placeholder = "Password"
-                    secureTextEntry
-                    onChangeText = {this.handleUpdatePassword}
-                    value = {password}
-                />
-                <BlueButton 
-                    style = {styles.button}
-                    onPress = {() => {
-                        if(
-                            username &&
-                            password
-                        ){
-                            (async () => {
-                                this.setState({authenticating: true})
-                                const resp = await auth(username, password)
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                <KeyboardAvoidingView style = {styles.container}>
+                    <Image style = {styles.image} source = {require('../assets/nus_logo.png')} />
+                    <TextInput
+                        style = {styles.textInput}
+                        placeholder = "NUSNET (e...)"
+                        onChangeText = {this.handleUpdateUsername}
+                        value = {username}
+                    />
+                    <TextInput
+                        style = {styles.textInput}
+                        placeholder = "Password"
+                        secureTextEntry
+                        onChangeText = {this.handleUpdatePassword}
+                        value = {password}
+                    />
+                    <BlueButton 
+                        style = {styles.button}
+                        onPress = {() => {
+                            if(
+                                username &&
+                                password
+                            ){
+                                (async () => {
+                                    this.setState({authenticating: true})
+                                    const resp = await auth(username, password)
 
-                                if ('set-cookie' in resp.headers){
-                                    store.dispatch({
-                                        type: 'UPDATE',
-                                        payload: {
-                                            updateName: getName(resp.data),
-                                            updateCookie: resp.headers['set-cookie'][0].split(";")[0],
-                                        }
-                                    })
-                                    this.setState({
-                                        signInSuccesful: true, 
-                                        authenticating: false, 
-                                    })
-                                    this.props.navigation.navigate('MainScreen')
-                                }
-                                else{
-                                    this.setState({
-                                        signInSuccesful: false, 
-                                        authenticating: false,
-                                        name: '',
-                                        cookie: '',
-                                    })
-                                }
-                            })()
-                            this.setState({
-                                username: '',
-                                password: '',
-                                typing: false,
-                            })
-                        }
-                    }}
-                >
-                    Log In
-                </BlueButton>
-                {
-                    (firstTime || typing) ? null : 
-                        (authenticating ? (<Text style = {styles.text}>Authenticating...</Text>)  : 
-                        (signInSuccesful ? (<Text style = {styles.text}>Log In Successful</Text>) : 
-                        (Alert.alert(
-                            'Log in failed',
-                            'Invalid NUSNET or Password',
-                            [
-                                { text: "Try again" }
-                            ],
-                            { cancelable: false }
-                        ))))
-                }
-            </KeyboardAvoidingView>
+                                    if ('set-cookie' in resp.headers){
+                                        store.dispatch({
+                                            type: 'UPDATE',
+                                            payload: {
+                                                updateName: getName(resp.data),
+                                                updateCookie: resp.headers['set-cookie'][0].split(";")[0],
+                                            }
+                                        })
+                                        this.setState({
+                                            signInSuccesful: true, 
+                                            authenticating: false, 
+                                        })
+                                        this.props.navigation.navigate('MainScreen')
+                                    }
+                                    else{
+                                        this.setState({
+                                            signInSuccesful: false, 
+                                            authenticating: false,
+                                            name: '',
+                                            cookie: '',
+                                        })
+                                    }
+                                })()
+                                this.setState({
+                                    username: '',
+                                    password: '',
+                                    typing: false,
+                                })
+                            }
+                        }}
+                    >
+                        Log In
+                    </BlueButton>
+                    {
+                        (firstTime || typing) ? null : 
+                            (authenticating ? (<Text style = {styles.text}>Authenticating...</Text>)  : 
+                            (signInSuccesful ? (<Text style = {styles.text}>Log In Successful</Text>) : 
+                            (Alert.alert(
+                                'Log in failed',
+                                'Invalid NUSNET or Password',
+                                [
+                                    { text: "Try again" }
+                                ],
+                                { cancelable: false }
+                            ))))
+                    }
+                </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
         );
     }
 }
