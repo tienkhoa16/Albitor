@@ -7,9 +7,9 @@
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "1.2.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/thermometer.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -22,7 +22,12 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.Albitor.FitNUS",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.Albitor.FitNUS",
+      "versionCode": 1
     }
   }
 }
