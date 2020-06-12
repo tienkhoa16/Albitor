@@ -4,7 +4,7 @@ import querystring from 'querystring';
 import store from '../store';
 
 export default async function getHistoryHtml(){
-    var sessionId = store.getState().logIn.cookie;
+    let sessionId = store.getState().logIn.cookie;
 
     const url = 'https://myaces.nus.edu.sg/htd/htd?loadPage=viewtemperature&actionToDo=NUS';
 
@@ -25,5 +25,21 @@ export default async function getHistoryHtml(){
     // resp = resp.data
     resp = resp.substr(resp.indexOf('<table id'))
     resp = resp.substr(0, resp.indexOf('</table>')+8)
+    resp = resp.replace('cellspacing="1"', 'cellspacing="0"')
+    resp = resp.replace(/Temperature/g, "Temp")
+    resp = resp.replace(/\/2020 /g, "")
+    resp = resp.replace(/Monday/g, "Mon")
+    resp = resp.replace(/Tuesday/g, "Tue")
+    resp = resp.replace(/Wednesday/g, "Wed")
+    resp = resp.replace(/Thursday/g, "Thu")
+    resp = resp.replace(/Friday/g, "Fri")
+    resp = resp.replace(/Saturday/g, "Sat")
+    resp = resp.replace(/Sunday/g, "Sun")
+    resp = resp.replace(/COVID-19/g, "COVID")
+    resp = resp.replace(/symptoms/g, "sx")
+    resp = resp.replace(/S.No/g, "No")
+    resp = resp.replace(/<br\/>/g, " ")
+    resp = resp.replace(/household/g, "home")
+    resp = resp.replace(/having/g, "with")
     return resp;
 }
