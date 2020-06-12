@@ -31,9 +31,10 @@ const htmlConfig = {
 export default class PastDeclareContainer extends PureComponent {
     render() {
         return (
-            <ScrollView contentContainerStyle={{ paddingHorizontal: 5 }} style={{ marginTop:40 ,backgroundColor: 'white' }}>
+            <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }} style={{ marginTop:40 ,backgroundColor: 'white' }}>
                 <Text style = {styles.heading}>Declaration History of</Text>
                 <Text style = {styles.heading}>{store.getState().logIn.name}</Text>
+                <Text style = {styles.text}>*sx: symptoms</Text>
                 <HTML html={store.getState().history.htmlTable} {...htmlConfig}/>
             </ScrollView>
         )
@@ -47,4 +48,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 'bold',
     },
+    text:{
+        fontSize: 13,
+        fontStyle: 'italic',
+        marginBottom: 5,
+    }
 });

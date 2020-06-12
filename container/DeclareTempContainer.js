@@ -102,7 +102,7 @@ export default class DeclareTempContainer extends React.Component{
                     store.dispatch({
                         type: 'GET_HISTORY',
                         payload:{
-                            updateHtmlTable: await getHistoryHtml()
+                            updateHtmlTable: await getHistoryHtml(store.getState().logIn.cookie)
                         }
                     })
 
@@ -127,18 +127,7 @@ export default class DeclareTempContainer extends React.Component{
         }   
     }
 
-    handlePressHistoryButton = () => {
-        (async() =>{
-            store.dispatch({
-                type: 'GET_HISTORY',
-                payload:{
-                    updateHtmlTable: await getHistoryHtml()
-                }
-            })
-            while(!store.getState().history.htmlTable){};
-            this.props.navigation.navigate('History')
-        })()
-    }
+    handlePressHistoryButton = () => {this.props.navigation.navigate('History')}
 
     render(){
         const {temp, date, timeOfDay, symptoms, famSymptoms} = this.state

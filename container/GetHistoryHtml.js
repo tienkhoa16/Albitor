@@ -1,10 +1,9 @@
 import axios from 'axios';
 import querystring from 'querystring';
 
-import store from '../store';
 
-export default async function getHistoryHtml(){
-    let sessionId = store.getState().logIn.cookie;
+export default async function getHistoryHtml(cookie){
+    let sessionId = cookie;
 
     const url = 'https://myaces.nus.edu.sg/htd/htd?loadPage=viewtemperature&actionToDo=NUS';
 
@@ -36,10 +35,10 @@ export default async function getHistoryHtml(){
     resp = resp.replace(/Saturday/g, "Sat")
     resp = resp.replace(/Sunday/g, "Sun")
     resp = resp.replace(/COVID-19/g, "COVID")
-    resp = resp.replace(/symptoms/g, "sx")
+    resp = resp.replace(/symptoms/g, "sx*")
     resp = resp.replace(/S.No/g, "No")
     resp = resp.replace(/<br\/>/g, " ")
     resp = resp.replace(/household/g, "home")
-    resp = resp.replace(/having/g, "with")
+    resp = resp.replace(/having COVID /g, "")
     return resp;
 }

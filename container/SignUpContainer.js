@@ -6,6 +6,7 @@ import querystring from 'querystring';
 
 import BlueButton from '../component/BlueButton';
 import store from '../store';
+import getHistoryHtml from './GetHistoryHtml';
 
 
 axios.defaults.headers.common['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36";
@@ -123,6 +124,12 @@ export default class SignUpContainer extends React.Component{
                                             payload: {
                                                 updateName: getName(resp.data),
                                                 updateCookie: resp.headers['set-cookie'][0].split(";")[0],
+                                            }
+                                        })
+                                        store.dispatch({
+                                            type: 'GET_HISTORY',
+                                            payload:{
+                                                updateHtmlTable: await getHistoryHtml(resp.headers['set-cookie'][0].split(";")[0])
                                             }
                                         })
                                         this.setState({
