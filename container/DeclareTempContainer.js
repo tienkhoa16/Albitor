@@ -144,7 +144,7 @@ export default class DeclareTempContainer extends React.Component{
                         <Picker
                             mode = 'dropdown'
                             selectedValue = {timeOfDay}
-                            style={{height: 50, width: 100, marginTop: 40}}
+                            style={styles.picker}
                             onValueChange={(itemValue, itemIndex) =>
                                 this.setState({timeOfDay: itemValue})
                             }
