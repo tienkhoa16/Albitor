@@ -129,6 +129,8 @@ export default class DeclareTempContainer extends React.Component{
 
     handlePressHistoryButton = () => {this.props.navigation.navigate('History')}
 
+    handlePressFlightButton = () => {this.props.navigation.navigate('Flight')}
+
     render(){
         const {temp, date, timeOfDay, symptoms, famSymptoms} = this.state
         
@@ -208,6 +210,13 @@ export default class DeclareTempContainer extends React.Component{
                     >
                         History
                     </BlueButton>
+
+                    <BlueButton
+                        style = {styles.button}
+                        onPress = {this.handlePressFlightButton}
+                    >
+                        Flight
+                    </BlueButton>
                     
                 </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
@@ -251,6 +260,7 @@ const styles = StyleSheet.create({
         color: 'green',
         marginTop: 10,
         marginLeft: 10,
+        marginRight: 10,
         fontStyle: 'italic',
         textAlign: 'left',
         fontWeight: 'bold',
@@ -259,6 +269,8 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: 'black',
         marginTop: 20,
+        marginLeft: 10,
+        marginRight: 10,
         textAlign: 'center',
         fontWeight: 'bold',
     },

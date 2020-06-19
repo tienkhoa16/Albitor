@@ -9,8 +9,10 @@ import { Provider } from 'react-redux';
 
 import SignUpContainer from './container/SignUpContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
-import store from './store';
 import PastDeclareContainer from './container/PastDeclareContainer';
+import FlightContainer from './container/FlightContainer';
+
+import store from './store';
 
 
 const Stack = createStackNavigator();
@@ -37,6 +39,7 @@ function MainScreenStack() {
     >
       <Stack.Screen name="Declare" component={DeclareTempContainer} />
       <Stack.Screen name="History" component={PastDeclareContainer} />
+      <Stack.Screen name="Flight" component={FlightContainer} />
     </Stack.Navigator>
   );
 }
