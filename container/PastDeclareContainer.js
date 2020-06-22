@@ -20,10 +20,10 @@ const htmlConfig = {
     renderers,
     ignoredTags: IGNORED_TAGS,
     onLinkPress: (e, url) => {
-      Snackbar.show({
-        title: url,
-        color: 'white'
-      })
+        Snackbar.show({
+            title: url,
+            color: 'white'
+        })
     }
 };
 

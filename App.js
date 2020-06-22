@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Provider } from 'react-redux';
 
-import SignUpContainer from './container/SignUpContainer';
+import LogInContainer from './container/LogInContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
 import PastDeclareContainer from './container/PastDeclareContainer';
 import FlightContainer from './container/FlightContainer';
@@ -21,7 +21,7 @@ const Stack = createStackNavigator();
 // const SwitchNavigator = createBottomTabNavigator(
 const SwitchNavigator = createSwitchNavigator(
   {
-    Login: SignUpContainer,
+    Login: LogInContainer,
     MainScreen: MainScreenStack,
   },
   {

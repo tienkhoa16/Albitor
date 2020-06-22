@@ -1,6 +1,5 @@
 import React from 'react';
-import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, Keyboard, 
-    TouchableWithoutFeedback } from 'react-native';
+import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import axios from 'axios';
 import querystring from 'querystring';
 
@@ -70,7 +69,7 @@ function getName(data){
     return name
 }
 
-export default class SignUpContainer extends React.Component{
+export default class LogInContainer extends React.Component{
     state = {
         username: '',
         password: '',
@@ -84,6 +83,52 @@ export default class SignUpContainer extends React.Component{
 
     handleUpdatePassword = (password, typing) => this.setState({password, typing: true, firstTime: false});
 
+    handlePressButton = () => {
+        if(
+            this.state.username &&
+            this.state.password
+        ){
+            (async () => {
+                this.setState({authenticating: true})
+                const resp = await auth(this.state.username, this.state.password)
+
+                if ('set-cookie' in resp.headers){
+                    store.dispatch({
+                        type: 'UPDATE',
+                        payload: {
+                            updateName: getName(resp.data),
+                            updateCookie: resp.headers['set-cookie'][0].split(";")[0],
+                        }
+                    })
+                    store.dispatch({
+                        type: 'GET_HISTORY',
+                        payload:{
+                            updateHtmlTable: await getHistoryHtml(resp.headers['set-cookie'][0].split(";")[0])
+                        }
+                    })
+                    this.setState({
+                        signInSuccesful: true, 
+                        authenticating: false, 
+                    })
+                    this.props.navigation.navigate('MainScreen')
+                }
+                else{
+                    this.setState({
+                        signInSuccesful: false, 
+                        authenticating: false,
+                        name: '',
+                        cookie: '',
+                    })
+                }
+            })()
+            this.setState({
+                username: '',
+                password: '',
+                typing: false,
+            })    
+        }
+    }
+
     render(){
         const {username, password, firstTime, typing, authenticating, signInSuccesful} = this.state
 
@@ -91,12 +136,14 @@ export default class SignUpContainer extends React.Component{
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <KeyboardAvoidingView style = {styles.container}>
                     <Image style = {styles.image} source = {require('../assets/nus_logo.png')} />
+
                     <TextInput
                         style = {styles.textInput}
                         placeholder = "NUSNET (e...)"
                         onChangeText = {this.handleUpdateUsername}
                         value = {username}
                     />
+
                     <TextInput
                         style = {styles.textInput}
                         placeholder = "Password"
@@ -104,56 +151,14 @@ export default class SignUpContainer extends React.Component{
                         onChangeText = {this.handleUpdatePassword}
                         value = {password}
                     />
+
                     <BlueButton 
                         style = {styles.button}
-                        onPress = {() => {
-                            if(
-                                username &&
-                                password
-                            ){
-                                (async () => {
-                                    this.setState({authenticating: true})
-                                    const resp = await auth(username, password)
-
-                                    if ('set-cookie' in resp.headers){
-                                        store.dispatch({
-                                            type: 'UPDATE',
-                                            payload: {
-                                                updateName: getName(resp.data),
-                                                updateCookie: resp.headers['set-cookie'][0].split(";")[0],
-                                            }
-                                        })
-                                        store.dispatch({
-                                            type: 'GET_HISTORY',
-                                            payload:{
-                                                updateHtmlTable: await getHistoryHtml(resp.headers['set-cookie'][0].split(";")[0])
-                                            }
-                                        })
-                                        this.setState({
-                                            signInSuccesful: true, 
-                                            authenticating: false, 
-                                        })
-                                        this.props.navigation.navigate('MainScreen')
-                                    }
-                                    else{
-                                        this.setState({
-                                            signInSuccesful: false, 
-                                            authenticating: false,
-                                            name: '',
-                                            cookie: '',
-                                        })
-                                    }
-                                })()
-                                this.setState({
-                                    username: '',
-                                    password: '',
-                                    typing: false,
-                                })
-                            }
-                        }}
+                        onPress = {() => this.handlePressButton()}
                     >
                         Log In
                     </BlueButton>
+
                     {
                         (firstTime || typing) ? null : 
                             (authenticating ? (<Text style = {styles.text}>Authenticating...</Text>)  : 

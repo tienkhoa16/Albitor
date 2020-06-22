@@ -2,8 +2,7 @@ import axios from 'axios';
 import querystring from 'querystring';
 import React from 'react';
 import moment from 'moment';
-import { TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, Keyboard, 
-    TouchableWithoutFeedback } from 'react-native';
+import { TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import {Picker} from '@react-native-community/picker';
 
 import BlueButton from '../component/BlueButton';
@@ -79,9 +78,6 @@ export default class DeclareTempContainer extends React.Component{
                 ],
                 { cancelable: false }
             )
-            this.setState({
-                temp: ''
-            })
         }
         else{
             (async() =>{
@@ -124,7 +120,11 @@ export default class DeclareTempContainer extends React.Component{
                       );
                 }
             })()
-        }   
+        }
+
+        this.setState({
+            temp: ''
+        })   
     }
 
     handlePressHistoryButton = () => {this.props.navigation.navigate('History')}
@@ -138,7 +138,9 @@ export default class DeclareTempContainer extends React.Component{
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <KeyboardAvoidingView style = {styles.container}>
                     <KeyboardAvoidingView style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
+
                     <Text style = {styles.textWelcome}>Welcome {store.getState().logIn.name}</Text>
+
                     <Text style = {styles.heading}>Temperature Declaration</Text>
 
                     <KeyboardAvoidingView style = {styles.options}>
