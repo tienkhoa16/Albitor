@@ -10,10 +10,6 @@ import getHistoryHtml from './GetHistoryHtml';
 import store from '../store';
 
 
-axios.defaults.headers.common['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36";
-axios.defaults.withCredentials = true;
-const instance = axios.create();
-instance.defaults.timeout = 20000;
 
 async function auth(username, password){
     console.log("[AUTH]")
