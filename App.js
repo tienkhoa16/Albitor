@@ -5,8 +5,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { Provider } from 'react-redux';
-
 import LogInContainer from './container/LogInContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
 import PastDeclareContainer from './container/PastDeclareContainer';
@@ -15,12 +13,15 @@ import FlightContainer from './container/FlightContainer';
 import AnnouncementForm from './announcement/upload_ui';
 import AnnouncementButton from './announcement/announcement_button';
 import AnnouncementListContainer from './announcement/AnnouncementList';
-import CameraButton from './camera/cameraButton';
-import CameraUI from './camera/camera_ui';
 import UpdateAnnouncement from './announcement/UpdateAnnouncement';
 import AnnouncementView from './announcement/AnnouncementView';
+
+import CameraButton from './camera/cameraButton';
+import CameraUI from './camera/camera_ui';
+
 import { Feather } from '@expo/vector-icons';
 
+import { Provider } from 'react-redux';
 import store from './store';
 
 import {decode, encode} from 'base-64'
@@ -59,6 +60,24 @@ function AnnouncementScreen({ navigation }) {
       </AnnouncementStackScreen.Navigator>
   );
 }
+
+const CameraStackScreen = createStackNavigator();
+
+function CameraScreen({ navigation }) {
+  return (
+      <CameraStackScreen.Navigator initialRouteName='Camera Button'>
+        <CameraStackScreen.Screen
+          name='Camera Button'
+          component={CameraButton}
+        />
+        <CameraStackScreen.Screen 
+          name='Camera'
+          component={CameraUI}
+        />
+      </CameraStackScreen.Navigator>
+  );
+}
+
 
 
 // const Stack = createStackNavigator();

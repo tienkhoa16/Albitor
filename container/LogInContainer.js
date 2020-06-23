@@ -99,7 +99,7 @@ export default class LogInContainer extends React.Component{
                             updateCookie: resp.headers['set-cookie'][0].split(";")[0],
                         }
                     })
-                    
+
                     this.setState({
                         signInSuccesful: true, 
                         authenticating: false, 
@@ -110,8 +110,6 @@ export default class LogInContainer extends React.Component{
                     this.setState({
                         signInSuccesful: false, 
                         authenticating: false,
-                        name: '',
-                        cookie: '',
                     })
                 }
             })()
@@ -119,7 +117,7 @@ export default class LogInContainer extends React.Component{
                 username: '',
                 password: '',
                 typing: false,
-            })    
+            })
         }
     }
 

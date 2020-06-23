@@ -15,18 +15,6 @@ export default class FlightContainer extends React.Component {
     state = {
         isLoading: true
     }
-    
-    // componentDidMount() {
-    //     this.focusListener = this.props.navigation.addListener("focus", () =>{
-    //             this.setState({isLoading: true}) 
-    //     }
-    //     )
-    //   }
-    
-    // componentWillUnmount() {
-    //     // Remove the event listener before removing the screen from the stack
-    //     this.focusListener();
-    // }
 
     handlePressX = () => {this.props.navigation.goBack()}
 
