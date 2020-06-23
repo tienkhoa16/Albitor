@@ -2,7 +2,7 @@ import axios from 'axios';
 import querystring from 'querystring';
 import React from 'react';
 import moment from 'moment';
-import { TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, Keyboard, TouchableWithoutFeedback, Picker, SafeAreaView } from 'react-native';
+import { TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, Keyboard, TouchableWithoutFeedback, Picker, SafeAreaView, Image } from 'react-native';
 
 import BlueButton from '../component/BlueButton';
 
@@ -202,6 +202,12 @@ export default class DeclareTempContainer extends React.Component{
                         Submit
                     </BlueButton>
 
+                    <Image 
+                        style = {{marginTop: 10, scaleX: 0.7, scaleY: 0.7}}
+                        source = {require('../assets/nus_lion.png')} 
+                    />
+
+
                     {/* <BlueButton
                         style = {styles.button}
                         onPress = {this.handlePressHistoryButton}
@@ -226,7 +232,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#C1EBFF',
+        backgroundColor: '#dbc6eb',
     },
     textInput:{
         borderWidth: 1,
@@ -287,9 +293,9 @@ const styles = StyleSheet.create({
         marginTop: 10, 
         marginLeft: 10,
         marginRight: 10,
-        backgroundColor: 'white',
-        borderWidth: 1,
+        borderWidth: 1.2,
         borderRadius: 10,
-        borderStyle: 'dashed'
+        backgroundColor: 'white',
+        shadowOpacity: 0.1,
     }
 });
