@@ -12,35 +12,78 @@ import DeclareTempContainer from './container/DeclareTempContainer';
 import PastDeclareContainer from './container/PastDeclareContainer';
 import FlightContainer from './container/FlightContainer';
 
+import AnnouncementForm from './announcement/upload_ui';
+import AnnouncementButton from './announcement/announcement_button';
+import AnnouncementListContainer from './announcement/AnnouncementList';
+import CameraButton from './camera/cameraButton';
+import CameraUI from './camera/camera_ui';
+import UpdateAnnouncement from './announcement/UpdateAnnouncement';
+import AnnouncementView from './announcement/AnnouncementView';
+import { Feather } from '@expo/vector-icons';
+
 import store from './store';
 
 
-const Stack = createStackNavigator();
+const AnnouncementStackScreen = createStackNavigator();
+
+function AnnouncementScreen({ navigation }) {
+  return (
+      <AnnouncementStackScreen.Navigator initialRouteName='Announcement list'>
+        <AnnouncementStackScreen.Screen
+          name='Announcement List'
+          component={AnnouncementListContainer}
+          options={{ title: 'Announcements' }}
+        />
+        <AnnouncementStackScreen.Screen
+          name='Announcement View'
+          component={AnnouncementView}
+          initialParams={{ title: null, hyperlink: null, description: null }}
+        />
+        <AnnouncementStackScreen.Screen
+          name='Add Announcement'
+          component={AnnouncementForm}
+          options={{ title: 'Add' }}
+        />
+        <AnnouncementStackScreen.Screen
+          name='Update Announcement'
+          component={UpdateAnnouncement}
+          options={{ title: 'Update' }}
+          initialParams={{ itemid: null, title: null, hyperlink: null, description: null }}
+        />
+      </AnnouncementStackScreen.Navigator>
+  );
+}
+
+
+// const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 
 // const SwitchNavigator = createBottomTabNavigator(
 const SwitchNavigator = createSwitchNavigator(
   {
     Login: LogInContainer,
-    MainScreen: MainScreenStack,
+    MainScreen: MainScreenTab,
   },
   {
     initialRouteName: 'Login',
   }
 );
 
-function MainScreenStack() {
+function MainScreenTab() {
   return (
-    <Stack.Navigator
+    <Tab.Navigator
       initialRouteName='Declare'
       screenOptions={{
-        headerShown: false
+        headerShown: false,
+        keyboardHidesTabBar: true,
       }}
     >
-      <Stack.Screen name="Declare" component={DeclareTempContainer} />
-      <Stack.Screen name="History" component={PastDeclareContainer} />
-      <Stack.Screen name="Flight" component={FlightContainer} />
-    </Stack.Navigator>
+      <Tab.Screen name="Declare" component={DeclareTempContainer} />
+      <Tab.Screen name="History" component={PastDeclareContainer} />
+      <Tab.Screen name="Flight" component={FlightContainer} />
+      <Tab.Screen name='Announcement' component={AnnouncementScreen} />
+    </Tab.Navigator>
   );
 }
 
