@@ -16,7 +16,6 @@ import AnnouncementListContainer from './announcement/AnnouncementList';
 import UpdateAnnouncement from './announcement/UpdateAnnouncement';
 import AnnouncementView from './announcement/AnnouncementView';
 
-import CameraButton from './camera/cameraButton';
 import CameraUI from './camera/camera_ui';
 
 import { Feather } from '@expo/vector-icons';
@@ -61,30 +60,28 @@ function AnnouncementScreen({ navigation }) {
   );
 }
 
-const CameraStackScreen = createStackNavigator();
+const DeclareCamStack = createStackNavigator();
 
-function CameraScreen({ navigation }) {
+function DeclareCamScreen({ navigation }) {
   return (
-      <CameraStackScreen.Navigator initialRouteName='Camera Button'>
-        <CameraStackScreen.Screen
-          name='Camera Button'
-          component={CameraButton}
+      <DeclareCamStack.Navigator 
+        initialRouteName='DeclareScreen'
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <DeclareCamStack.Screen
+          name='DeclareScreen'
+          component={DeclareTempContainer}
         />
-        <CameraStackScreen.Screen 
+        <DeclareCamStack.Screen
           name='Camera'
           component={CameraUI}
         />
-      </CameraStackScreen.Navigator>
+      </DeclareCamStack.Navigator>
   );
 }
 
-
-
-// const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
-
-
-// const SwitchNavigator = createBottomTabNavigator(
 const SwitchNavigator = createSwitchNavigator(
   {
     Login: LogInContainer,
@@ -95,16 +92,20 @@ const SwitchNavigator = createSwitchNavigator(
   }
 );
 
+const Tab = createBottomTabNavigator();
+
 function MainScreenTab() {
   return (
     <Tab.Navigator
       initialRouteName='Declare'
       screenOptions={{
         headerShown: false,
+      }}
+      tabBaroptions= {{
         keyboardHidesTabBar: true,
       }}
     >
-      <Tab.Screen name="Declare" component={DeclareTempContainer} />
+      <Tab.Screen name="Declare" component={DeclareCamScreen} />
       <Tab.Screen name="History" component={PastDeclareContainer} />
       <Tab.Screen name="Flight" component={FlightContainer} />
       <Tab.Screen name='Announcement' component={AnnouncementScreen} />

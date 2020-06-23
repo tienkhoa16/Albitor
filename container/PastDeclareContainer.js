@@ -37,7 +37,7 @@ export default class PastDeclareContainer extends PureComponent {
             })() 
         }
         )
-      }
+    }
     
     componentWillUnmount() {
         // Remove the event listener before removing the screen from the stack

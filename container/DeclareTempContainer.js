@@ -2,12 +2,13 @@ import axios from 'axios';
 import querystring from 'querystring';
 import React from 'react';
 import moment from 'moment';
-import { TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, Keyboard, TouchableWithoutFeedback, Picker, SafeAreaView, Image } from 'react-native';
-
+import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, 
+    Keyboard, TouchableWithoutFeedback, Picker, SafeAreaView, Image } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+    
 import BlueButton from '../component/BlueButton';
-
-import CameraButton from '../camera/cameraButton';
-import CameraUI from '../camera/camera_ui';
 
 import store from '../store';
 
@@ -54,6 +55,10 @@ async function submitTemp(temp, date, timeOfDay, symptoms, famSymptoms){
 }
 
 export default class DeclareTempContainer extends React.Component{
+    componentDidMount() {
+        this.props.navigation.addListener('tabPress', () => this.props.navigation.navigate('Declare'));
+    }
+
     state = {
         temp: '',
         date: dateTime.substr(0,dateTime.length-3),
@@ -61,7 +66,7 @@ export default class DeclareTempContainer extends React.Component{
         symptoms: 'N',
         famSymptoms: 'N',
     };
-    
+
     handleTemp = (temp) => this.setState({temp});
     handleTimeOfDay = (timeOfDay) => this.setState({timeOfDay});
     handleTimeOfDay = (symptoms) => this.setState({symptoms});
@@ -166,7 +171,15 @@ export default class DeclareTempContainer extends React.Component{
                                     value = {temp}
                                     keyboardType = 'numeric'
                                 />
-                                <CameraButton/>
+
+                                <View style={styles.CamButton}>
+                                    <TouchableOpacity
+                                        onPress= { () => { this.props.navigation.navigate('Camera') } }
+                                        activeOpacity={0.5}
+                                    >
+                                        <MaterialCommunityIcons name='camera' size={30} />
+                                    </TouchableOpacity>
+                                </View>
                             </KeyboardAvoidingView>
 
                             <Picker 
@@ -297,5 +310,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: 'white',
         shadowOpacity: 0.1,
-    }
+    },
+    CamButton: {
+        alignSelf: 'center',
+        marginTop: -15,
+      },
 });
