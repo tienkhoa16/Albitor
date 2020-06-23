@@ -1,12 +1,12 @@
 import React, {PureComponent} from 'react';
-import { ScrollView, Text, StyleSheet, Image } from 'react-native';
+import { ScrollView, Text, StyleSheet } from 'react-native';
 import HTML from 'react-native-render-html';
 import { IGNORED_TAGS, alterNode, makeTableRenderer } from 'react-native-render-html-table-bridge';
 import { WebView } from 'react-native-webview';
 import { SafeAreaView } from 'react-navigation';
-import Snackbar from 'react-native-snackbar-component';
 
 import getHistoryHtml from './GetHistoryHtml';
+import LoadingImage from '../component/LoadingImage';
 
 import store from '../store';
 
@@ -22,12 +22,6 @@ const htmlConfig = {
     alterNode,
     renderers,
     ignoredTags: IGNORED_TAGS,
-    onLinkPress: (e, url) => {
-        Snackbar.show({
-            title: url,
-            color: 'white'
-        })
-    }
 };
 
 
@@ -52,12 +46,7 @@ export default class PastDeclareContainer extends PureComponent {
 
     render() {
         if (!this.state.tableData) {
-            return( 
-                <SafeAreaView style={{ flex: 1, justifyContent:'center', alignItems: 'center' }}>
-                    <Image source = {require('../assets/loading.gif')} />
-                    <Text style = {styles.heading}>Loading, please wait ;)</Text>
-                </SafeAreaView>
-            )
+            return <LoadingImage/>
         }
         return (
             <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }} style={{ marginTop:40 ,backgroundColor: 'white' }}>
