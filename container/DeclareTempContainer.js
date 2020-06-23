@@ -203,7 +203,7 @@ export default class DeclareTempContainer extends React.Component{
                     </BlueButton>
 
                     <Image 
-                        style = {{marginTop: 10, scaleX: 0.7, scaleY: 0.7}}
+                        style = {{transform: [{scale: 0.7}]}}
                         source = {require('../assets/nus_lion.png')} 
                     />
 
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
         borderLeftColor: 'white',
     },
     button:{
-        marginTop: 40,
+        marginTop: 30,
         borderRadius: 5,
         width: 150,
         alignSelf: 'center',
