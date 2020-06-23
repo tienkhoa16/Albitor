@@ -2,8 +2,7 @@ import axios from 'axios';
 import querystring from 'querystring';
 import React from 'react';
 import moment from 'moment';
-import { TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import {Picker} from '@react-native-community/picker';
+import { TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, Keyboard, TouchableWithoutFeedback, Picker } from 'react-native';
 
 import BlueButton from '../component/BlueButton';
 
