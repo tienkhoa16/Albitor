@@ -6,7 +6,6 @@ import { TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, K
 import {Picker} from '@react-native-community/picker';
 
 import BlueButton from '../component/BlueButton';
-import getHistoryHtml from './GetHistoryHtml';
 
 import store from '../store';
 
@@ -95,13 +94,6 @@ export default class DeclareTempContainer extends React.Component{
                     )
                 }
                 else{
-                    store.dispatch({
-                        type: 'GET_HISTORY',
-                        payload:{
-                            updateHtmlTable: await getHistoryHtml(store.getState().logIn.cookie)
-                        }
-                    })
-
                     Alert.alert(
                         "Declare Succesful",    //Alert Title
                         'Declared '+floatTemp+'\u2103 for '+this.state.timeOfDay+'M on '+this.state.date,    // Alert Message

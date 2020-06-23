@@ -4,7 +4,6 @@ import axios from 'axios';
 import querystring from 'querystring';
 
 import BlueButton from '../component/BlueButton';
-import getHistoryHtml from './GetHistoryHtml';
 
 import store from '../store';
 
@@ -100,12 +99,7 @@ export default class LogInContainer extends React.Component{
                             updateCookie: resp.headers['set-cookie'][0].split(";")[0],
                         }
                     })
-                    store.dispatch({
-                        type: 'GET_HISTORY',
-                        payload:{
-                            updateHtmlTable: await getHistoryHtml(resp.headers['set-cookie'][0].split(";")[0])
-                        }
-                    })
+                    
                     this.setState({
                         signInSuccesful: true, 
                         authenticating: false, 
