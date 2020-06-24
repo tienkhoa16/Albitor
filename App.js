@@ -101,11 +101,22 @@ function MainScreenTab() {
       screenOptions={{
         headerShown: false,
       }}
-      tabBaroptions= {{
-        keyboardHidesTabBar: true,
-      }}
+      // tabBaroptions= {{
+      //   keyboardHidesTabBar: true,
+      // }}
     >
-      <Tab.Screen name="Declare" component={DeclareCamScreen} />
+      <Tab.Screen 
+        name="Declare" 
+        component={DeclareCamScreen} 
+        listeners={({ scene, isFocused, jumpToIndex, navigation, route }) => ({
+          tabPress: e => {
+            e.preventDefault(); 
+            // Use this to navigate somewhere else
+            console.log("Declare tab bar button pressed")
+            navigation.navigate('DeclareScreen')
+          },
+        })}
+      />
       <Tab.Screen name="History" component={PastDeclareContainer} />
       <Tab.Screen name="Flight" component={FlightContainer} />
       <Tab.Screen name='Announcement' component={AnnouncementScreen} />

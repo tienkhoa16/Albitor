@@ -5,7 +5,7 @@ import moment from 'moment';
 import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, 
     Keyboard, TouchableWithoutFeedback, Picker, SafeAreaView, Image } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
     
 import BlueButton from '../component/BlueButton';
@@ -54,11 +54,8 @@ async function submitTemp(temp, date, timeOfDay, symptoms, famSymptoms){
     return resp.status
 }
 
-export default class DeclareTempContainer extends React.Component{
-    componentDidMount() {
-        this.props.navigation.addListener('tabPress', () => this.props.navigation.navigate('Declare'));
-    }
 
+export default class DeclareTempContainer extends React.Component{
     state = {
         temp: '',
         date: dateTime.substr(0,dateTime.length-3),
