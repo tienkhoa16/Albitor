@@ -130,7 +130,7 @@ export default class LogInContainer extends React.Component{
 
     toggleRememberMe = value => {
         this.setState({ rememberMe: value })
-        if (value === true) {
+        if (value === true && this.state.signInSuccesful === true) {
             this.remember();
         } else {
             this.clear();
@@ -148,6 +148,7 @@ export default class LogInContainer extends React.Component{
                     password: myJson.password,
                     rememberMe: true,
                 });
+                this.handlePressButton()
             }
             else{
                 this.setState({
@@ -157,7 +158,7 @@ export default class LogInContainer extends React.Component{
                 });
             }
         } catch (e) {
-          console.log(e);
+            console.log(e);
         }
     };
 
