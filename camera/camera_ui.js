@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, PermissionsAndroid } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, PermissionsAndroid, Alert } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -37,6 +37,14 @@ export default class CameraUI extends Component {
             console.log(photo.uri);
             if (this.state.hasCameraRollPermission) {
                 MediaLibrary.saveToLibraryAsync(photo.uri);
+                Alert.alert(
+                    "Photo taken",    //Alert Title
+                    'Thermometer photo is saved to your gallery',    // Alert Message
+                    [
+                        { text: "OK", onPress: () => this.props.navigation.navigate('DeclareScreen') }
+                    ],
+                    { cancelable: false }
+                );
             }
         }
     }

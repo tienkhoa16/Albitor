@@ -114,17 +114,18 @@ function MainScreenTab() {
       <Tab.Screen 
         name="Declare" 
         component={DeclareCamScreen} 
-        listeners={({ navigation }) => ({
+        listeners={({ navigation, route }) => ({
           tabPress: e => {
             e.preventDefault(); 
             console.log("Declare tab bar button pressed")
-            navigation.navigate('DeclareScreen')
+            navigation.navigate('Declare', {screen: 'DeclareScreen'})
           },
         })}
         options={{
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="add-circle-outline" size={24} color={color} />
-          ),  
+          ),
+          unmountOnBlur: true,
          }}
       />
       <Tab.Screen 

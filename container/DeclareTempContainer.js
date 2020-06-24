@@ -102,18 +102,10 @@ export default class DeclareTempContainer extends React.Component{
                         "Declare Succesful",    //Alert Title
                         'Declared '+floatTemp+'\u2103 for '+this.state.timeOfDay+'M on '+this.state.date,    // Alert Message
                         [
-                            {
-                                text: "See Declare History",
-                                onPress: () => {
-                                    console.log("See Declare History Pressed")
-                                    while(!store.getState().history.htmlTable){};
-                                    this.props.navigation.navigate('History')
-                                }
-                            },
                             { text: "OK", onPress: () => console.log("OK Pressed") }
                         ],
                         { cancelable: false }
-                      );
+                    );
                 }
             })()
         }
