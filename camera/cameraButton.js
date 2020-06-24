@@ -13,7 +13,7 @@ function CameraButton ( { navigation } ) {
                 onPress= { () => { navigation.navigate('Camera') } }
                 activeOpacity={0.5}
             >
-                <MaterialCommunityIcons name='camera' size={30} />
+                <MaterialCommunityIcons name='camera' size={30} color='red'/>
             </TouchableOpacity>
         </View>
     );

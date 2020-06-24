@@ -112,13 +112,22 @@ function MainScreenTab() {
           tabPress: e => {
             e.preventDefault(); 
             console.log("Declare tab bar button pressed")
-            navigation.navigate('DeclareScreen')
+            navigation.navigate('Declare')
           },
         })}
       />
-      <Tab.Screen name="History" component={PastDeclareContainer} />
-      <Tab.Screen name="Flight" component={FlightContainer} />
-      <Tab.Screen name='Announcement' component={AnnouncementScreen} />
+      <Tab.Screen 
+        name="History" 
+        component={PastDeclareContainer} 
+      />
+      <Tab.Screen 
+        name="Flight" 
+        component={FlightContainer} 
+      />
+      <Tab.Screen 
+        name='Announcement' 
+        component={AnnouncementScreen} 
+      />
     </Tab.Navigator>
   );
 }

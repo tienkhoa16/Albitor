@@ -133,90 +133,95 @@ export default class DeclareTempContainer extends React.Component{
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <SafeAreaView style = {styles.container}>
-                    <KeyboardAvoidingView style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
+                    <KeyboardAvoidingView style = {{flex: 6}}>
+                        <KeyboardAvoidingView style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
 
-                    <Text style = {styles.textWelcome}>Welcome {store.getState().logIn.name}</Text>
+                        <Text style = {styles.textWelcome}>Welcome {store.getState().logIn.name}</Text>
 
-                    <Text style = {styles.heading}>Temperature Declaration</Text>
+                        <Text style = {styles.heading}>Temperature Declaration</Text>
 
-                    <KeyboardAvoidingView style={styles.form}>
-                        <KeyboardAvoidingView style={{flex: 1, flexDirection: 'column', marginRight: 10}}>
-                            <Text style = {styles.text}>Date: {date} </Text>
-                            <Text style = {styles.text}>Temperature ({'\u2103'})</Text>
-                            <Text style = {styles.text}>Do you have COVID-19 symptoms?</Text>
-                            <Text style = {styles.text}>Do you have anyone in the same household having fever, and/or showing the above stated symptoms?</Text>
-                        </KeyboardAvoidingView>
-
-                        <KeyboardAvoidingView style={{flex: 1, flexDirection: 'column', marginLeft: 10}}>
-                            <Picker
-                                mode = 'dropdown'
-                                selectedValue = {timeOfDay}
-                                style={styles.picker}
-                                onValueChange={(itemValue, itemIndex) =>
-                                    this.setState({timeOfDay: itemValue})
-                                }
-                            >
-                                <Picker.Item label="AM" value="A" />
-                                <Picker.Item label="PM" value="P" />
-                            </Picker>
-
-                            <KeyboardAvoidingView style={{flexDirection: 'row'}}>
-                                <TextInput 
-                                    style = {{...styles.textInput}}
-                                    placeholder = "Your temperature"
-                                    onChangeText = {this.handleTemp}
-                                    value = {temp}
-                                    keyboardType = 'numeric'
-                                />
-
-                                <View style={styles.CamButton}>
-                                    <TouchableOpacity
-                                        onPress= { () => { this.props.navigation.navigate('Camera') } }
-                                        activeOpacity={0.5}
-                                    >
-                                        <MaterialCommunityIcons name='camera' size={30} />
-                                    </TouchableOpacity>
-                                </View>
+                        <KeyboardAvoidingView style={styles.form}>
+                            <KeyboardAvoidingView style={{flex: 1, flexDirection: 'column', marginRight: 10}}>
+                                <Text style = {styles.text}>Date: {date} </Text>
+                                <Text style = {styles.text}>Temperature ({'\u2103'})</Text>
+                                <Text style = {styles.text}>Do you have COVID-19 symptoms?</Text>
+                                <Text style = {styles.text}>Do you have anyone in the same household having fever, and/or showing the above stated symptoms?</Text>
                             </KeyboardAvoidingView>
 
-                            <Picker 
-                                mode = 'dropdown'
-                                selectedValue = {symptoms}
-                                style={{...styles.picker, marginTop: 5}}
-                                onValueChange={(itemValue, itemIndex) =>
-                                    this.setState({symptoms: itemValue})
-                                }
-                            >
-                                <Picker.Item label="No" value="N" />
-                                <Picker.Item label="Yes" value="Y" />
-                            </Picker>    
+                            <KeyboardAvoidingView style={{flex: 1, flexDirection: 'column', marginLeft: 10}}>
+                                <Picker
+                                    mode = 'dropdown'
+                                    selectedValue = {timeOfDay}
+                                    style={styles.picker}
+                                    onValueChange={(itemValue, itemIndex) =>
+                                        this.setState({timeOfDay: itemValue})
+                                    }
+                                >
+                                    <Picker.Item label="AM" value="A" />
+                                    <Picker.Item label="PM" value="P" />
+                                </Picker>
 
-                            <Picker
-                                mode = 'dropdown'
-                                selectedValue = {famSymptoms}
-                                style={{...styles.picker, marginTop: 20}}
-                                onValueChange={(itemValue, itemIndex) =>
-                                    this.setState({famSymptoms: itemValue})
-                                }
-                            >
-                                <Picker.Item label="No" value="N" />
-                                <Picker.Item label="Yes" value="Y" />
-                            </Picker>      
+                                <KeyboardAvoidingView style={{flexDirection: 'row'}}>
+                                    <TextInput 
+                                        style = {{...styles.textInput}}
+                                        placeholder = "Your temperature"
+                                        placeholderTextColor = 'white'
+                                        onChangeText = {this.handleTemp}
+                                        value = {temp}
+                                        keyboardType = 'numeric'
+                                    />
+
+                                    <View style={styles.CamButton}>
+                                        <TouchableOpacity
+                                            onPress= { () => { this.props.navigation.navigate('Camera') } }
+                                            activeOpacity={0.5}
+                                        >
+                                            <MaterialCommunityIcons name='camera' size={30} color='white' />
+                                        </TouchableOpacity>
+                                    </View>
+                                </KeyboardAvoidingView>
+
+                                <Picker 
+                                    mode = 'dropdown'
+                                    selectedValue = {symptoms}
+                                    style={{...styles.picker, marginTop: 5}}
+                                    onValueChange={(itemValue, itemIndex) =>
+                                        this.setState({symptoms: itemValue})
+                                    }
+                                >
+                                    <Picker.Item label="No" value="N" />
+                                    <Picker.Item label="Yes" value="Y" />
+                                </Picker>    
+
+                                <Picker
+                                    mode = 'dropdown'
+                                    selectedValue = {famSymptoms}
+                                    style={{...styles.picker, marginTop: 20}}
+                                    onValueChange={(itemValue, itemIndex) =>
+                                        this.setState({famSymptoms: itemValue})
+                                    }
+                                >
+                                    <Picker.Item label="No" value="N" />
+                                    <Picker.Item label="Yes" value="Y" />
+                                </Picker>      
+                            </KeyboardAvoidingView>
                         </KeyboardAvoidingView>
+                        
+                        <BlueButton
+                            style = {styles.button}
+                            onPress = {this.handlePressSubmitButton}
+                        >
+                            Submit
+                        </BlueButton>
                     </KeyboardAvoidingView>
                     
-                    <BlueButton
-                        style = {styles.button}
-                        onPress = {this.handlePressSubmitButton}
-                    >
-                        Submit
-                    </BlueButton>
-
-                    <Image 
-                        style = {{transform: [{scale: 0.7}]}}
-                        source = {require('../assets/nus_lion.png')} 
-                    />
-
+                    <View style = {{flex: 4, flexDirection: 'column', backgroundColor:'visible', justifyContent: 'space-around', alignItems: 'center'}}>
+                        <Image 
+                            style = {{transform: [{scale: 0.5}]}}
+                            source = {require('../assets/nus_lion.png')} 
+                        />
+                        <Text>fjdklfjsadlskf</Text>
+                    </View>
 
                     {/* <BlueButton
                         style = {styles.button}
@@ -242,22 +247,22 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#dbc6eb',
+        backgroundColor: '#fcf7bb',
     },
     textInput:{
-        borderWidth: 1,
+        borderWidth: 1.5,
         width: 140,
         height: 25,
         paddingHorizontal: 10,
         paddingVertical: 3,
         fontSize: 14,
+        color: 'white',
         marginBottom: 10,
-        // marginTop: 20,
-        // alignSelf: 'center',
         textAlign: 'center',
-        borderTopColor: 'white',
-        borderRightColor: 'white',
-        borderLeftColor: 'white',
+        borderTopColor: '#ba6b57',
+        borderRightColor: '#ba6b57',
+        borderLeftColor: '#ba6b57',
+        borderBottomColor: 'white',
     },
     button:{
         marginTop: 30,
@@ -277,7 +282,7 @@ const styles = StyleSheet.create({
     },
     text:{
         fontSize: 15,
-        color: 'black',
+        color: 'white',
         marginTop: 10,
         marginLeft: 10,
         marginRight: 0,
@@ -296,6 +301,7 @@ const styles = StyleSheet.create({
         height: 50,
         width: 100,
         marginTop: -6,
+        color: 'white'
     },
     form: {
         flexDirection: 'row', 
@@ -305,7 +311,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         borderWidth: 1.2,
         borderRadius: 10,
-        backgroundColor: 'white',
+        backgroundColor: '#ba6b57',
         shadowOpacity: 0.1,
     },
     CamButton: {
