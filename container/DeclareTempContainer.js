@@ -3,7 +3,7 @@ import querystring from 'querystring';
 import React from 'react';
 import moment from 'moment';
 import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, 
-    Keyboard, TouchableWithoutFeedback, Picker, ScrollView, Image } from 'react-native';
+    Keyboard, TouchableWithoutFeedback, Picker, ScrollView, Image, Switch } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -63,12 +63,11 @@ export default class DeclareTempContainer extends React.Component{
         timeOfDay: dateTime.charAt(dateTime.length-2),
         symptoms: 'N',
         famSymptoms: 'N',
+        symptoms_bool: false,
+        famSymptoms_bool: false,
     };
 
     handleTemp = (temp) => this.setState({temp});
-    handleTimeOfDay = (timeOfDay) => this.setState({timeOfDay});
-    handleTimeOfDay = (symptoms) => this.setState({symptoms});
-    handleTimeOfDay = (famSymptoms) => this.setState({famSymptoms});
 
     handlePressSubmitButton = () => {
         const floatTemp = parseFloat(this.state.temp)
@@ -129,7 +128,7 @@ export default class DeclareTempContainer extends React.Component{
     handlePressFlightButton = () => {this.props.navigation.navigate('Flight')}
 
     render(){
-        const {temp, date, timeOfDay, symptoms, famSymptoms} = this.state
+        const {temp, date, timeOfDay, symptoms, famSymptoms, symptoms_bool, famSymptoms_bool} = this.state
         
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -186,29 +185,47 @@ export default class DeclareTempContainer extends React.Component{
                                         </View>
                                     </View>
 
-                                    <Picker 
-                                        mode = 'dropdown'
-                                        selectedValue = {symptoms}
-                                        style={{...styles.picker, marginTop: 5}}
-                                        onValueChange={(itemValue, itemIndex) =>
-                                            this.setState({symptoms: itemValue})
-                                        }
-                                    >
-                                        <Picker.Item label="No" value="N" />
-                                        <Picker.Item label="Yes" value="Y" />
-                                    </Picker>    
+                                    <View style={{flexDirection: 'row'}}>
+                                        <Switch
+                                            value={symptoms_bool}
+                                            onValueChange={v => {
+                                                this.setState({symptoms_bool: !symptoms_bool})
+                                                if (v)
+                                                    this.setState({symptoms: 'Y'})
+                                                else
+                                                    this.setState({symptoms: 'N'})
+                                            }}
+                                            style={{marginTop: 18, alignSelf: 'flex-start'}}
+                                            trackColor = {{false: 'visible', true: 'pink'}}
+                                            thumbColor = {symptoms_bool ? 'red':'mediumseagreen'}
+                                        />
+                                        {
+                                            symptoms_bool ? 
+                                                (<Text style = {{marginTop: 18, fontSize: 17, color:'#fafba4'}}>Yes</Text>) : 
+                                                (<Text style = {{marginTop: 18, fontSize: 17, color:'white'}}>No</Text>)
+                                        }   
+                                    </View>
 
-                                    <Picker
-                                        mode = 'dropdown'
-                                        selectedValue = {famSymptoms}
-                                        style={{...styles.picker, marginTop: 20}}
-                                        onValueChange={(itemValue, itemIndex) =>
-                                            this.setState({famSymptoms: itemValue})
-                                        }
-                                    >
-                                        <Picker.Item label="No" value="N" />
-                                        <Picker.Item label="Yes" value="Y" />
-                                    </Picker>      
+                                    <View style={{flexDirection: 'row'}}>
+                                        <Switch
+                                            value={famSymptoms_bool}
+                                            onValueChange={v => {
+                                                this.setState({famSymptoms_bool: !famSymptoms_bool})
+                                                if (v)
+                                                    this.setState({famSymptoms: 'Y'})
+                                                else
+                                                    this.setState({famSymptoms: 'N'})
+                                            }}
+                                            style={{marginTop: 50, alignSelf: 'flex-start'}}
+                                            trackColor = {{false: 'visible', true: 'pink'}}
+                                            thumbColor = {famSymptoms_bool ? 'red':'mediumseagreen'}
+                                        />
+                                        {
+                                            famSymptoms_bool ? 
+                                                (<Text style = {{marginTop: 50, fontSize: 17, color:'#fafba4'}}>Yes</Text>) : 
+                                                (<Text style = {{marginTop: 50, fontSize: 17, color:'white'}}>No</Text>)
+                                        }   
+                                    </View>
                                 </View>
                             </View>
                             
@@ -225,22 +242,7 @@ export default class DeclareTempContainer extends React.Component{
                                 style = {{transform: [{scale: 0.5}]}}
                                 source = {require('../assets/nus_lion.png')} 
                             />
-                        </View>
-
-                        {/* <BlueButton
-                            style = {styles.button}
-                            onPress = {this.handlePressHistoryButton}
-                        >
-                            History
-                        </BlueButton>
-
-                        <BlueButton
-                            style = {styles.button}
-                            onPress = {this.handlePressFlightButton}
-                        >
-                            Flight
-                        </BlueButton> */}
-                        
+                        </View>                        
                     </KeyboardAvoidingView>
                 </ScrollView>
             </TouchableWithoutFeedback>
