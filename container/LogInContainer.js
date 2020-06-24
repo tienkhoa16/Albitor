@@ -1,5 +1,7 @@
 import React from 'react';
-import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, View, Keyboard, TouchableWithoutFeedback, Switch } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
+
 import axios from 'axios';
 import querystring from 'querystring';
 
@@ -76,7 +78,12 @@ export default class LogInContainer extends React.Component{
         typing: false,
         authenticating: false,
         signInSuccesful: false,
+        rememberMe: false,
     };
+
+    async componentDidMount() {
+        await this.read();
+    }
 
     handleUpdateUsername = (username, typing) => this.setState({username, typing: true, firstTime: false});
 
@@ -121,8 +128,62 @@ export default class LogInContainer extends React.Component{
         }
     }
 
+    toggleRememberMe = value => {
+        this.setState({ rememberMe: value })
+        if (value === true) {
+            this.remember();
+        } else {
+            this.clear();
+        }
+    }
+
+    read = async () => {
+        try {
+            const credentials = await SecureStore.getItemAsync('credentials');
+    
+            if (credentials) {
+                const myJson = JSON.parse(credentials);
+                this.setState({
+                    username: myJson.username,
+                    password: myJson.password,
+                    rememberMe: true,
+                });
+            }
+            else{
+                this.setState({
+                    username: '',
+                    password: '',
+                    rememberMe: false,
+                });
+            }
+        } catch (e) {
+          console.log(e);
+        }
+    };
+
+    remember = async () => {
+        const { username, password } = this.state;
+        const credentials = { username, password };
+        try {
+            await SecureStore.setItemAsync(
+                'credentials',
+                JSON.stringify(credentials)
+            );
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    clear = async () => {
+        try {
+            await SecureStore.deleteItemAsync('credentials');
+        } catch (e) {
+            console.log(e);
+        }
+      };
+
     render(){
-        const {username, password, firstTime, typing, authenticating, signInSuccesful} = this.state
+        const {username, password, firstTime, typing, authenticating, signInSuccesful, rememberMe} = this.state
 
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -145,6 +206,22 @@ export default class LogInContainer extends React.Component{
                         onChangeText = {this.handleUpdatePassword}
                         value = {password}
                     />
+
+                    <View style = {{flexDirection: 'row', marginTop: 15}}>
+                        <Switch
+                            value={rememberMe}
+                            onValueChange={(value) => this.toggleRememberMe(value)}
+                        />
+                        <Text
+                            style = {{
+                                fontWeight: 'bold',
+                                fontSize: 18,
+                                color: rememberMe ? 'green' : 'black',
+                            }}
+                        >
+                            Remember Me
+                        </Text>
+                    </View>
 
                     <BlueButton 
                         style = {styles.button}
@@ -195,7 +272,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     button:{
-        marginTop: 42,
+        marginTop: 22,
         borderRadius: 5,
     },
     text:{
