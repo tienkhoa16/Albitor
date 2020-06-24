@@ -101,9 +101,9 @@ function MainScreenTab() {
       screenOptions={{
         headerShown: false,
       }}
-      // tabBaroptions= {{
-      //   keyboardHidesTabBar: true,
-      // }}
+      tabBarOptions={{
+        keyboardHidesTabBar: true,
+      }}
     >
       <Tab.Screen 
         name="Declare" 
