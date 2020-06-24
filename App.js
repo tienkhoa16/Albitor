@@ -2,7 +2,7 @@ import React from 'react';
 import { UIManager, Platform } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createSwitchNavigator, createAppContainer } from 'react-navigation';
+import { createSwitchNavigator, createAppContainer, StackActions } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import LogInContainer from './container/LogInContainer';
@@ -108,10 +108,9 @@ function MainScreenTab() {
       <Tab.Screen 
         name="Declare" 
         component={DeclareCamScreen} 
-        listeners={({ scene, isFocused, jumpToIndex, navigation, route }) => ({
+        listeners={({ navigation }) => ({
           tabPress: e => {
             e.preventDefault(); 
-            // Use this to navigate somewhere else
             console.log("Declare tab bar button pressed")
             navigation.navigate('DeclareScreen')
           },
