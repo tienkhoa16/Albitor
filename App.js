@@ -4,6 +4,7 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createSwitchNavigator, createAppContainer, StackActions } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 
 import LogInContainer from './container/LogInContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
@@ -103,6 +104,11 @@ function MainScreenTab() {
       }}
       tabBarOptions={{
         keyboardHidesTabBar: true,
+        activeTintColor: 'orange',
+        inactiveTintColor: 'white',
+        activeBackgroundColor: 'black',
+        inactiveBackgroundColor: 'black',
+        labelStyle: {fontWeight: 'bold'},
       }}
     >
       <Tab.Screen 
@@ -112,21 +118,41 @@ function MainScreenTab() {
           tabPress: e => {
             e.preventDefault(); 
             console.log("Declare tab bar button pressed")
-            navigation.navigate('Declare')
+            navigation.navigate('DeclareScreen')
           },
         })}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="add-circle-outline" size={24} color={color} />
+          ),  
+         }}
       />
       <Tab.Screen 
         name="History" 
         component={PastDeclareContainer} 
+        options={{
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="table" size={24} color={color} />
+          ),  
+         }}
       />
       <Tab.Screen 
         name="Flight" 
         component={FlightContainer} 
+        options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="airplane-takeoff" size={24} color={color} />
+          ),  
+         }}
       />
       <Tab.Screen 
         name='Announcement' 
         component={AnnouncementScreen} 
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Entypo name="info" size={24} color={color} />
+          ),  
+         }}
       />
     </Tab.Navigator>
   );
