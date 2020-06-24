@@ -133,7 +133,10 @@ export default class DeclareTempContainer extends React.Component{
         
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                <ScrollView style = {{height: screenHeight}}>
+                <ScrollView 
+                    style = {{height: screenHeight}}
+                    scrollEnabled = {false}
+                >
                     <KeyboardAvoidingView style = {styles.container}>
                         <View style = {{flex: 6}}>
                             <View style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
@@ -217,7 +220,7 @@ export default class DeclareTempContainer extends React.Component{
                             </BlueButton>
                         </View>
                         
-                        <View style = {{flex: 4, position: 'relative', marginTop: -60}}>
+                        <View style = {{flex: 4, position: 'relative', marginTop: -70, alignSelf: 'center'}}>
                             <Image 
                                 style = {{transform: [{scale: 0.5}]}}
                                 source = {require('../assets/nus_lion.png')} 
