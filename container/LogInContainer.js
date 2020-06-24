@@ -132,6 +132,7 @@ export default class LogInContainer extends React.Component{
                     <TextInput
                         style = {styles.textInput}
                         placeholder = "NUSNET (e...)"
+                        placeholderTextColor = 'grey'
                         onChangeText = {this.handleUpdateUsername}
                         value = {username}
                     />
@@ -139,6 +140,7 @@ export default class LogInContainer extends React.Component{
                     <TextInput
                         style = {styles.textInput}
                         placeholder = "Password"
+                        placeholderTextColor = 'grey'
                         secureTextEntry
                         onChangeText = {this.handleUpdatePassword}
                         value = {password}
@@ -176,6 +178,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'white',
     },
     image:{
         marginBottom: 60,
