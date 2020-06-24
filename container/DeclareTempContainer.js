@@ -3,7 +3,7 @@ import querystring from 'querystring';
 import React from 'react';
 import moment from 'moment';
 import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, 
-    Keyboard, TouchableWithoutFeedback, Picker, SafeAreaView, Image } from 'react-native';
+    Keyboard, TouchableWithoutFeedback, Picker, ScrollView, Image } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -13,6 +13,7 @@ import BlueButton from '../component/BlueButton';
 import store from '../store';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
+const screenHeight = Math.round(Dimensions.get('window').height);
 const dateTime = getDateTime();
 
 
@@ -132,112 +133,113 @@ export default class DeclareTempContainer extends React.Component{
         
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                <SafeAreaView style = {styles.container}>
-                    <KeyboardAvoidingView style = {{flex: 6}}>
-                        <KeyboardAvoidingView style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
+                <ScrollView style = {{height: screenHeight}}>
+                    <KeyboardAvoidingView style = {styles.container}>
+                        <View style = {{flex: 6}}>
+                            <View style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
 
-                        <Text style = {styles.textWelcome}>Welcome {store.getState().logIn.name}</Text>
+                            <Text style = {styles.textWelcome}>Welcome {store.getState().logIn.name}</Text>
 
-                        <Text style = {styles.heading}>Temperature Declaration</Text>
+                            <Text style = {styles.heading}>Temperature Declaration</Text>
 
-                        <KeyboardAvoidingView style={styles.form}>
-                            <KeyboardAvoidingView style={{flex: 1, flexDirection: 'column', marginRight: 10}}>
-                                <Text style = {styles.text}>Date: {date} </Text>
-                                <Text style = {styles.text}>Temperature ({'\u2103'})</Text>
-                                <Text style = {styles.text}>Do you have COVID-19 symptoms?</Text>
-                                <Text style = {styles.text}>Do you have anyone in the same household having fever, and/or showing the above stated symptoms?</Text>
-                            </KeyboardAvoidingView>
+                            <View style={styles.form}>
+                                <View style={{flex: 1, flexDirection: 'column', marginRight: 10}}>
+                                    <Text style = {styles.text}>Date: {date} </Text>
+                                    <Text style = {styles.text}>Temperature ({'\u2103'})</Text>
+                                    <Text style = {styles.text}>Do you have COVID-19 symptoms?</Text>
+                                    <Text style = {styles.text}>Do you have anyone in the same household having fever, and/or showing the above stated symptoms?</Text>
+                                </View>
 
-                            <KeyboardAvoidingView style={{flex: 1, flexDirection: 'column', marginLeft: 10}}>
-                                <Picker
-                                    mode = 'dropdown'
-                                    selectedValue = {timeOfDay}
-                                    style={styles.picker}
-                                    onValueChange={(itemValue, itemIndex) =>
-                                        this.setState({timeOfDay: itemValue})
-                                    }
-                                >
-                                    <Picker.Item label="AM" value="A" />
-                                    <Picker.Item label="PM" value="P" />
-                                </Picker>
+                                <View style={{flex: 1, flexDirection: 'column', marginLeft: 10}}>
+                                    <Picker
+                                        mode = 'dropdown'
+                                        selectedValue = {timeOfDay}
+                                        style={styles.picker}
+                                        onValueChange={(itemValue, itemIndex) =>
+                                            this.setState({timeOfDay: itemValue})
+                                        }
+                                    >
+                                        <Picker.Item label="AM" value="A" />
+                                        <Picker.Item label="PM" value="P" />
+                                    </Picker>
 
-                                <KeyboardAvoidingView style={{flexDirection: 'row'}}>
-                                    <TextInput 
-                                        style = {{...styles.textInput}}
-                                        placeholder = "Your temperature"
-                                        placeholderTextColor = 'white'
-                                        onChangeText = {this.handleTemp}
-                                        value = {temp}
-                                        keyboardType = 'numeric'
-                                    />
+                                    <View style={{flexDirection: 'row'}}>
+                                        <TextInput 
+                                            style = {{...styles.textInput}}
+                                            placeholder = "Your temperature"
+                                            placeholderTextColor = 'white'
+                                            onChangeText = {this.handleTemp}
+                                            value = {temp}
+                                            keyboardType = 'numeric'
+                                        />
 
-                                    <View style={styles.CamButton}>
-                                        <TouchableOpacity
-                                            onPress= { () => { this.props.navigation.navigate('Camera') } }
-                                            activeOpacity={0.5}
-                                        >
-                                            <MaterialCommunityIcons name='camera' size={30} color='white' />
-                                        </TouchableOpacity>
+                                        <View style={styles.CamButton}>
+                                            <TouchableOpacity
+                                                onPress= { () => { this.props.navigation.navigate('Camera') } }
+                                                activeOpacity={0.5}
+                                            >
+                                                <MaterialCommunityIcons name='camera' size={30} color='white' />
+                                            </TouchableOpacity>
+                                        </View>
                                     </View>
-                                </KeyboardAvoidingView>
 
-                                <Picker 
-                                    mode = 'dropdown'
-                                    selectedValue = {symptoms}
-                                    style={{...styles.picker, marginTop: 5}}
-                                    onValueChange={(itemValue, itemIndex) =>
-                                        this.setState({symptoms: itemValue})
-                                    }
-                                >
-                                    <Picker.Item label="No" value="N" />
-                                    <Picker.Item label="Yes" value="Y" />
-                                </Picker>    
+                                    <Picker 
+                                        mode = 'dropdown'
+                                        selectedValue = {symptoms}
+                                        style={{...styles.picker, marginTop: 5}}
+                                        onValueChange={(itemValue, itemIndex) =>
+                                            this.setState({symptoms: itemValue})
+                                        }
+                                    >
+                                        <Picker.Item label="No" value="N" />
+                                        <Picker.Item label="Yes" value="Y" />
+                                    </Picker>    
 
-                                <Picker
-                                    mode = 'dropdown'
-                                    selectedValue = {famSymptoms}
-                                    style={{...styles.picker, marginTop: 20}}
-                                    onValueChange={(itemValue, itemIndex) =>
-                                        this.setState({famSymptoms: itemValue})
-                                    }
-                                >
-                                    <Picker.Item label="No" value="N" />
-                                    <Picker.Item label="Yes" value="Y" />
-                                </Picker>      
-                            </KeyboardAvoidingView>
-                        </KeyboardAvoidingView>
+                                    <Picker
+                                        mode = 'dropdown'
+                                        selectedValue = {famSymptoms}
+                                        style={{...styles.picker, marginTop: 20}}
+                                        onValueChange={(itemValue, itemIndex) =>
+                                            this.setState({famSymptoms: itemValue})
+                                        }
+                                    >
+                                        <Picker.Item label="No" value="N" />
+                                        <Picker.Item label="Yes" value="Y" />
+                                    </Picker>      
+                                </View>
+                            </View>
+                            
+                            <BlueButton
+                                style = {styles.button}
+                                onPress = {this.handlePressSubmitButton}
+                            >
+                                Submit
+                            </BlueButton>
+                        </View>
                         
+                        <View style = {{flex: 4, position: 'relative', marginTop: -60}}>
+                            <Image 
+                                style = {{transform: [{scale: 0.5}]}}
+                                source = {require('../assets/nus_lion.png')} 
+                            />
+                        </View>
+
+                        {/* <BlueButton
+                            style = {styles.button}
+                            onPress = {this.handlePressHistoryButton}
+                        >
+                            History
+                        </BlueButton>
+
                         <BlueButton
                             style = {styles.button}
-                            onPress = {this.handlePressSubmitButton}
+                            onPress = {this.handlePressFlightButton}
                         >
-                            Submit
-                        </BlueButton>
+                            Flight
+                        </BlueButton> */}
+                        
                     </KeyboardAvoidingView>
-                    
-                    <View style = {{flex: 4, flexDirection: 'column', backgroundColor:'visible', justifyContent: 'space-around', alignItems: 'center'}}>
-                        <Image 
-                            style = {{transform: [{scale: 0.5}]}}
-                            source = {require('../assets/nus_lion.png')} 
-                        />
-                        <Text>fjdklfjsadlskf</Text>
-                    </View>
-
-                    {/* <BlueButton
-                        style = {styles.button}
-                        onPress = {this.handlePressHistoryButton}
-                    >
-                        History
-                    </BlueButton>
-
-                    <BlueButton
-                        style = {styles.button}
-                        onPress = {this.handlePressFlightButton}
-                    >
-                        Flight
-                    </BlueButton> */}
-                    
-                </SafeAreaView>
+                </ScrollView>
             </TouchableWithoutFeedback>
         )
     }
