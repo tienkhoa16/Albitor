@@ -130,7 +130,7 @@ export default class LogInContainer extends React.Component{
 
     toggleRememberMe = value => {
         this.setState({ rememberMe: value })
-        if (value === true && this.state.signInSuccesful === true) {
+        if (value === true) {
             this.remember();
         } else {
             this.clear();
