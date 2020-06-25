@@ -34,8 +34,7 @@ export default class PastDeclareContainer extends PureComponent {
             (async() => {
                 this.setState({tableData: await getHistoryHtml(store.getState().logIn.cookie)}) 
             })() 
-        }
-        )
+        })
     }
     
     componentWillUnmount() {

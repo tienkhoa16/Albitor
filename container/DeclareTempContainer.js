@@ -11,6 +11,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import BlueButton from '../component/BlueButton';
 
 import store from '../store';
+import * as SecureStore from 'expo-secure-store';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -115,9 +116,16 @@ export default class DeclareTempContainer extends React.Component{
         })   
     }
 
-    handlePressHistoryButton = () => {this.props.navigation.navigate('History')}
-
-    handlePressFlightButton = () => {this.props.navigation.navigate('Flight')}
+    handlePressLogoutButton = () => {
+        (async () => {
+            try {
+                await SecureStore.deleteItemAsync('credentials');
+            } catch (e) {
+                console.log(e);
+            }
+        }) ()
+        // this.props.navigation.navigate('Login')
+    }
 
     render(){
         const {temp, date, timeOfDay, symptoms, famSymptoms, symptoms_bool, famSymptoms_bool} = this.state
@@ -226,6 +234,13 @@ export default class DeclareTempContainer extends React.Component{
                                 onPress = {this.handlePressSubmitButton}
                             >
                                 Submit
+                            </BlueButton>
+
+                            <BlueButton
+                                style = {styles.button}
+                                onPress = {this.handlePressLogoutButton}
+                            >
+                                Log out
                             </BlueButton>
                         </View>
                         

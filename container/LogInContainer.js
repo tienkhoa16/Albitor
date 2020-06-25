@@ -85,19 +85,19 @@ export default class LogInContainer extends React.Component{
         await this.read();
     }
 
-    handleUpdateUsername = (username, typing) => this.setState({username, typing: true, firstTime: false});
+    handleUpdateUsername = (username) => this.setState({username, typing: true, firstTime: false});
 
-    handleUpdatePassword = (password, typing) => this.setState({password, typing: true, firstTime: false});
+    handleUpdatePassword = (password) => this.setState({password, typing: true, firstTime: false});
 
-    handlePressButton = () => {
+    handlePressButton = (username, password) => {
         if(
-            this.state.username &&
-            this.state.password
+            username &&
+            password
         ){
             (async () => {
                 this.setState({authenticating: true})
-                const resp = await auth(this.state.username, this.state.password)
-
+                const resp = await auth(username, password)
+                
                 if ('set-cookie' in resp.headers){
                     store.dispatch({
                         type: 'UPDATE',
@@ -110,29 +110,31 @@ export default class LogInContainer extends React.Component{
                     this.setState({
                         signInSuccesful: true, 
                         authenticating: false, 
+                        typing: false,
                     })
+                    if(this.state.rememberMe)
+                        this.remember()
+                    // this.signInFlag(true)
                     this.props.navigation.navigate('MainScreen')
                 }
                 else{
                     this.setState({
+                        username: '',
+                        password: '',
                         signInSuccesful: false, 
                         authenticating: false,
+                        rememberMe: false,
+                        typing: false,
                     })
+                    // this.signInFlag(false)
                 }
             })()
-            this.setState({
-                username: '',
-                password: '',
-                typing: false,
-            })
         }
     }
 
     toggleRememberMe = value => {
         this.setState({ rememberMe: value })
-        if (value === true) {
-            this.remember();
-        } else {
+        if (value === false) {
             this.clear();
         }
     }
@@ -143,12 +145,13 @@ export default class LogInContainer extends React.Component{
     
             if (credentials) {
                 const myJson = JSON.parse(credentials);
+
                 this.setState({
                     username: myJson.username,
                     password: myJson.password,
                     rememberMe: true,
                 });
-                this.handlePressButton()
+                this.handlePressButton(myJson.username, myJson.password)
             }
             else{
                 this.setState({
@@ -164,7 +167,8 @@ export default class LogInContainer extends React.Component{
 
     remember = async () => {
         const { username, password } = this.state;
-        const credentials = { username, password };
+        const { name } = store.getState().logIn;
+        const credentials = { username, password, name };
         try {
             await SecureStore.setItemAsync(
                 'credentials',
@@ -175,13 +179,24 @@ export default class LogInContainer extends React.Component{
         }
     };
 
+    // signInFlag = async (val) => {
+    //     try {
+    //         await SecureStore.setItemAsync(
+    //             'signInFlag',
+    //             val.toString(),
+    //         );
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // };
+
     clear = async () => {
         try {
             await SecureStore.deleteItemAsync('credentials');
         } catch (e) {
             console.log(e);
         }
-      };
+    };
 
     render(){
         const {username, password, firstTime, typing, authenticating, signInSuccesful, rememberMe} = this.state
@@ -226,7 +241,7 @@ export default class LogInContainer extends React.Component{
 
                     <BlueButton 
                         style = {styles.button}
-                        onPress = {() => this.handlePressButton()}
+                        onPress = {() => this.handlePressButton(username, password)}
                     >
                         Log In
                     </BlueButton>
