@@ -1,12 +1,9 @@
 import React from 'react';
-import { UIManager, Platform } from 'react-native';
-import { NavigationContainer, DefaultTheme, useRoute, useNavigationState } from '@react-navigation/native';
+import { UIManager, Platform, Alert } from 'react-native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createSwitchNavigator, createAppContainer, StackActions } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
-import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
-import { Transition } from 'react-native-reanimated';
 
 import LogInContainer from './container/LogInContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
@@ -25,8 +22,6 @@ import { Provider } from 'react-redux';
 import store from './store';
 
 import * as SecureStore from 'expo-secure-store';
-
-import GetNameAndCookie from './container/GetNameAndCookie'
 
 import {decode, encode} from 'base-64'
 
@@ -87,26 +82,6 @@ function DeclareCamScreen({ navigation }) {
   );
 }
 
-const SwitchNavigator = createAnimatedSwitchNavigator(
-  {
-    Login: LogInContainer,
-    MainScreen: MainScreenTab,
-  },
-  {
-    initialRouteName: 'Login',
-    transition: (
-      <Transition.Together>
-        <Transition.Out
-          type="slide-bottom"
-          durationMs={400}
-          interpolation="easeIn"
-        />
-        <Transition.In type="fade" durationMs={500} />
-      </Transition.Together>
-    ),
-  }
-);
-
 const Tab = createBottomTabNavigator();
 
 function MainScreenTab() {
@@ -128,6 +103,12 @@ function MainScreenTab() {
       <Tab.Screen 
         name="Declare" 
         component={DeclareCamScreen} 
+        options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="add-circle-outline" size={24} color={color} />
+          ),
+          unmountOnBlur: true,
+         }}
         listeners={({ navigation }) => ({
           tabPress: e => {
             e.preventDefault(); 
@@ -135,12 +116,6 @@ function MainScreenTab() {
             navigation.navigate('Declare', {screen: 'DeclareScreen'})
           },
         })}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="add-circle-outline" size={24} color={color} />
-          ),
-          unmountOnBlur: true,
-         }}
       />
       <Tab.Screen 
         name="History" 
@@ -169,6 +144,42 @@ function MainScreenTab() {
           ),  
          }}
       />
+      <Tab.Screen 
+        name='Logout' 
+        component={LogInContainer} 
+        options={{
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="logout" size={24} color={color} />
+          ),  
+          unmountOnBlur: true,
+          tabBarVisible: false,
+         }}
+        listeners={({ navigation }) => ({
+          tabPress: e => {
+            e.preventDefault(); 
+            Alert.alert(
+              'Alert',
+              'Are you sure you want to log out?',
+              [
+                { text: "No" },
+                { text: "Yes",  
+                  onPress: () => {
+                    (async () => {
+                      try {
+                          await SecureStore.deleteItemAsync('credentials');
+                      } catch (e) {
+                          console.log(e);
+                      }
+                    }) ()
+                    navigation.navigate('Logout') 
+                  }
+                }
+              ],
+              { cancelable: false }
+            )
+          },
+        })}
+      />
     </Tab.Navigator>
   );
 }
@@ -177,57 +188,24 @@ if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const AppContainer = createAppContainer(SwitchNavigator)
 const Stack = createStackNavigator()
 
 
 export default function App() {
-  const [isSignIn, setisSignIn] = React.useState(false)
-  React.useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
-    const bootstrapAsync = async () => {
-      try {
-        const credentials = await SecureStore.getItemAsync('credentials');
-
-        if (credentials) {
-          const myJson = JSON.parse(credentials);
-
-          await GetNameAndCookie(myJson.username, myJson.password)
-          setisSignIn(true)
-        }
-        else{
-          setisSignIn(false)
-        }
-    } catch (e) {
-        console.log(e);
-    }
-    };
-    bootstrapAsync();
-  }, []);
   return (
     <Provider store = {store}>
       <NavigationContainer theme = {styles}>
-        {/* <Stack.Navigator
+        <Stack.Navigator
           screenOptions={{
             headerShown: false
           }}
         >
-          {isSignIn == false ? (
-            // No token found, user isn't signed in
-            <Stack.Screen
-              name="LogIn"
-              component={LogInContainer}
-              options={{
-                // When logging out, a pop animation feels intuitive
-                animationTypeForReplace: !isSignIn ? 'pop' : 'push',
-              }}
-            />
-          ) : (
-            // User is signed in
-            <Stack.Screen name="MainScreen" component={MainScreenTab} />
-          )}
-        </Stack.Navigator> */}
-        <AppContainer/>
+          <Stack.Screen
+            name="Login"
+            component={LogInContainer}
+          />            
+          <Stack.Screen name="MainScreen" component={MainScreenTab} />
+        </Stack.Navigator>
       </NavigationContainer>
     </Provider>
   );

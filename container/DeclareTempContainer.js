@@ -3,7 +3,7 @@ import querystring from 'querystring';
 import React from 'react';
 import moment from 'moment';
 import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, 
-    Keyboard, TouchableWithoutFeedback, Picker, ScrollView, Image, Switch } from 'react-native';
+    Keyboard, TouchableWithoutFeedback, Picker, ScrollView, Image, Switch, BackHandler } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -116,15 +116,14 @@ export default class DeclareTempContainer extends React.Component{
         })   
     }
 
-    handlePressLogoutButton = () => {
-        (async () => {
-            try {
-                await SecureStore.deleteItemAsync('credentials');
-            } catch (e) {
-                console.log(e);
-            }
-        }) ()
-        // this.props.navigation.navigate('Login')
+    onBackPress = () => {return true}
+
+    componentDidMount(){      
+        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+    }
+
+    componentWillUnmount(){
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
     }
 
     render(){
@@ -236,12 +235,12 @@ export default class DeclareTempContainer extends React.Component{
                                 Submit
                             </BlueButton>
 
-                            <BlueButton
+                            {/* <BlueButton
                                 style = {styles.button}
                                 onPress = {this.handlePressLogoutButton}
                             >
                                 Log out
-                            </BlueButton>
+                            </BlueButton> */}
                         </View>
                         
                         <View style = {{flex: 4, position: 'relative', marginTop: -70, alignSelf: 'center'}}>

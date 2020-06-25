@@ -1,11 +1,12 @@
 import React from 'react';
-import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, View, Keyboard, TouchableWithoutFeedback, Switch } from 'react-native';
+import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, View, Keyboard, TouchableWithoutFeedback, Switch, BackHandler } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 
 import axios from 'axios';
 import querystring from 'querystring';
 
 import BlueButton from '../component/BlueButton';
+import Spinner from '../component/SpinningComponent';
 
 import store from '../store';
 
@@ -83,6 +84,11 @@ export default class LogInContainer extends React.Component{
 
     async componentDidMount() {
         await this.read();
+        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+    }
+
+    componentWillUnmount(){
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
     }
 
     handleUpdateUsername = (username) => this.setState({username, typing: true, firstTime: false});
@@ -95,7 +101,7 @@ export default class LogInContainer extends React.Component{
             password
         ){
             (async () => {
-                this.setState({authenticating: true})
+                this.setState({authenticating: true, typing: false})
                 const resp = await auth(username, password)
                 
                 if ('set-cookie' in resp.headers){
@@ -110,12 +116,10 @@ export default class LogInContainer extends React.Component{
                     this.setState({
                         signInSuccesful: true, 
                         authenticating: false, 
-                        typing: false,
                     })
                     if(this.state.rememberMe)
-                        this.remember()
-                    // this.signInFlag(true)
-                    this.props.navigation.navigate('MainScreen')
+                        this.remember(this.state.username, this.state.password)
+                    this.props.navigation.navigate('MainScreen', {screen: 'Declare'})
                 }
                 else{
                     this.setState({
@@ -123,18 +127,18 @@ export default class LogInContainer extends React.Component{
                         password: '',
                         signInSuccesful: false, 
                         authenticating: false,
-                        rememberMe: false,
-                        typing: false,
                     })
-                    // this.signInFlag(false)
                 }
+                this.setState({
+                    typing: false,
+                })
             })()
         }
     }
 
     toggleRememberMe = value => {
         this.setState({ rememberMe: value })
-        if (value === false) {
+        if (value == false) {
             this.clear();
         }
     }
@@ -165,10 +169,8 @@ export default class LogInContainer extends React.Component{
         }
     };
 
-    remember = async () => {
-        const { username, password } = this.state;
-        const { name } = store.getState().logIn;
-        const credentials = { username, password, name };
+    remember = async (username, password) => {
+        const credentials = { username, password };
         try {
             await SecureStore.setItemAsync(
                 'credentials',
@@ -179,17 +181,6 @@ export default class LogInContainer extends React.Component{
         }
     };
 
-    // signInFlag = async (val) => {
-    //     try {
-    //         await SecureStore.setItemAsync(
-    //             'signInFlag',
-    //             val.toString(),
-    //         );
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // };
-
     clear = async () => {
         try {
             await SecureStore.deleteItemAsync('credentials');
@@ -197,6 +188,8 @@ export default class LogInContainer extends React.Component{
             console.log(e);
         }
     };
+
+    onBackPress = () => {return true}
 
     render(){
         const {username, password, firstTime, typing, authenticating, signInSuccesful, rememberMe} = this.state
@@ -208,7 +201,7 @@ export default class LogInContainer extends React.Component{
 
                     <TextInput
                         style = {styles.textInput}
-                        placeholder = "NUSNET (e...)"
+                        placeholder = "NUSNET (E...)"
                         placeholderTextColor = 'grey'
                         onChangeText = {this.handleUpdateUsername}
                         value = {username}
@@ -248,8 +241,8 @@ export default class LogInContainer extends React.Component{
 
                     {
                         (firstTime || typing) ? null : 
-                            (authenticating ? (<Text style = {styles.text}>Authenticating...</Text>)  : 
-                            (signInSuccesful ? (<Text style = {styles.text}>Log In Successful</Text>) : 
+                            (authenticating ? (<Spinner/>) : 
+                            (signInSuccesful ? null : 
                             (Alert.alert(
                                 'Log in failed',
                                 'Invalid NUSNET or Password',
@@ -290,10 +283,5 @@ const styles = StyleSheet.create({
     button:{
         marginTop: 22,
         borderRadius: 5,
-    },
-    text:{
-        fontSize: 20,
-        color: 'green',
-        marginTop: 40,
     },
 });
