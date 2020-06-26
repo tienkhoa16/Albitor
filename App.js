@@ -3,7 +3,7 @@ import { UIManager, Platform, Alert } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import LogInContainer from './container/LogInContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
@@ -140,7 +140,7 @@ function MainScreenTab() {
         component={AnnouncementScreen} 
         options={{
           tabBarIcon: ({ color }) => (
-            <Entypo name="info" size={24} color={color} />
+            <AntDesign name="notification" size={24} color={color} />
           ),  
          }}
       />
