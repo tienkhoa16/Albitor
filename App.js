@@ -5,7 +5,7 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MaterialIcons, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 
 import LogInContainer from './container/LogInContainer';
 import LogOutContainer from './container/LogOutContainer';
@@ -103,6 +103,7 @@ function MainScreenTab() {
         activeBackgroundColor: 'black',
         inactiveBackgroundColor: 'black',
         labelStyle: {fontWeight: 'bold'},
+        tabStyle: {borderWidth: 1, }
       }}
     >
       <Tab.Screen 
@@ -130,7 +131,7 @@ function MainScreenTab() {
         component={AnnouncementScreen} 
         options={{
           tabBarIcon: ({ color }) => (
-            <AntDesign name="notification" size={24} color={color} />
+            <Entypo name="bell" size={24} color={color} />
           ),  
          }}
       />
