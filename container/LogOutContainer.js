@@ -151,32 +151,6 @@ export default class LogInContainer extends React.Component{
         }
     }
 
-    read = async () => {
-        try {
-            const credentials = await SecureStore.getItemAsync('credentials');
-    
-            if (credentials) {
-                const myJson = JSON.parse(credentials);
-
-                this.setState({
-                    username: myJson.username,
-                    password: myJson.password,
-                    rememberMe: true,
-                });
-                this.handlePressButton(myJson.username, myJson.password)
-            }
-            else{
-                this.setState({
-                    username: '',
-                    password: '',
-                    rememberMe: false,
-                });
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
     remember = async (username, password) => {
         const credentials = { username, password };
         try {

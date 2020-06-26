@@ -1,0 +1,65 @@
+import React from 'react';
+import { StyleSheet, Dimensions, Image, Text, Alert, View, SafeAreaView, TouchableOpacity } from 'react-native';
+import { MaterialIcons, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as SecureStore from 'expo-secure-store';
+
+const screenWidth = Math.round(Dimensions.get('window').width);
+
+export default class MoreScreenContainer extends React.Component{
+    render(){
+        return(
+            <SafeAreaView style = {{flex: 1, backgroundColor: '#fcf7bb'}}>
+                <View style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
+                <Image
+                    style = {{
+                        alignSelf:'center', 
+                        marginTop: 20,
+                        borderColor: 'red',
+                        marginBottom: 20,
+                    }}
+                    source = {require('../assets/thermometer_small.png')}
+                />
+
+                <TouchableOpacity
+                    style = {styles.option}
+                    onPress = {() => {
+                        this.props.navigation.navigate('Flight')
+                    }}
+                >
+                    <MaterialCommunityIcons name="airplane-takeoff" size={24} color='black' />
+                    <Text style = {styles.text}>Overseas Flight Declaration</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style = {styles.option}
+                    onPress = {() => {
+                        this.props.navigation.navigate('Logout')
+                    }}
+                >
+                    <AntDesign name="logout" size={24} color='black' />
+                    <Text style = {styles.text}>Logout</Text>
+                </TouchableOpacity>
+            </SafeAreaView>
+        );
+    }
+}
+
+const styles = StyleSheet.create({
+    option:{
+        flexDirection: 'row',
+        padding: 10,
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 1,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderLeftColor: 'transparent',
+        borderRightColor: 'transparent',
+        borderTopColor: 'transparent',
+        borderBottomColor: '#e7dfd5',
+    },
+    text:{
+        fontSize: 15,
+        marginLeft: 5,
+    }
+});

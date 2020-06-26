@@ -3,7 +3,7 @@ import { UIManager, Platform, Alert } from 'react-native';
 
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -12,7 +12,8 @@ import LogOutContainer from './container/LogOutContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
 import PastDeclareContainer from './container/PastDeclareContainer';
 import FlightContainer from './container/FlightContainer';
-import ReportBugContainer from './container/ReportBugContainer'
+import ReportBugContainer from './container/ReportBugContainer';
+import MoreScreenContainer from './container/MoreScreenContainer';
 
 import AnnouncementForm from './announcement/upload_ui';
 import AnnouncementButton from './announcement/announcement_button';
@@ -113,13 +114,6 @@ function MainScreenTab() {
           ),
           unmountOnBlur: true,
          }}
-        listeners={({ navigation }) => ({
-          tabPress: e => {
-            e.preventDefault(); 
-            console.log("Declare tab bar button pressed")
-            navigation.navigate('Declare', {screen: 'DeclareScreen'})
-          },
-        })}
       />
       <Tab.Screen 
         name="History" 
@@ -131,7 +125,7 @@ function MainScreenTab() {
           unmountOnBlur: true,  
          }}
       />
-      <Tab.Screen 
+      {/* <Tab.Screen 
         name="Flight" 
         component={FlightContainer} 
         options={{
@@ -139,7 +133,7 @@ function MainScreenTab() {
             <MaterialCommunityIcons name="airplane-takeoff" size={24} color={color} />
           ),  
          }}
-      />
+      /> */}
       <Tab.Screen 
         name='Announcement' 
         component={AnnouncementScreen} 
@@ -149,7 +143,17 @@ function MainScreenTab() {
           ),  
          }}
       />
-      <Tab.Screen 
+      <Tab.Screen
+        name="More"
+        component={MoreStack}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="more-horiz" size={24} color={color} />
+          ),  
+          unmountOnBlur: true,
+        }}
+      />
+      {/* <Tab.Screen 
         name='Logout' 
         component={LogOutContainer} 
         options={{
@@ -177,36 +181,30 @@ function MainScreenTab() {
             )
           },
         })}
-      />
-      {/* <Tab.Screen
-        name="More"
-        component={MoreDrawer}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="more-horiz" size={24} color={color} />
-          ),  
-        }}
-
       /> */}
     </Tab.Navigator>
   );
 }
 
-// const Drawer = createDrawerNavigator();
-// function MoreDrawer() {
-//   return (
-//     <Drawer.Navigator>
-//       <Drawer.Screen 
-//         name="Report" 
-//         component={ReportBugContainer} 
-//         options={{
-//           ='Report bug',
-//         }}
-//       />
-//       <Drawer.Screen name="Logout" component={LogOutContainer} />
-//     </Drawer.Navigator>
-//   );
-// }
+function MoreStack(){
+  return(
+    <Stack.Navigator
+      screenOptions={{
+        initialRouteName: 'Flight',
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen
+        name="MoreScreen"
+        component={MoreScreenContainer}
+      />
+      <Stack.Screen
+        name="Flight" 
+        component={FlightContainer} 
+      />            
+    </Stack.Navigator>
+  )
+}
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -229,6 +227,7 @@ export default function App() {
             component={LogInContainer}
           />            
           <Stack.Screen name="MainScreen" component={MainScreenTab} />
+          <Stack.Screen name="Logout" component={LogOutContainer} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

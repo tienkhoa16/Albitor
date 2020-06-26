@@ -2,6 +2,7 @@ import React from 'react';
 import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, View, Keyboard, TouchableWithoutFeedback, 
     Switch } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
+import { useIsFocused } from '@react-navigation/native';
 
 import axios from 'axios';
 import querystring from 'querystring';
@@ -187,7 +188,6 @@ export default class LogInContainer extends React.Component{
 
     render(){
         const {username, password, firstTime, typing, authenticating, signInSuccesful, rememberMe} = this.state
-
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <KeyboardAvoidingView style = {styles.container}>

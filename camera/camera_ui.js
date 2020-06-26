@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, PermissionsAndroid, Alert } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, PermissionsAndroid, Alert, BackHandler } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -17,6 +17,11 @@ export default class CameraUI extends Component {
 
     componentDidMount() {
         this.getCameraPermissions();
+        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+    }
+
+    componentWillUnmount(){
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
     }
 
     async getCameraPermissions() {
@@ -47,6 +52,11 @@ export default class CameraUI extends Component {
                 );
             }
         }
+    }
+
+    onBackPress = () => {
+        this.props.navigation.pop();
+        return true;
     }
 
     render() {
