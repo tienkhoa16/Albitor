@@ -48,7 +48,7 @@ export default class PastDeclareContainer extends PureComponent {
         }
         return (
             <SafeAreaView style ={{flex:1, backgroundColor: 'orange'}}>
-                <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }} style={{ marginTop:40, backgroundColor: '#fcf7bb' }}>
+                <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }} style={{ marginTop:35, backgroundColor: '#fcf7bb' }}>
                     <Text style = {styles.heading}>Declaration History of</Text>
                     <Text style = {styles.heading}>{store.getState().logIn.name}</Text>
                     <Text style = {styles.text}>*sx: symptoms</Text>

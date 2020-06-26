@@ -124,7 +124,8 @@ function MainScreenTab() {
         options={{
           tabBarIcon: ({ color }) => (
             <AntDesign name="table" size={24} color={color} />
-          ),  
+          ),
+          unmountOnBlur: true,  
          }}
       />
       <Tab.Screen 
