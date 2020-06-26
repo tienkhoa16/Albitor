@@ -125,15 +125,6 @@ function MainScreenTab() {
           unmountOnBlur: true,  
          }}
       />
-      {/* <Tab.Screen 
-        name="Flight" 
-        component={FlightContainer} 
-        options={{
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="airplane-takeoff" size={24} color={color} />
-          ),  
-         }}
-      /> */}
       <Tab.Screen 
         name='Announcement' 
         component={AnnouncementScreen} 
@@ -153,35 +144,6 @@ function MainScreenTab() {
           unmountOnBlur: true,
         }}
       />
-      {/* <Tab.Screen 
-        name='Logout' 
-        component={LogOutContainer} 
-        options={{
-          tabBarIcon: ({ color }) => (
-            <AntDesign name="logout" size={24} color={color} />
-          ),  
-          unmountOnBlur: true,
-          tabBarVisible: false,
-        }}
-        listeners={({ navigation }) => ({
-          tabPress: e => {
-            e.preventDefault(); 
-            Alert.alert(
-              'Alert',
-              'Are you sure you want to log out?',
-              [
-                { text: "No" },
-                { text: "Yes",  
-                  onPress: () => {
-                    navigation.navigate('Logout') 
-                  }
-                }
-              ],
-              { cancelable: false }
-            )
-          },
-        })}
-      /> */}
     </Tab.Navigator>
   );
 }
@@ -202,6 +164,10 @@ function MoreStack(){
         name="Flight" 
         component={FlightContainer} 
       />            
+      <Stack.Screen
+        name="ReportBug"
+        component={ReportBugContainer}
+      />
     </Stack.Navigator>
   )
 }

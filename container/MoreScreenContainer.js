@@ -4,6 +4,7 @@ import { MaterialIcons, AntDesign, MaterialCommunityIcons } from '@expo/vector-i
 import * as SecureStore from 'expo-secure-store';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
+const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default class MoreScreenContainer extends React.Component{
     render(){
@@ -33,11 +34,33 @@ export default class MoreScreenContainer extends React.Component{
                 <TouchableOpacity
                     style = {styles.option}
                     onPress = {() => {
-                        this.props.navigation.navigate('Logout')
+                        this.props.navigation.navigate('ReportBug')
+                    }}
+                >
+                    <MaterialIcons name="bug-report" size={24} color="black" />
+                    <Text style = {styles.text}>Report Bug</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style = {styles.option}
+                    onPress = {() => {
+                        Alert.alert(
+                            'Logging out',
+                            'Are you sure ?',
+                            [
+                              { text: "No" },
+                              { text: "Yes",  
+                                onPress: () => {
+                                    this.props.navigation.navigate('Logout') 
+                                }
+                              }
+                            ],
+                            { cancelable: false }
+                          )
                     }}
                 >
                     <AntDesign name="logout" size={24} color='black' />
-                    <Text style = {styles.text}>Logout</Text>
+                    <Text style = {styles.text}>Log out</Text>
                 </TouchableOpacity>
             </SafeAreaView>
         );
