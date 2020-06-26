@@ -90,7 +90,7 @@ export default class LogInContainer extends React.Component{
     springValue = new Animated.Value(100);
 
     async componentDidMount() {
-        await this.read();
+        await this.clear();
         BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
     }
 
@@ -134,6 +134,7 @@ export default class LogInContainer extends React.Component{
                         password: '',
                         signInSuccesful: false, 
                         authenticating: false,
+                        rememberMe: false,
                     })
                 }
                 this.setState({

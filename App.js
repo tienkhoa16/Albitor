@@ -1,7 +1,9 @@
 import React from 'react';
 import { UIManager, Platform, Alert } from 'react-native';
+
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -10,6 +12,7 @@ import LogOutContainer from './container/LogOutContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
 import PastDeclareContainer from './container/PastDeclareContainer';
 import FlightContainer from './container/FlightContainer';
+import ReportBugContainer from './container/ReportBugContainer'
 
 import AnnouncementForm from './announcement/upload_ui';
 import AnnouncementButton from './announcement/announcement_button';
@@ -155,7 +158,7 @@ function MainScreenTab() {
           ),  
           unmountOnBlur: true,
           tabBarVisible: false,
-         }}
+        }}
         listeners={({ navigation }) => ({
           tabPress: e => {
             e.preventDefault(); 
@@ -166,13 +169,6 @@ function MainScreenTab() {
                 { text: "No" },
                 { text: "Yes",  
                   onPress: () => {
-                    (async () => {
-                      try {
-                          await SecureStore.deleteItemAsync('credentials');
-                      } catch (e) {
-                          console.log(e);
-                      }
-                    }) ()
                     navigation.navigate('Logout') 
                   }
                 }
@@ -182,9 +178,35 @@ function MainScreenTab() {
           },
         })}
       />
+      {/* <Tab.Screen
+        name="More"
+        component={MoreDrawer}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="more-horiz" size={24} color={color} />
+          ),  
+        }}
+
+      /> */}
     </Tab.Navigator>
   );
 }
+
+// const Drawer = createDrawerNavigator();
+// function MoreDrawer() {
+//   return (
+//     <Drawer.Navigator>
+//       <Drawer.Screen 
+//         name="Report" 
+//         component={ReportBugContainer} 
+//         options={{
+//           ='Report bug',
+//         }}
+//       />
+//       <Drawer.Screen name="Logout" component={LogOutContainer} />
+//     </Drawer.Navigator>
+//   );
+// }
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);

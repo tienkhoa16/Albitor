@@ -122,6 +122,7 @@ export default class LogInContainer extends React.Component{
                         password: '',
                         signInSuccesful: false, 
                         authenticating: false,
+                        rememberMe: false,
                     })
                 }
                 this.setState({
