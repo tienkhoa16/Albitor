@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import LogInContainer from './container/LogInContainer';
+import LogOutContainer from './container/LogOutContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
 import PastDeclareContainer from './container/PastDeclareContainer';
 import FlightContainer from './container/FlightContainer';
@@ -146,7 +147,7 @@ function MainScreenTab() {
       />
       <Tab.Screen 
         name='Logout' 
-        component={LogInContainer} 
+        component={LogOutContainer} 
         options={{
           tabBarIcon: ({ color }) => (
             <AntDesign name="logout" size={24} color={color} />
