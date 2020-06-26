@@ -1,5 +1,6 @@
 import React from 'react';
-import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, View, Keyboard, TouchableWithoutFeedback, Switch, BackHandler } from 'react-native';
+import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, View, Keyboard, TouchableWithoutFeedback, 
+    Switch, BackHandler, Animated, Dimensions } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 
 import axios from 'axios';
@@ -10,6 +11,9 @@ import Spinner from '../component/SpinningComponent';
 
 import store from '../store';
 
+
+const screenWidth = Math.round(Dimensions.get('window').width);
+const screenHeight = Math.round(Dimensions.get('window').height);
 
 
 async function auth(username, password){
@@ -80,7 +84,10 @@ export default class LogInContainer extends React.Component{
         authenticating: false,
         signInSuccesful: false,
         rememberMe: false,
+        backClickCount: 0,
     };
+
+    springValue = new Animated.Value(100);
 
     async componentDidMount() {
         await this.read();
@@ -189,7 +196,38 @@ export default class LogInContainer extends React.Component{
         }
     };
 
-    onBackPress = () => {return true}
+    onBackPress = () => {
+        this.state.backClickCount == 1 ? BackHandler.exitApp() : this._spring();
+        return true;
+    }
+
+    _spring() {
+        this.setState({backClickCount: 1}, () => {
+            Animated.sequence([
+                Animated.spring(
+                    this.springValue,
+                    {
+                        toValue: -.15 * screenHeight,
+                        friction: 5,
+                        duration: 300,
+                        useNativeDriver: true,
+                    }
+                ),
+                Animated.timing(
+                    this.springValue,
+                    {
+                        toValue: 100,
+                        duration: 300,
+                        useNativeDriver: true,
+                    }
+                ),
+
+            ]).start(() => {
+                this.setState({backClickCount: 0});
+            });
+        });
+
+    }
 
     render(){
         const {username, password, firstTime, typing, authenticating, signInSuccesful, rememberMe} = this.state
@@ -252,6 +290,10 @@ export default class LogInContainer extends React.Component{
                                 { cancelable: false }
                             ))))
                     }
+
+                    <Animated.View style={[styles.animatedView, {transform: [{translateY: this.springValue}]}]}>
+                        <Text style={styles.exitTitleText}>Press back again to exit FitNUS</Text>
+                    </Animated.View>  
                 </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
         );
@@ -283,5 +325,17 @@ const styles = StyleSheet.create({
     button:{
         marginTop: 22,
         borderRadius: 5,
+    },
+    animatedView: {
+        width: 260,
+        position: "absolute",
+        top: screenHeight,
+        padding: 10,
+        alignSelf: 'center',
+        backgroundColor: "#dddddd",
+        borderRadius: 130,
+    },
+    exitTitleText: {
+        textAlign: "center",
     },
 });

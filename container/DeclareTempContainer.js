@@ -3,7 +3,7 @@ import querystring from 'querystring';
 import React from 'react';
 import moment from 'moment';
 import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, 
-    Keyboard, TouchableWithoutFeedback, Picker, ScrollView, Image, Switch, BackHandler } from 'react-native';
+    Keyboard, TouchableWithoutFeedback, Picker, ScrollView, Image, Switch, BackHandler, Animated } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -66,7 +66,10 @@ export default class DeclareTempContainer extends React.Component{
         famSymptoms: 'N',
         symptoms_bool: false,
         famSymptoms_bool: false,
+        backClickCount: 0,
     };
+
+    springValue = new Animated.Value(100);
 
     handleTemp = (temp) => this.setState({temp});
 
@@ -116,7 +119,10 @@ export default class DeclareTempContainer extends React.Component{
         })   
     }
 
-    onBackPress = () => {return true}
+    onBackPress = () => {
+        this.state.backClickCount == 1 ? BackHandler.exitApp() : this._spring();
+        return true;
+    }
 
     componentDidMount(){      
         BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
@@ -124,6 +130,34 @@ export default class DeclareTempContainer extends React.Component{
 
     componentWillUnmount(){
         BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+    }
+
+    _spring() {
+        this.setState({backClickCount: 1}, () => {
+            Animated.sequence([
+                Animated.spring(
+                    this.springValue,
+                    {
+                        toValue: -.15 * screenHeight,
+                        friction: 5,
+                        duration: 300,
+                        useNativeDriver: true,
+                    }
+                ),
+                Animated.timing(
+                    this.springValue,
+                    {
+                        toValue: 100,
+                        duration: 300,
+                        useNativeDriver: true,
+                    }
+                ),
+
+            ]).start(() => {
+                this.setState({backClickCount: 0});
+            });
+        });
+
     }
 
     render(){
@@ -234,21 +268,18 @@ export default class DeclareTempContainer extends React.Component{
                             >
                                 Submit
                             </BlueButton>
-
-                            {/* <BlueButton
-                                style = {styles.button}
-                                onPress = {this.handlePressLogoutButton}
-                            >
-                                Log out
-                            </BlueButton> */}
                         </View>
                         
-                        <View style = {{flex: 4, position: 'relative', marginTop: -70, alignSelf: 'center'}}>
+                        <View style = {{flex: 4, marginTop: -70, alignSelf: 'center'}}>
                             <Image 
                                 style = {{transform: [{scale: 0.5}]}}
                                 source = {require('../assets/nus_lion.png')} 
                             />
-                        </View>                        
+                        </View>              
+
+                        <Animated.View style={[styles.animatedView, {transform: [{translateY: this.springValue}]}]}>
+                            <Text style={styles.exitTitleText}>Press back again to exit FitNUS</Text>
+                        </Animated.View>          
                     </KeyboardAvoidingView>
                 </ScrollView>
             </TouchableWithoutFeedback>
@@ -330,5 +361,17 @@ const styles = StyleSheet.create({
     CamButton: {
         alignSelf: 'center',
         marginTop: -15,
-      },
+    },
+    animatedView: {
+        width: 260,
+        position: "absolute",
+        top: screenHeight,
+        padding: 10,
+        alignSelf: 'center',
+        backgroundColor: "#dddddd",
+        borderRadius: 130,
+    },
+    exitTitleText: {
+        textAlign: "center",
+    },
 });
