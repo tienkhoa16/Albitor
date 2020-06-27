@@ -127,7 +127,7 @@ function MainScreenTab() {
          }}
       />
       <Tab.Screen 
-        name='Announcement' 
+        name='Announcements' 
         component={AnnouncementScreen} 
         options={{
           tabBarIcon: ({ color }) => (
