@@ -203,8 +203,8 @@ export default class DeclareTempContainer extends React.Component{
                                         />
                                         {
                                             isPm ? 
-                                                (<Text style = {{marginTop: 7, fontSize: 17, color:'#ffffff'}}>PM</Text>) : 
-                                                (<Text style = {{marginTop: 7, fontSize: 17, color:'#ffffff'}}>AM</Text>)
+                                                (<Text style = {styles.amPm}>PM</Text>) : 
+                                                (<Text style = {styles.amPm}>AM</Text>)
                                         }   
                                     </View>
 
@@ -378,5 +378,11 @@ const styles = StyleSheet.create({
     },
     exitTitleText: {
         textAlign: "center",
+    },
+    amPm: {
+        marginTop: 7, 
+        fontSize: 17, 
+        color:'#ffffff',
+        fontWeight: 'bold',
     },
 });
