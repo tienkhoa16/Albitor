@@ -104,7 +104,6 @@ function MainScreenTab() {
         activeBackgroundColor: 'black',
         inactiveBackgroundColor: 'black',
         labelStyle: {fontWeight: 'bold'},
-        tabStyle: {borderWidth: 1, }
       }}
     >
       <Tab.Screen 
