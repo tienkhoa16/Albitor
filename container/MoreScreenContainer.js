@@ -44,6 +44,16 @@ export default class MoreScreenContainer extends React.Component{
                 <TouchableOpacity
                     style = {styles.option}
                     onPress = {() => {
+                        this.props.navigation.navigate('About')
+                    }}
+                >
+                    <AntDesign name="team" size={24} color="black" />
+                    <Text style = {styles.text}>About Us</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style = {styles.option}
+                    onPress = {() => {
                         Alert.alert(
                             'Logging out',
                             'Are you sure ?',
@@ -62,6 +72,8 @@ export default class MoreScreenContainer extends React.Component{
                     <AntDesign name="logout" size={24} color='black' />
                     <Text style = {styles.text}>Log out</Text>
                 </TouchableOpacity>
+
+                
             </SafeAreaView>
         );
     }

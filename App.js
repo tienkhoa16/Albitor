@@ -14,6 +14,7 @@ import PastDeclareContainer from './container/PastDeclareContainer';
 import FlightContainer from './container/FlightContainer';
 import ReportBugContainer from './container/ReportBugContainer';
 import MoreScreenContainer from './container/MoreScreenContainer';
+import AboutContainer from './container/AboutContainer';
 
 import AnnouncementForm from './announcement/upload_ui';
 import AnnouncementButton from './announcement/announcement_button';
@@ -153,7 +154,7 @@ function MoreStack(){
   return(
     <Stack.Navigator
       screenOptions={{
-        initialRouteName: 'Flight',
+        initialRouteName: 'MoreScreen',
         headerShown: false,
       }}
     >
@@ -168,6 +169,10 @@ function MoreStack(){
       <Stack.Screen
         name="ReportBug"
         component={ReportBugContainer}
+      />
+      <Stack.Screen
+        name="About"
+        component={AboutContainer}
       />
     </Stack.Navigator>
   )

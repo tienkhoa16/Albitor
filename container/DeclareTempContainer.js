@@ -3,7 +3,7 @@ import querystring from 'querystring';
 import React from 'react';
 import moment from 'moment';
 import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, 
-    Keyboard, TouchableWithoutFeedback, Picker, ScrollView, Image, Switch, BackHandler, Animated } from 'react-native';
+    Keyboard, TouchableWithoutFeedback, ScrollView, Image, Switch, BackHandler, Animated } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -62,6 +62,7 @@ export default class DeclareTempContainer extends React.Component{
         temp: '',
         date: dateTime.substr(0,dateTime.length-3),
         timeOfDay: dateTime.charAt(dateTime.length-2),
+        isPm: (dateTime.charAt(dateTime.length-2) === 'P'),
         symptoms: 'N',
         famSymptoms: 'N',
         symptoms_bool: false,
@@ -162,7 +163,7 @@ export default class DeclareTempContainer extends React.Component{
     }
 
     render(){
-        const {temp, date, timeOfDay, symptoms, famSymptoms, symptoms_bool, famSymptoms_bool} = this.state
+        const {temp, date, timeOfDay, isPm, symptoms, famSymptoms, symptoms_bool, famSymptoms_bool} = this.state
         
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -186,21 +187,32 @@ export default class DeclareTempContainer extends React.Component{
                                 </View>
 
                                 <View style={{flex: 1, flexDirection: 'column', marginLeft: 10}}>
-                                    <Picker
-                                        mode = 'dropdown'
-                                        selectedValue = {timeOfDay}
-                                        style={styles.picker}
-                                        onValueChange={(itemValue, itemIndex) =>
-                                            this.setState({timeOfDay: itemValue})
-                                        }
-                                    >
-                                        <Picker.Item label="AM" value="A" />
-                                        <Picker.Item label="PM" value="P" />
-                                    </Picker>
+                                    <View style={{flexDirection: 'row'}}>
+                                        <Switch
+                                            value={isPm}
+                                            onValueChange={v => {                                                
+                                                this.setState({isPm: !isPm})
+                                                if (v)
+                                                    this.setState({timeOfDay: 'P'})
+                                                else
+                                                    this.setState({timeOfDay: 'A'})
+                                            }}
+                                            style={{marginTop: 7, alignSelf: 'flex-start'}}
+                                            trackColor = {{false: '#f4ea8e', true: '#5fdde5'}}
+                                            thumbColor = {isPm ? '#111d5e':'#fcbf1e'}
+                                        />
+                                        {
+                                            isPm ? 
+                                                (<Text style = {{marginTop: 7, fontSize: 17, color:'#ffffff'}}>PM</Text>) : 
+                                                (<Text style = {{marginTop: 7, fontSize: 17, color:'#ffffff'}}>AM</Text>)
+                                        }   
+                                    </View>
+
+
 
                                     <View style={{flexDirection: 'row'}}>
                                         <TextInput 
-                                            style = {{...styles.textInput}}
+                                            style = {styles.textInput}
                                             placeholder = "Your temperature"
                                             placeholderTextColor = 'white'
                                             onChangeText = {this.handleTemp}
@@ -301,6 +313,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: 'white',
         marginBottom: 10,
+        marginTop: 10,
         textAlign: 'center',
         borderTopColor: '#ba6b57',
         borderRightColor: '#ba6b57',
@@ -340,12 +353,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 'bold',
     },
-    picker:{
-        height: 50,
-        width: 100,
-        marginTop: -6,
-        color: 'white'
-    },
     form: {
         flexDirection: 'row', 
         justifyContent:'space-between', 
@@ -359,7 +366,6 @@ const styles = StyleSheet.create({
     },
     CamButton: {
         alignSelf: 'center',
-        marginTop: -15,
     },
     animatedView: {
         width: 260,
