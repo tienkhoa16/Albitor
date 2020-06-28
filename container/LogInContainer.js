@@ -81,6 +81,7 @@ export default class LogInContainer extends React.Component{
         authenticating: false,
         signInSuccesful: false,
         rememberMe: false,
+        haveCredentials: false,
     };
 
     async componentDidMount() {
@@ -162,6 +163,7 @@ export default class LogInContainer extends React.Component{
                     username: myJson.username,
                     password: myJson.password,
                     rememberMe: true,
+                    haveCredentials: true,
                 });
                 this.handlePressButton(myJson.username, myJson.password)
             }
@@ -198,7 +200,7 @@ export default class LogInContainer extends React.Component{
     };
 
     render(){
-        const {username, password, firstTime, typing, authenticating, signInSuccesful, rememberMe} = this.state
+        const {username, password, firstTime, typing, authenticating, signInSuccesful, rememberMe, haveCredentials} = this.state
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <KeyboardAvoidingView style = {styles.container}>
@@ -231,7 +233,10 @@ export default class LogInContainer extends React.Component{
 
                     <BlueButton 
                         style = {styles.button}
-                        onPress = {() => this.handlePressButton(username, password)}
+                        onPress = {() => {
+                            if (!haveCredentials)
+                                this.handlePressButton(username, password)
+                        }}
                     >
                         Log In
                     </BlueButton>
