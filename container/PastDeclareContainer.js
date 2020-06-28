@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { ScrollView, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { ScrollView, Text, StyleSheet, SafeAreaView, View, Dimensions } from 'react-native';
 import HTML from 'react-native-render-html';
 import { IGNORED_TAGS, alterNode, makeTableRenderer } from 'react-native-render-html-table-bridge';
 import { WebView } from 'react-native-webview';
@@ -9,6 +9,7 @@ import LoadingImage from '../component/LoadingImage';
 
 import store from '../store';
 
+const screenWidth = Math.round(Dimensions.get('window').width);
 
 const renderers = {
     table: makeTableRenderer({
@@ -47,10 +48,11 @@ export default class PastDeclareContainer extends PureComponent {
             return <LoadingImage/>
         }
         return (
-            <SafeAreaView style ={{flex:1, backgroundColor: 'orange'}}>
-                <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }} style={{ marginTop:35, backgroundColor: '#fcf7bb' }}>
-                    <Text style = {styles.heading}>Declaration History of</Text>
-                    <Text style = {styles.heading}>{store.getState().logIn.name}</Text>
+            <SafeAreaView style ={{flex:1, backgroundColor: '#fcf7bb' }}>
+                <View style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
+                <Text style = {styles.heading}>Declaration History of</Text>
+                <Text style = {styles.heading}>{store.getState().logIn.name}</Text>
+                <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }} style={{ marginTop:5 }}>
                     <Text style = {styles.text}>*sx: symptoms</Text>
                     <HTML html={this.state.tableData} {...htmlConfig}/>
                 </ScrollView>

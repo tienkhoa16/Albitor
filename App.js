@@ -193,10 +193,7 @@ export default function App() {
             headerShown: false
           }}
         >
-          <Stack.Screen
-            name="Login"
-            component={LogInContainer}
-          />            
+          <Stack.Screen name="Login" component={LogInContainer} />            
           <Stack.Screen name="MainScreen" component={MainScreenTab} />
           <Stack.Screen name="Logout" component={LogOutContainer} />
         </Stack.Navigator>
