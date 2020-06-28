@@ -27,6 +27,7 @@
     },
     "android": {
       "package": "com.Albitor.FitNUS",
+      "googleServicesFile": "./google-services.json",
       "versionCode": 1
     }
   }

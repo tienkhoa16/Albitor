@@ -56,7 +56,7 @@ export default class MoreScreenContainer extends React.Component{
                     onPress = {() => {
                         Alert.alert(
                             'Logging out',
-                            'Are you sure ?',
+                            'Are you sure?',
                             [
                               { text: "No" },
                               { text: "Yes",  

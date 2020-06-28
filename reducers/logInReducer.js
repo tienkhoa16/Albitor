@@ -2,6 +2,7 @@ const initialState = {
     name: '',
     cookie: '',
     htmlTable: '',
+    username: '',
 };
 
 const logInReducer = (state = initialState, action) => {
@@ -12,6 +13,7 @@ const logInReducer = (state = initialState, action) => {
                 ...state,
                 name: action.payload.updateName,
                 cookie: action.payload.updateCookie,
+                username: action.payload.updateUsername,
             };
         
         default:

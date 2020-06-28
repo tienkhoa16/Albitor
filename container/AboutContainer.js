@@ -19,7 +19,7 @@ export default class AboutContainer extends React.Component{
                     
                     <Text style = {styles.heading}>Developers</Text>
                     <Text style = {styles.text}>
-                        This amazing app is brought to you by the following amazing developers to be.
+                        This amazing app is brought to you by the following amazing developers:
                     </Text>
                     <Text style = {styles.name}>Nguyen Tien Khoa</Text>
                     <Text style = {styles.info}>{'\u2022'} Year 1 Computer Engineering</Text>

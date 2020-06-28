@@ -2,6 +2,7 @@ const initialState = {
     name: '',
     cookie: '',
     htmlTable: '',
+    username: '',
 };
 
 const historyReducer = (state = initialState, action) => {

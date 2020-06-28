@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "438163943669",
-    "firebase_url": "https://fitnus-54bdc.firebaseio.com",
-    "project_id": "fitnus-54bdc",
-    "storage_bucket": "fitnus-54bdc.appspot.com"
+    "project_number": "1028682263241",
+    "firebase_url": "https://fitnus-d2c2b.firebaseio.com",
+    "project_id": "fitnus-d2c2b",
+    "storage_bucket": "fitnus-d2c2b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:438163943669:android:73ead09d8b04cc117d55bc",
+        "mobilesdk_app_id": "1:1028682263241:android:5f7720957eda3adac97b18",
         "android_client_info": {
-          "package_name": "com.nus.fitnus"
+          "package_name": "com.Albitor.FitNUS"
         }
       },
       "oauth_client": [
         {
-          "client_id": "438163943669-94rfrtb3btbrc8uju7nuujesi2imn9sf.apps.googleusercontent.com",
+          "client_id": "1028682263241-n3a0lqpledcab2nk6stjct4stfsgka6k.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDd29PridoQ-AXODwOa20KhdwndnVQ30Gs"
+          "current_key": "AIzaSyACIFemVGg8edCGAdi8to-Dd4msD13rT38"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "438163943669-94rfrtb3btbrc8uju7nuujesi2imn9sf.apps.googleusercontent.com",
+              "client_id": "1028682263241-n3a0lqpledcab2nk6stjct4stfsgka6k.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

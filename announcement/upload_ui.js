@@ -12,9 +12,16 @@ import { Text,
          TouchableWithoutFeedback,
          Keyboard,
          YellowBox,
+         Vibration
          } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import * as Permissions from 'expo-permissions';
+import { Notifications } from 'expo';
+import Constants from 'expo-constants';
 import firebaseDb from '../firebaseDb';
+import ExpandingTextInput from './ExpandingTextInput';
+import { CheckBox } from 'react-native-btr';
+import store from '../store';
 import _ from 'lodash';
 
 class AnnouncementForm extends Component {
@@ -26,8 +33,12 @@ class AnnouncementForm extends Component {
       description: '',
       created: '',
       addSuccess: false,
-      deleteSuccess: false,
-      editSuccess: false
+      checked: false,
+      hasNotificationPermission: null,
+      notificationToken: null,
+      notification: {},
+      createdBy: '',
+      checked: false,
     };
     YellowBox.ignoreWarnings(['Setting a timer']);
     const _console = _.clone(console);
@@ -38,9 +49,69 @@ class AnnouncementForm extends Component {
     };
   }
 
+  getNotificationPermission = async () => {
+    if (Constants.isDevice) {
+      const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+      this.setState({ hasNotificationPermission: status === 'granted'});
+      if (!this.state.hasNotificationPermission) {
+        const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        this.setState({ hasNotificationPermission: status === 'granted'});
+      }
+      if (!this.state.hasNotificationPermission) {
+        alert('Failed to get push token for push notifications!');
+      }
+      const token = await Notifications.getExpoPushTokenAsync();
+      console.log(token); // test token
+      this.setState({ notificationToken: token });
+    }
+    else {
+      alert('Must use physical device for notifications')
+    }
+
+    if ( Platform.OS === 'android' ) {
+      Notifications.createChannelAndroidAsync('default', {
+        name: 'default',
+        sound: true,
+        priority: 'max',
+        vibrate: [0, 250, 250, 250],
+      });
+    }
+  };
+
+  componentDidMount() {
+    this.handleSetCreator(store.getState().logIn.name)
+    this.getNotificationPermission();
+    this.notificationSubscription = Notifications.addListener(this.handleNotification);
+  }
+
+  handleNotification = notification => {
+    Vibration.vibrate();
+    this.setState({ notification: notification });
+  }
+
+  sendPushNotification = async () => {
+    const message = {
+      to: this.state.notificationToken,
+      sound: 'default',
+      title: 'New announcement updated',
+      body: `${this.state.createdBy} has posted a new announcement`,
+      _displayInForeground: true,
+    };
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+  };
+
   handleUpdateTitle = (title) => this.setState({title});
   handleUpdateHyperlink = (hyperlink) => this.setState({hyperlink});
   handleUpdateDescription = (description) => this.setState({description});
+  handleSetCreator = (createdBy) =>  this.setState({createdBy});
 
   render() {
     return (
@@ -48,43 +119,55 @@ class AnnouncementForm extends Component {
         <ScrollView style={styles.container}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.inner}>
-              <Text style = {styles.TitleText}> Title: </Text>
-              <TextInput
+              <Text style = {styles.TitleText}> Subject: </Text>
+              <ExpandingTextInput
                 multiline
-                style = {styles.TitleBox}
-                placeholder = "Enter title here..."
+                style = {styles.Box}
+                placeholder = "Subject"
                 textAlignVertical={'top'}
                 onChangeText = {this.handleUpdateTitle}
                 value = {this.state.title}
-                maxLength = {100}
               />
 
-              <Text style = {styles.HyperlinkText}> Hyperlink: </Text>
-              <TextInput
+              <Text style = {styles.HyperlinkText}> PDF file: </Text>
+              <ExpandingTextInput
                 multiline
-                style = {styles.HyperlinkBox}
-                placeholder = "Enter hyperlink here..."
+                style = {styles.Box}
+                placeholder = "Hyperlink to PDF file"
                 textAlignVertical={'top'}
                 onChangeText={this.handleUpdateHyperlink}
                 value={this.state.hyperlink}
               />
-              <Text style = {styles.DescriptionText}> Description: </Text>
-              <TextInput
+
+              <Text style = {styles.DescriptionText}> Announcement: </Text>
+              <ExpandingTextInput
                 multiline
-                style = {styles.DescriptionBox}
-                placeholder = "Enter description here..."
+                style = {styles.Box}
+                placeholder = "Announcement ..."
                 textAlignVertical={'top'}
                 onChangeText={this.handleUpdateDescription}
                 value={this.state.description}
               />
 
+              <View style={styles.options}>
+                <CheckBox
+                  checked={this.state.checked}
+                  onPress={() => this.setState({ checked: !this.state.checked })}
+                  color='#009688'
+                />
+                <Text>      Send update notification to all users</Text>
+              </View>
+
               <View style = {styles.SubmitButton}>
                 <Button
                   color = "blue"
-                  title = "Submit"
+                  title = "Upload"
                   onPress = {() => {
                     if (this.state.title.length && this.state.hyperlink.length && this.state.description.length) {
-                      this.handleCreateAnnouncement()
+                      this.handleCreateAnnouncement();
+                    }
+                    if (this.state.checked) {
+                      this.sendPushNotification();
                     }
                   }}
                 />
@@ -107,69 +190,66 @@ class AnnouncementForm extends Component {
         description: this.state.description,
         hyperlink: this.state.hyperlink,
         title: this.state.title,
-        created: firebaseDb.firestore.FieldValue.serverTimestamp()
+        created: firebaseDb.firestore.FieldValue.serverTimestamp(),
+        createdBy: store.getState().logIn.name
       })
-      .then(() =>
+      .then(() => {
         this.setState({
           title: '',
           hyperlink: '',
           description: '',
           created: '',
           addSuccess: true,
-          deleteSuccess: false,
-          editSuccess: false
+        })
       })
-      )
       .catch((err) => console.error(err));
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
   },
   inner: {
-    padding: 5,
+    padding: 10,
     flex: 1,
     justifyContent: "flex-end",
   },
   TitleText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'left',
-    marginBottom: 15,
+    marginTop: 20,
+    marginBottom: 10,
+    left: -4,
   },
   HyperlinkText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'left',
-    marginBottom: 15,
+    marginBottom: 10,
+    left: -4,
   },
   DescriptionText: {
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'left',
-    marginBottom: 15,
+    marginBottom: 10,
+    left: -4,
   },
-  TitleBox: {
-    height: 60,
-    borderColor: 'gray',
+  Box: {
+    borderTopColor: 'white',
+    borderLeftColor: 'white',
+    borderRightColor: 'white',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 15,
   },
-  HyperlinkBox: {
-    height: 70,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15,
-  },
-  DescriptionBox: {
-    height: 100,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15,
+  options: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingTop: 20,
+    paddingBottom: 30,
   },
   SubmitButton: {
     alignSelf: "center",

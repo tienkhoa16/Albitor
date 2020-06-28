@@ -1,8 +1,8 @@
 import React from 'react';
 import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, View, Keyboard, TouchableWithoutFeedback, 
-    Switch } from 'react-native';
+    Switch } from 'react-native';   
+import { CheckBox } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
-import { useIsFocused } from '@react-navigation/native';
 
 import axios from 'axios';
 import querystring from 'querystring';
@@ -106,6 +106,7 @@ export default class LogInContainer extends React.Component{
                         payload: {
                             updateName: getName(resp.data),
                             updateCookie: resp.headers['set-cookie'][0].split(";")[0],
+                            updateUsername: username.toUpperCase(),
                         }
                     })
 
@@ -115,6 +116,8 @@ export default class LogInContainer extends React.Component{
                     })
                     if(this.state.rememberMe)
                         this.remember(this.state.username, this.state.password)
+                    else   
+                        this.clear()
                     this.props.navigation.navigate('MainScreen', {screen: 'Declare'})
                 }
                 else{
@@ -131,12 +134,20 @@ export default class LogInContainer extends React.Component{
                 })
             })()
         }
-    }
-
-    toggleRememberMe = value => {
-        this.setState({ rememberMe: value })
-        if (value == false) {
-            this.clear();
+        else if(
+            username &&
+            !password
+        ){
+            alert('Please fill in your password')
+        }
+        else if(
+            !username &&
+            password
+        ){
+            alert('Please fill in your NUSNET')
+        }
+        else{
+            alert('Please fill in your NUSNET and password')
         }
     }
 
@@ -210,21 +221,13 @@ export default class LogInContainer extends React.Component{
                         value = {password}
                     />
 
-                    <View style = {{flexDirection: 'row', marginTop: 15}}>
-                        <Switch
-                            value={rememberMe}
-                            onValueChange={(value) => this.toggleRememberMe(value)}
-                        />
-                        <Text
-                            style = {{
-                                fontWeight: 'bold',
-                                fontSize: 18,
-                                color: rememberMe ? 'green' : 'black',
-                            }}
-                        >
-                            Remember Me
-                        </Text>
-                    </View>
+                    <CheckBox
+                        title = "Remember Me"
+                        checked={this.state.rememberMe}
+                        onPress={() => this.setState({ rememberMe: !this.state.rememberMe })}
+                        containerStyle={{backgroundColor: 'visible', borderWidth: 0}}
+                        textStyle={{fontWeight: 'bold', fontSize: 18, color: rememberMe ? 'green' : 'black'}}
+                    />
 
                     <BlueButton 
                         style = {styles.button}
