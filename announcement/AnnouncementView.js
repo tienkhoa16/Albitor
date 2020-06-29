@@ -8,6 +8,10 @@ import HeaderDeleteButton from './Header_DeleteButton';
 import HeaderEditButton from './Header_EditButton';
 import { AntDesign } from '@expo/vector-icons';
 
+import store from '../store';
+
+const admin = ['E0426339']
+
 export default class AnnouncementView extends Component {
   constructor(props) {
     super(props);
@@ -19,19 +23,25 @@ export default class AnnouncementView extends Component {
     }
     this.props.navigation.setOptions({
       headerRight: () => (
-        <View style={{ flexDirection: 'row' }}>
-          <HeaderDeleteButton onPress={async () => this.confirmDelete(this.state.id)} />
-          <HeaderEditButton onPress={async () => {
-            const {id, title, hyperlink, description} = this.props.route.params;
-            this.props.navigation.navigate('Update Announcement', {
-              itemid: id,
-              title: title,
-              hyperlink: hyperlink,
-              description: description
-            });
-            }} />
-        </View>
+        admin.includes(store.getState().logIn.username) ? 
+          (
+            <View style={{ flexDirection: 'row' }}>
+              <HeaderDeleteButton onPress={async () => this.confirmDelete(this.state.id)} />
+              <HeaderEditButton onPress={async () => {
+                const {id, title, hyperlink, description} = this.props.route.params;
+                this.props.navigation.navigate('Update Announcement', {
+                  itemid: id,
+                  title: title,
+                  hyperlink: hyperlink,
+                  description: description
+                });
+                }} />
+            </View>
+          ) : null
       ),
+      headerStyle: {
+        backgroundColor: 'orange',
+      },
     });
   }
 
@@ -91,6 +101,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
+    backgroundColor: '#fcf7bb',
   },
   TitleStyle: {
     fontSize: 30,

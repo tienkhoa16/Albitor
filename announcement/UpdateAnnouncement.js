@@ -82,12 +82,15 @@ export default class UpdateAnnouncement extends Component {
         title: this.state.title,
         hyperlink: this.state.hyperlink,
         description: this.state.description,
-        created: firebaseDb.firestore.FieldValue.serverTimestamp()
+        created: firebaseDb.firestore.FieldValue.serverTimestamp(),
+        lastEditedBy: store.getState().logIn.name,
+        hasBeenEdited: true,
       })
       .then(() => {
         if (this.state.checked) {
           this.sendPushNotification();
         }
+        alert('Update announcement successful!')
         this.props.navigation.navigate('Announcement List')
       })
       .catch(err => console.error(err))
@@ -149,7 +152,7 @@ export default class UpdateAnnouncement extends Component {
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.innerLayout}>
               <Text style={styles.Header}>UPDATE</Text>
-              <Text style = {styles.TitleText}> Subject: </Text>
+              <Text style = {styles.TitleText}>Subject: *</Text>
               <ExpandingTextInput
                 multiline
                 style = {styles.Box}
@@ -158,7 +161,13 @@ export default class UpdateAnnouncement extends Component {
                 onChangeText = {this.handleSetTitle}
                 maxLength = {100}
               />
-              <Text style = {styles.HyperlinkText}> PDF file: </Text>
+              {
+                (!this.state.title.length) ?
+                (
+                  <Text style={styles.alertText}>* Required field must not be left blank</Text>
+                ) : null
+              }
+              <Text style = {styles.HyperlinkText}>PDF file: *</Text>
               <ExpandingTextInput
                 multiline
                 style = {styles.Box}
@@ -166,7 +175,13 @@ export default class UpdateAnnouncement extends Component {
                 textAlignVertical={'top'}
                 onChangeText={this.handleSetHyperlink}
               />
-              <Text style = {styles.DescriptionText}> Announcement: </Text>
+              {
+                (!this.state.hyperlink.length) ?
+                (
+                  <Text style={styles.alertText}>* Required field must not be left blank</Text>
+                ) : null
+              }
+              <Text style = {styles.DescriptionText}>Announcement: *</Text>
               <ExpandingTextInput
                 multiline
                 style = {styles.Box}
@@ -174,6 +189,12 @@ export default class UpdateAnnouncement extends Component {
                 textAlignVertical={'top'}
                 onChangeText={this.handleSetDescription}
               />
+              {
+                (!this.state.description.length) ?
+                (
+                  <Text style={styles.alertText}>* Required field must not be left blank</Text>
+                ) : null
+              }
 
               <View style={styles.options}>
                 <CheckBox
@@ -188,7 +209,9 @@ export default class UpdateAnnouncement extends Component {
                 <Button
                   color = "blue"
                   title = "Update"
-                  onPress={() => {this.confirmEdit(itemid)}}
+                  onPress={() => {
+                    this.confirmEdit(itemid)
+                  }}
                 />
               </View>
             </View>
@@ -213,27 +236,29 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'blue'
   },
+  alertText: {
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
   TitleText: {
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'left',
     marginTop: 20,
     marginBottom: 10,
-    left: -4,
   },
   HyperlinkText: {
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'left',
     marginBottom: 10,
-    left: -4,
   },
   DescriptionText: {
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'left',
     marginBottom: 10,
-    left: -4,
   },
   options: {
     flexDirection: 'row',

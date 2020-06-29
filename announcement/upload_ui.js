@@ -24,6 +24,8 @@ import { CheckBox } from 'react-native-btr';
 import store from '../store';
 import _ from 'lodash';
 
+import BlueButton from '../component/BlueButton';
+
 class AnnouncementForm extends Component {
   constructor(props) {
     super(props);
@@ -32,13 +34,13 @@ class AnnouncementForm extends Component {
       hyperlink: '',
       description: '',
       created: '',
-      addSuccess: false,
       checked: false,
       hasNotificationPermission: null,
       notificationToken: null,
       notification: {},
       createdBy: '',
       checked: false,
+      submitButtonPressed: false,
     };
     YellowBox.ignoreWarnings(['Setting a timer']);
     const _console = _.clone(console);
@@ -47,6 +49,11 @@ class AnnouncementForm extends Component {
         _console.warn(message);
       }
     };
+    this.props.navigation.setOptions({
+      headerStyle: {
+        backgroundColor: 'orange',
+      },
+    });
   }
 
   getNotificationPermission = async () => {
@@ -63,6 +70,12 @@ class AnnouncementForm extends Component {
       const token = await Notifications.getExpoPushTokenAsync();
       console.log(token); // test token
       this.setState({ notificationToken: token });
+      firebaseDb.firestore()
+        .collection('users')
+        .doc(store.getState().logIn.username)
+        .set({
+          notificationToken: token
+        }, {merge: true })
     }
     else {
       alert('Must use physical device for notifications')
@@ -108,6 +121,32 @@ class AnnouncementForm extends Component {
     });
   };
 
+  handleAddTokenIfNotExist = (token) =>
+  firebaseDb.firestore()
+    .collection('users')
+    .doc(store.getState().logIn.username)
+    .set({
+      notificationToken: token
+    }, {merge: true })
+
+  handleCreateAnnouncement = () =>
+    firebaseDb.firestore()
+      .collection("notice")
+      .add({
+        description: this.state.description,
+        hyperlink: this.state.hyperlink,
+        title: this.state.title,
+        created: firebaseDb.firestore.FieldValue.serverTimestamp(),
+        createdBy: store.getState().logIn.name,
+        lastEditBy: '',
+        hasBeenEdited: false,
+      })
+      .then(() => {
+        alert('Add new announcement successful!')
+        this.props.navigation.navigate('Announcement List')
+      })
+      .catch((err) => console.error(err));
+
   handleUpdateTitle = (title) => this.setState({title});
   handleUpdateHyperlink = (hyperlink) => this.setState({hyperlink});
   handleUpdateDescription = (description) => this.setState({description});
@@ -119,7 +158,7 @@ class AnnouncementForm extends Component {
         <ScrollView style={styles.container}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.inner}>
-              <Text style = {styles.TitleText}> Subject: </Text>
+              <Text style = {styles.TitleText}>Subject: *</Text>
               <ExpandingTextInput
                 multiline
                 style = {styles.Box}
@@ -128,8 +167,14 @@ class AnnouncementForm extends Component {
                 onChangeText = {this.handleUpdateTitle}
                 value = {this.state.title}
               />
+              {
+                (this.state.submitButtonPressed && !this.state.title.length) ?
+                (
+                  <Text style={styles.alertText}>* Required field must not be left blank</Text>
+                ) : null
+              }
 
-              <Text style = {styles.HyperlinkText}> PDF file: </Text>
+              <Text style = {styles.HyperlinkText}>PDF file: *</Text>
               <ExpandingTextInput
                 multiline
                 style = {styles.Box}
@@ -138,8 +183,14 @@ class AnnouncementForm extends Component {
                 onChangeText={this.handleUpdateHyperlink}
                 value={this.state.hyperlink}
               />
+              {
+                (this.state.submitButtonPressed && !this.state.hyperlink.length) ?
+                (
+                  <Text style={styles.alertText}>* Required field must not be left blank</Text>
+                ) : null
+              }
 
-              <Text style = {styles.DescriptionText}> Announcement: </Text>
+              <Text style = {styles.DescriptionText}>Announcement: *</Text>
               <ExpandingTextInput
                 multiline
                 style = {styles.Box}
@@ -148,6 +199,12 @@ class AnnouncementForm extends Component {
                 onChangeText={this.handleUpdateDescription}
                 value={this.state.description}
               />
+              {
+                (this.state.submitButtonPressed && !this.state.description.length) ?
+                (
+                  <Text style={styles.alertText}>* Required field must not be left blank</Text>
+                ) : null
+              }
 
               <View style={styles.options}>
                 <CheckBox
@@ -158,11 +215,10 @@ class AnnouncementForm extends Component {
                 <Text>      Send update notification to all users</Text>
               </View>
 
-              <View style = {styles.SubmitButton}>
-                <Button
-                  color = "blue"
-                  title = "Upload"
+              <BlueButton
+                  style = {styles.button}
                   onPress = {() => {
+                    this.setState({submitButtonPressed: true })
                     if (this.state.title.length && this.state.hyperlink.length && this.state.description.length) {
                       this.handleCreateAnnouncement();
                     }
@@ -170,11 +226,9 @@ class AnnouncementForm extends Component {
                       this.sendPushNotification();
                     }
                   }}
-                />
-              </View>
-              {this.state.addSuccess ? (
-                <Text style={styles.check}> ADD SUCCESSFUL! </Text>
-              ) : null}
+              >
+                  Submit
+              </BlueButton>
               <View style={{ flex: 1 }} />
             </View>
           </TouchableWithoutFeedback>
@@ -182,65 +236,47 @@ class AnnouncementForm extends Component {
       </KeyboardAvoidingView>
     );
   }
-
-  handleCreateAnnouncement = () =>
-    firebaseDb.firestore()
-      .collection("notice")
-      .add({
-        description: this.state.description,
-        hyperlink: this.state.hyperlink,
-        title: this.state.title,
-        created: firebaseDb.firestore.FieldValue.serverTimestamp(),
-        createdBy: store.getState().logIn.name
-      })
-      .then(() => {
-        this.setState({
-          title: '',
-          hyperlink: '',
-          description: '',
-          created: '',
-          addSuccess: true,
-        })
-      })
-      .catch((err) => console.error(err));
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
+    backgroundColor: '#fcf7bb',
   },
   inner: {
     padding: 10,
     flex: 1,
     justifyContent: "flex-end",
   },
+  alertText: {
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
   TitleText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
     marginTop: 20,
     marginBottom: 10,
-    left: -4,
   },
   HyperlinkText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
     marginBottom: 10,
-    left: -4,
   },
   DescriptionText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
     marginBottom: 10,
-    left: -4,
   },
   Box: {
-    borderTopColor: 'white',
-    borderLeftColor: 'white',
-    borderRightColor: 'white',
+    borderTopColor: '#fcf7bb',
+    borderLeftColor: '#fcf7bb',
+    borderRightColor: '#fcf7bb',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 15,
@@ -258,14 +294,21 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderRadius: 5,
     fontWeight: "bold",
+    backgroundColor: "#5aa2ff",
+    borderColor: '#000000',
+    alignItems: 'center'
   },
-  check: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: 'green',
-    marginTop: 30,
+  submitText: {
+    fontSize: 18,
+    paddingTop: 3,
+    fontWeight: 'bold'
   },
+  button:{
+    marginTop: 10,
+    borderRadius: 5,
+    width: 150,
+    alignSelf: 'center',
+},
 });
 
 export default AnnouncementForm;
