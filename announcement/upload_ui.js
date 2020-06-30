@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: 150,
     alignSelf: 'center',
-},
+  },
 });
 
 export default AnnouncementForm;

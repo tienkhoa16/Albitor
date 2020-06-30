@@ -10,7 +10,7 @@ import { AntDesign } from '@expo/vector-icons';
 
 import store from '../store';
 
-const admin = ['E0426339']
+const admin = ['E0426339', 'E0407678']
 
 export default class AnnouncementView extends Component {
   constructor(props) {

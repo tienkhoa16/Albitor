@@ -10,7 +10,7 @@ import AnnouncementButton from './announcement_button';
 import _ from 'lodash';
 import store from '../store';
 
-const admin = ['E0426339']
+const admin = ['E0426339', 'E0407678']
 
 export default class AnnouncementListContainer extends Component {
   constructor(props) {
@@ -116,11 +116,13 @@ export default class AnnouncementListContainer extends Component {
             <TouchableOpacity
               style={styles.itemContainer}
               onLongPress={() => {
-                this.handleSetID(item.id);
-                this.handleSetTitle(item.title);
-                this.handleSetHyperlink(item.hyperlink);
-                this.handleSetDescription(item.description);
-                this._toggleBottomNavigationView();
+                if (admin.includes(store.getState().logIn.username)) {
+                  this.handleSetID(item.id);
+                  this.handleSetTitle(item.title);
+                  this.handleSetHyperlink(item.hyperlink);
+                  this.handleSetDescription(item.description);
+                  this._toggleBottomNavigationView();
+                }
               }}
               onPress={() => {
                 this.props.navigation.navigate('Announcement View', {

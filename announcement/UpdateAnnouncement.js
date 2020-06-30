@@ -11,6 +11,7 @@ import store from '../store';
 import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';
 import ExpandingTextInput from './ExpandingTextInput';
+import BlueButton from '../component/BlueButton';
 import Constants from 'expo-constants';
 import _ from 'lodash';
 
@@ -37,6 +38,11 @@ export default class UpdateAnnouncement extends Component {
         _console.warn(message);
       }
     };
+    this.props.navigation.setOptions({
+      headerStyle: {
+        backgroundColor: 'orange',
+      },
+    });
   }
 
   getNotificationPermission = async () => {
@@ -147,7 +153,7 @@ export default class UpdateAnnouncement extends Component {
   render() {
     const { itemid, title, hyperlink, description } = this.props.route.params;
     return (
-      <KeyboardAvoidingView style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#fcf7bb' }}>
         <ScrollView style={styles.container}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.innerLayout}>
@@ -205,15 +211,14 @@ export default class UpdateAnnouncement extends Component {
                 <Text>      Send update notification to all users</Text>
               </View>
 
-              <View style = {styles.UDButton}>
-                <Button
-                  color = "blue"
-                  title = "Update"
-                  onPress={() => {
-                    this.confirmEdit(itemid)
-                  }}
-                />
-              </View>
+              <BlueButton
+                style = {styles.button}
+                onPress = {() => {
+                  this.confirmEdit(itemid)
+                }}
+              >
+                  UPDATE
+              </BlueButton>
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>
@@ -282,5 +287,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     fontWeight: "bold",
     marginBottom: 20,
+  },
+  button:{
+    marginTop: 10,
+    borderRadius: 5,
+    width: 150,
+    alignSelf: 'center',
   },
 })
