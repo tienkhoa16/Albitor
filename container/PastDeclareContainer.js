@@ -14,7 +14,7 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const renderers = {
     table: makeTableRenderer({
         WebViewComponent: WebView,
-        useLayoutAnimations: true
+        useLayoutAnimations: true,
     })
 };
 
@@ -48,7 +48,7 @@ export default class PastDeclareContainer extends PureComponent {
             return <LoadingImage/>
         }
         return (
-            <SafeAreaView style ={{flex:1, backgroundColor: '#fcf7bb' }}>
+            <SafeAreaView style ={{flex:1, backgroundColor: '#ffffff' }}>
                 <View style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
                 <Text style = {styles.heading}>Declaration History of</Text>
                 <Text style = {styles.heading}>{store.getState().logIn.name}</Text>

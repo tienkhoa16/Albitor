@@ -1,14 +1,19 @@
 import React, { Component, useEffect } from 'react';
 import { View, FlatList, ActivityIndicator, Text, StyleSheet, Alert,
-         TouchableOpacity, Button, SafeAreaView, YellowBox, Linking } from 'react-native';
+         TouchableOpacity, Button, SafeAreaView, YellowBox, Linking, Vibration } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { BottomSheet } from 'react-native-btr';
 import { Entypo, Feather, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import firebaseDb from '../firebaseDb';
+import * as Permissions from 'expo-permissions';
+import { Notifications } from 'expo';
+import Constants from 'expo-constants';
 import AnnouncementButton from './announcement_button';
 import _ from 'lodash';
 import store from '../store';
+
+const admin = ['E0426339', 'E0407678']
 
 export default class AnnouncementListContainer extends Component {
   constructor(props) {
@@ -29,7 +34,43 @@ export default class AnnouncementListContainer extends Component {
         _console.warn(message);
       }
     };
+    this.props.navigation.setOptions({
+      headerStyle: {
+        backgroundColor: 'orange',
+      },
+    });
+
   }
+
+  getNotificationPermission = async () => {
+    if (Constants.isDevice) {
+      const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+      this.setState({ hasNotificationPermission: status === 'granted'});
+      if (!this.state.hasNotificationPermission) {
+        const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        this.setState({ hasNotificationPermission: status === 'granted'});
+      }
+      if (!this.state.hasNotificationPermission) {
+        alert('Failed to get push token for push notifications!');
+      }
+      const token = await Notifications.getExpoPushTokenAsync();
+      console.log(token); // test token
+      this.setState({ notificationToken: token });
+    }
+    else {
+      alert('Must use physical device for notifications')
+    }
+
+    if ( Platform.OS === 'android' ) {
+      Notifications.createChannelAndroidAsync('default', {
+        name: 'default',
+        sound: true,
+        priority: 'max',
+        vibrate: [0, 250, 250, 250],
+      });
+    }
+  };
+
 
   _toggleBottomNavigationView = () => {
     this.setState({ bottomSheetVisible: !this.state.bottomSheetVisible });
@@ -48,6 +89,7 @@ export default class AnnouncementListContainer extends Component {
   handleSetTitle = (title) =>  this.setState({title});
   handleSetHyperlink = (hyperlink) =>  this.setState({hyperlink});
   handleSetDescription = (description) =>  this.setState({description});
+  handleSetEdited = (editedBy) => this.setState({lastEditedBy});
 
   updateAnnouncementList = () =>
     firebaseDb
@@ -85,6 +127,7 @@ export default class AnnouncementListContainer extends Component {
   }
 
   componentDidMount() {
+    this.getNotificationPermission();
     this.props.navigation.addListener('focus', () => this.updateAnnouncementList())
   }
 
@@ -107,11 +150,13 @@ export default class AnnouncementListContainer extends Component {
             <TouchableOpacity
               style={styles.itemContainer}
               onLongPress={() => {
-                this.handleSetID(item.id);
-                this.handleSetTitle(item.title);
-                this.handleSetHyperlink(item.hyperlink);
-                this.handleSetDescription(item.description);
-                this._toggleBottomNavigationView();
+                if (admin.includes(store.getState().logIn.username)) {
+                  this.handleSetID(item.id);
+                  this.handleSetTitle(item.title);
+                  this.handleSetHyperlink(item.hyperlink);
+                  this.handleSetDescription(item.description);
+                  this._toggleBottomNavigationView();
+                }
               }}
               onPress={() => {
                 this.props.navigation.navigate('Announcement View', {
@@ -124,9 +169,17 @@ export default class AnnouncementListContainer extends Component {
                 })
               }}>
                 <View style={styles.infoBar}>
-                  <View style={styles.CreatorStyle}>
-                    <Text style={styles.creator}>Posted by {item.createdBy}</Text>
-                  </View>
+                  {
+                    item.hasBeenEdited ? (
+                      <View style={styles.CreatorStyle}>
+                        <Text style={styles.creator}>Last edited by {item.lastEditedBy}</Text>
+                      </View>
+                    ) : (
+                      <View style={styles.CreatorStyle}>
+                        <Text style={styles.creator}>Posted by {item.createdBy}</Text>
+                      </View>
+                    )
+                  }
                   <View style={styles.DayStyle}>
                     <Text style={styles.date}>{new Date(item.created.toDate()).toString().substr(0, 21)}</Text>
                   </View>
@@ -177,8 +230,11 @@ export default class AnnouncementListContainer extends Component {
             </TouchableOpacity>
           </View>
         </BottomSheet>
-        <AnnouncementButton onPress={ () => {this.props.navigation.navigate('Add Announcement')} }>
-        </AnnouncementButton>
+        {
+          admin.includes(store.getState().logIn.username) ? 
+            (<AnnouncementButton onPress={ () => {this.props.navigation.navigate('Add Announcement')} }>
+            </AnnouncementButton>) : null
+        }
       </SafeAreaView>
     );
   }
@@ -189,10 +245,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 5,
     paddingRight: 5,
+    backgroundColor: '#fcf7bb',
   },
   itemContainer: {
     flex: 1,
     padding: 5,
+    backgroundColor: '#fcf7bb',
   },
   optionIcon: {
     alignItems: 'center',
@@ -228,29 +286,32 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     borderWidth: 1,
     borderBottomColor: 'black',
-    borderTopColor: 'white',
-    borderLeftColor: 'white',
-    borderRightColor: 'white',
+    borderTopColor: 'orange',
+    borderLeftColor: 'orange',
+    borderRightColor: 'orange',
+    backgroundColor: 'orange',
   },
   ButtonBoxEdit: {
     borderWidth: 1,
     paddingTop: 15,
     paddingBottom: 15,
     borderBottomColor: 'black',
-    borderTopColor: 'white',
-    borderLeftColor: 'white',
-    borderRightColor: 'white',
+    borderTopColor: 'orange',
+    borderLeftColor: 'orange',
+    borderRightColor: 'orange',
+    backgroundColor: 'orange',
   },
   ButtonBoxCancel: {
     paddingTop: 15,
     paddingBottom: 15,
+    backgroundColor: 'orange',
   },
   bottomButton: {
     fontSize: 20,
     textAlign: 'center',
   },
   bottomNavigationView: {
-    backgroundColor: '#fff',
+    backgroundColor: 'orange',
     height: 180,
     justifyContent: 'space-between',
     alignItems: 'stretch',

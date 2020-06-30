@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import {ScrollView, StyleSheet, Alert, View, Dimensions, Text,
     KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, TextInput } from 'react-native';
+import firebaseDb from '../firebaseDb';
 
 import BlueButton from '../component/BlueButton'
+
+import store from '../store';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -11,10 +14,28 @@ export default class UpdateAnnouncement extends Component {
     state = {
         title: '',
         description: '',
+        link: '',
     }
 
     handleUpdateTitle = (title) => this.setState({title});
     handleUpdateDescription = (description) => this.setState({description});
+    handleUpdateLink = (link) => this.setState({link});
+
+    handleCreateBug = () =>
+        firebaseDb.firestore()
+        .collection("bug")
+        .add({
+            title: this.state.title,
+            description: this.state.description,
+            link: this.state.link,
+            reporter: store.getState().logIn.username,
+            reportedTime: firebaseDb.firestore.FieldValue.serverTimestamp()
+        })
+        .then(() => {
+            alert('Bug reported successfully! Thanks!')
+            this.props.navigation.navigate('MoreScreen')
+        })
+        .catch((err) => console.error(err));
 
     render() {
         return (
@@ -26,6 +47,7 @@ export default class UpdateAnnouncement extends Component {
                             <Text style = {styles.heading}>
                                 Tell me your bug
                             </Text>
+
                             <TextInput
                                 multiline
                                 style = {styles.TitleBox}
@@ -35,6 +57,16 @@ export default class UpdateAnnouncement extends Component {
                                 value = {this.state.title}
                                 maxLength = {100}
                             />
+
+                            <TextInput
+                                multiline
+                                style = {{...styles.DescriptionBox, height: 60}}
+                                placeholder = "Enter link to screenshot/video here..."
+                                textAlignVertical={'top'}
+                                onChangeText={this.handleUpdateLink}
+                                value={this.state.link}
+                            />
+
                             <TextInput
                                 multiline
                                 style = {styles.DescriptionBox}
@@ -46,6 +78,9 @@ export default class UpdateAnnouncement extends Component {
 
                             <BlueButton
                                 style = {styles.button}
+                                onPress = {() => {
+                                    this.handleCreateBug();
+                                }}
                             >
                                 Report
                             </BlueButton>
@@ -75,6 +110,8 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginLeft: 10,
         marginRight: 10,
+        fontSize: 20,
+        fontWeight: 'bold',
     },
     DescriptionBox: {
         height: 100,
