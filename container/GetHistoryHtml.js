@@ -24,9 +24,8 @@ export default async function getHistoryHtml(cookie){
     // resp = resp.data
     resp = resp.substr(resp.indexOf('<table id'))
     resp = resp.substr(0, resp.indexOf('</table>')+8)
-    resp = resp.replace('cellspacing="1"', 'cellspacing="0"')
     resp = resp.replace(/Temperature/g, "Temp")
-    resp = resp.replace(/\/2020 /g, "")
+    resp = resp.replace(/\/2020 ,/g, "")
     resp = resp.replace(/Monday/g, "Mon")
     resp = resp.replace(/Tuesday/g, "Tue")
     resp = resp.replace(/Wednesday/g, "Wed")
