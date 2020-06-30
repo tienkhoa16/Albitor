@@ -70,6 +70,12 @@ class AnnouncementForm extends Component {
       const token = await Notifications.getExpoPushTokenAsync();
       console.log(token); // test token
       this.setState({ notificationToken: token });
+      firebaseDb.firestore()
+        .collection('users')
+        .doc(store.getState().logIn.username)
+        .set({
+          notificationToken: token
+        }, {merge: true })
     }
     else {
       alert('Must use physical device for notifications')
