@@ -11,6 +11,7 @@ import BlueButton from '../component/BlueButton';
 import Spinner from '../component/SpinningComponent';
 
 import store from '../store';
+import base64 from 'Base64';
 
 
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -163,7 +164,9 @@ export default class LogInContainer extends React.Component{
         }
     }
 
-    remember = async (username, password) => {
+    remember = async (usernameRaw, passwordRaw) => {
+        const username = base64.btoa(usernameRaw);
+        const password = base64.btoa(passwordRaw);
         const credentials = { username, password };
         try {
             await SecureStore.setItemAsync(

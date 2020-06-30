@@ -11,6 +11,7 @@ import BlueButton from '../component/BlueButton';
 import Spinner from '../component/SpinningComponent';
 
 import store from '../store';
+import base64 from 'Base64';
 
 
 async function auth(username, password){
@@ -158,14 +159,16 @@ export default class LogInContainer extends React.Component{
     
             if (credentials) {
                 const myJson = JSON.parse(credentials);
+                decodedUsername = base64.atob(myJson.username)
+                decodedPassword = base64.atob(myJson.password)
 
                 this.setState({
-                    username: myJson.username,
-                    password: myJson.password,
+                    username: decodedUsername,
+                    password: decodedPassword,
                     rememberMe: true,
                     haveCredentials: true,
                 });
-                this.handlePressButton(myJson.username, myJson.password)
+                this.handlePressButton(decodedUsername, decodedPassword)
             }
             else{
                 this.setState({
@@ -179,7 +182,9 @@ export default class LogInContainer extends React.Component{
         }
     };
 
-    remember = async (username, password) => {
+    remember = async (usernameRaw, passwordRaw) => {
+        const username = base64.btoa(usernameRaw);
+        const password = base64.btoa(passwordRaw);
         const credentials = { username, password };
         try {
             await SecureStore.setItemAsync(
