@@ -32,9 +32,12 @@ export default class PastDeclareContainer extends PureComponent {
     
     componentDidMount() {
         this.focusListener = this.props.navigation.addListener("focus", () =>{
-            (async() => {
-                this.setState({tableData: await getHistoryHtml(store.getState().logIn.cookie)}) 
-            })() 
+            setInterval(
+                async() => {
+                    this.setState({tableData: await getHistoryHtml(store.getState().logIn.cookie)}) 
+                },
+                500
+            )
         })
     }
     
