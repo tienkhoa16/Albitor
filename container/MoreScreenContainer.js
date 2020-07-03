@@ -34,6 +34,16 @@ export default class MoreScreenContainer extends React.Component{
                 <TouchableOpacity
                     style = {styles.option}
                     onPress = {() => {
+                        this.props.navigation.navigate('Exemption')
+                    }}
+                >
+                    <AntDesign name="exception1" size={24} color="black" />
+                    <Text style = {styles.text}>Exemption Form</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style = {styles.option}
+                    onPress = {() => {
                         this.props.navigation.navigate('ReportBug')
                     }}
                 >

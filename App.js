@@ -11,10 +11,12 @@ import LogInContainer from './container/LogInContainer';
 import LogOutContainer from './container/LogOutContainer';
 import DeclareTempContainer from './container/DeclareTempContainer';
 import PastDeclareContainer from './container/PastDeclareContainer';
+
+import MoreScreenContainer from './container/MoreScreenContainer';
 import FlightContainer from './container/FlightContainer';
 import ReportBugContainer from './container/ReportBugContainer';
-import MoreScreenContainer from './container/MoreScreenContainer';
 import AboutContainer from './container/AboutContainer';
+import ExemptionContainer from './container/ExemptionContainer';
 
 import AnnouncementForm from './announcement/upload_ui';
 import AnnouncementButton from './announcement/announcement_button';
@@ -173,6 +175,10 @@ function MoreStack(){
       <Stack.Screen
         name="About"
         component={AboutContainer}
+      />
+      <Stack.Screen
+        name="Exemption"
+        component={ExemptionContainer}
       />
     </Stack.Navigator>
   )

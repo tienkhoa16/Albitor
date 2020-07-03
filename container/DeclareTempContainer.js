@@ -11,7 +11,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import BlueButton from '../component/BlueButton';
 
 import store from '../store';
-import * as SecureStore from 'expo-secure-store';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
