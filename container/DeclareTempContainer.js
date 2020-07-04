@@ -166,9 +166,7 @@ export default class DeclareTempContainer extends React.Component{
         
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                <ScrollView 
-                    style = {{backgroundColor: '#fcf7bb'}}
-                >
+                <ScrollView>
                     <KeyboardAvoidingView style = {styles.container}>
                         <View style = {{flex: 6}}>
                             <View style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
@@ -301,7 +299,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#fcf7bb',
     },
     textInput:{
         borderWidth: 1.5,
@@ -350,7 +347,7 @@ const styles = StyleSheet.create({
         color: 'red',
         marginTop: 30,
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontFamily: 'PlayfairDisplay_700Bold',
     },
     form: {
         flexDirection: 'row', 

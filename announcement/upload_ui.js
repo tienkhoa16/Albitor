@@ -242,7 +242,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: '#fcf7bb',
   },
   inner: {
     padding: 10,
@@ -274,9 +273,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   Box: {
-    borderTopColor: '#fcf7bb',
-    borderLeftColor: '#fcf7bb',
-    borderRightColor: '#fcf7bb',
+    borderTopColor: 'transparent',
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 15,

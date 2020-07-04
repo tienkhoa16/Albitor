@@ -251,12 +251,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 5,
     paddingRight: 5,
-    backgroundColor: '#fcf7bb',
   },
   itemContainer: {
     flex: 1,
     padding: 5,
-    backgroundColor: '#fcf7bb',
   },
   optionIcon: {
     alignItems: 'center',

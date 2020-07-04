@@ -127,7 +127,7 @@ export default class ExemptionContainer extends React.Component{
         const {reasonCode, reason1, reason2, reason3, reason4, reason5} = this.state
         
         return(
-            <SafeAreaView style = {{flex: 1, backgroundColor: '#fcf7bb'}}>
+            <SafeAreaView style = {{flex: 1}}>
                 <View style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
 
                 <ScrollView style = {{flex: 1}}>
@@ -210,7 +210,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#fcf7bb',
     },
     button:{
         marginTop: 30,
@@ -242,7 +241,7 @@ const styles = StyleSheet.create({
         color: 'green',
         marginTop: 20,
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontFamily: 'PlayfairDisplay_700Bold',
         paddingHorizontal: 10,
     },
     form: {

@@ -153,7 +153,7 @@ export default class UpdateAnnouncement extends Component {
   render() {
     const { itemid, title, hyperlink, description } = this.props.route.params;
     return (
-      <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#fcf7bb' }}>
+      <KeyboardAvoidingView style={{ flex: 1 }}>
         <ScrollView style={styles.container}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.innerLayout}>
@@ -272,9 +272,9 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   Box: {
-    borderTopColor: 'white',
-    borderLeftColor: 'white',
-    borderRightColor: 'white',
+    borderTopColor: 'transparent',
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 15,

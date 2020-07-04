@@ -32,10 +32,10 @@ import store from './store';
 
 import * as SecureStore from 'expo-secure-store';
 
+import { useFonts, PlayfairDisplay_700Bold } from '@expo-google-fonts/playfair-display'
+
 import {decode, encode} from 'base-64'
-
 if (!global.btoa) {  global.btoa = encode }
-
 if (!global.atob) { global.atob = decode }
 
 
@@ -197,6 +197,9 @@ const Stack = createStackNavigator()
 
 
 export default function App() {
+  let [fontsLoaded] = useFonts({
+    PlayfairDisplay_700Bold
+  });
   return (
     <Provider store = {store}>
       <NavigationContainer theme = {styles}>
@@ -217,6 +220,6 @@ export default function App() {
 const styles = ({
   ...DefaultTheme,
   colors: {
-    background: 'white',
+    background: '#eeeeee',
   },
 });

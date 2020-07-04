@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#fcf7bb',
     },
     heading:{
         fontSize: 25,
@@ -119,7 +118,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 15,
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontFamily: 'PlayfairDisplay_700Bold',
         paddingHorizontal: 10,
     },
     text:{

@@ -95,7 +95,6 @@ export default class UpdateAnnouncement extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fcf7bb',
     },
     inner: {
         flex: 1,
@@ -133,6 +132,6 @@ const styles = StyleSheet.create({
         color: 'green',
         marginTop: 30,
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontFamily: 'PlayfairDisplay_700Bold',
     },
 })

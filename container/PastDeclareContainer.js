@@ -71,7 +71,7 @@ export default class PastDeclareContainer extends PureComponent {
             return <LoadingImage/>
         }
         return (
-            <SafeAreaView style ={{flex:1, backgroundColor: '#ffffff' }}>
+            <SafeAreaView style ={{flex:1}}>
                 <View style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
                 <Text style = {styles.heading}>Declaration History of</Text>
                 <Text style = {styles.heading}>{store.getState().logIn.name}</Text>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: 'green',
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontFamily: 'PlayfairDisplay_700Bold',
     },
     text:{
         fontSize: 13,

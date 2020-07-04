@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Dimensions, Image, Text, Alert, View, SafeAreaView, TouchableOpacity } from 'react-native';
-import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -9,7 +9,7 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 export default class MoreScreenContainer extends React.Component{
     render(){
         return(
-            <SafeAreaView style = {{flex: 1, backgroundColor: '#fcf7bb'}}>
+            <SafeAreaView style = {{flex: 1}}>
                 <View style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
                 <Image
                     style = {{
@@ -47,7 +47,7 @@ export default class MoreScreenContainer extends React.Component{
                         this.props.navigation.navigate('Emergency')
                     }}
                 >
-                    <Entypo name="lifebuoy" size={24} color="black" />
+                    <Feather name="phone-call" size={24} color="black" />
                     <Text style = {styles.text}>Emergency Contact</Text>
                 </TouchableOpacity>
 
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
         borderLeftColor: 'transparent',
         borderRightColor: 'transparent',
         borderTopColor: 'transparent',
-        borderBottomColor: '#e7dfd5',
+        borderBottomColor: 'grey',
     },
     text:{
         fontSize: 15,

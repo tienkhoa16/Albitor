@@ -7,7 +7,7 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 export default class AboutContainer extends React.Component{
     render(){
         return(
-            <SafeAreaView style = {{flex: 1, backgroundColor: '#fcf7bb'}}>
+            <SafeAreaView style = {{flex: 1}}>
                 <ScrollView>
                     <View style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
                     <Text style = {styles.heading}>About FitNUS</Text>
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         borderLeftColor: 'transparent',
         borderRightColor: 'transparent',
         borderTopColor: 'transparent',
-        borderBottomColor: '#e7dfd5',
+        borderBottomColor: 'grey',
     },
     text:{
         fontSize: 15,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         color: 'green',
         marginTop: 20,
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontFamily: 'PlayfairDisplay_700Bold',
     },
     name:{
         fontSize: 18,
