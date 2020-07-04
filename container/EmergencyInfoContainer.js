@@ -15,13 +15,13 @@ export default class FlightContainer extends React.Component {
                 <Text style = {styles.text}>{'\u2022'} Questions on COVID-19-related NUS matters</Text> 
 
                 <View style = {{paddingHorizontal: 10, flexDirection: 'row'}}>
-                    <View style = {{...styles.header, flex: 1, borderTopColor: 'black'}}></View>
+                    <View style = {{...styles.header, flex: 0.65, borderTopColor: 'black'}}></View>
                     <Text style = {{...styles.header, borderTopColor: 'black', fontWeight: 'bold'}}>For Students</Text>
                     <Text style = {{...styles.header, borderTopColor: 'black', borderRightColor: 'black', fontWeight: 'bold'}}>For Staff</Text>
                 </View>
 
                 <View style = {{paddingHorizontal: 10, flexDirection: 'row'}}>
-                    <Text style = {{...styles.header, flex: 1, fontWeight: 'bold'}}>Tel</Text>
+                    <Text style = {{...styles.header, flex: 0.65, fontWeight: 'bold'}}>Tel</Text>
                     <Text 
                         style = {styles.tableContent}
                         onPress = {() => Linking.openURL('tel:+65 98000028')}
@@ -37,7 +37,7 @@ export default class FlightContainer extends React.Component {
                 </View>
 
                 <View style = {{paddingHorizontal: 10, flexDirection: 'row'}}>
-                    <Text style = {{...styles.header, flex: 1, fontWeight: 'bold'}}>Email</Text>
+                    <Text style = {{...styles.header, flex: 0.65, fontWeight: 'bold'}}>Email</Text>
                     <Text 
                         style = {styles.tableContent}
                         onPress = {() => Linking.openURL('mailto: osaresponds@nus.edu.sg')}
