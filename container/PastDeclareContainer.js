@@ -15,6 +15,26 @@ const renderers = {
     table: makeTableRenderer({
         WebViewComponent: WebView,
         useLayoutAnimations: true,
+        tableStyleSpecs: {
+            selectableText: false,
+            fitContainerWidth: true,
+            fitContainerHeight: false,
+            cellPaddingEm: 0.1,
+            borderWidthPx: 0.25,
+            linkColor: '#3498DB',
+            fontFamily: 'sans-serif',
+            fontSizePx: 14,
+            thBorderColor: '#3f5c7a',
+            tdBorderColor: '#b5b5b5',
+            thOddBackground: '#253546',
+            thOddColor: '#FFFFFF',
+            thEvenBackground: '#253546',
+            thEvenColor: '#FFFFFF',
+            trOddBackground: '#e2e2e2',
+            trOddColor: '#333333',
+            trEvenBackground: '#FFFFFF',
+            trEvenColor: '#333333'
+        }
     })
 };
 
@@ -55,7 +75,7 @@ export default class PastDeclareContainer extends PureComponent {
                 <View style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
                 <Text style = {styles.heading}>Declaration History of</Text>
                 <Text style = {styles.heading}>{store.getState().logIn.name}</Text>
-                <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }} style={{ marginTop:5 }}>
+                <ScrollView contentContainerStyle={{ padding: 10 }} style={{ marginTop:5 }}>
                     <Text style = {styles.text}>*sx: symptoms</Text>
                     <HTML html={this.state.tableData} {...htmlConfig}/>
                 </ScrollView>

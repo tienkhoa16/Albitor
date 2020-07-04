@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Dimensions, Image, Text, Alert, View, SafeAreaView, TouchableOpacity } from 'react-native';
-import { MaterialIcons, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -39,6 +39,16 @@ export default class MoreScreenContainer extends React.Component{
                 >
                     <AntDesign name="exception1" size={24} color="black" />
                     <Text style = {styles.text}>Exemption Form</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style = {styles.option}
+                    onPress = {() => {
+                        this.props.navigation.navigate('Emergency')
+                    }}
+                >
+                    <Entypo name="lifebuoy" size={24} color="black" />
+                    <Text style = {styles.text}>Emergency Contact</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity

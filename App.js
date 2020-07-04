@@ -17,6 +17,7 @@ import FlightContainer from './container/FlightContainer';
 import ReportBugContainer from './container/ReportBugContainer';
 import AboutContainer from './container/AboutContainer';
 import ExemptionContainer from './container/ExemptionContainer';
+import EmergencyInfoContainer from './container/EmergencyInfoContainer';
 
 import AnnouncementForm from './announcement/upload_ui';
 import AnnouncementButton from './announcement/announcement_button';
@@ -179,6 +180,10 @@ function MoreStack(){
       <Stack.Screen
         name="Exemption"
         component={ExemptionContainer}
+      />
+      <Stack.Screen
+        name="Emergency"
+        component={EmergencyInfoContainer}
       />
     </Stack.Navigator>
   )

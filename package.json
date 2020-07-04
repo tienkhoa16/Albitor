@@ -39,7 +39,7 @@
     "react-native-gesture-handler": "^1.6.1",
     "react-native-reanimated": "~1.7.0",
     "react-native-render-html": "^4.2.0",
-    "react-native-render-html-table-bridge": "^0.5.3",
+    "react-native-render-html-table-bridge": "0.6.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.2.0",
     "react-native-snackbar": "^2.2.2",
