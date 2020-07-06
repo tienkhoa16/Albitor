@@ -166,6 +166,8 @@ export default class LogInContainer extends React.Component{
                 this.setState({
                     username: decodedUsername,
                     password: decodedPassword,
+                    firstTime: false,
+                    signInSuccesful: true,
                     rememberMe: true,
                     haveCredentials: true,
                 });
