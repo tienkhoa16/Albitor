@@ -239,10 +239,7 @@ export default class LogInContainer extends React.Component{
 
                     <BlueButton 
                         style = {styles.button}
-                        onPress = {() => {
-                            if (!haveCredentials)
-                                this.handlePressButton(username, password)
-                        }}
+                        onPress = {() => this.handlePressButton(username, password)}
                     >
                         Log In
                     </BlueButton>

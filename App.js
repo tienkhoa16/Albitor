@@ -1,5 +1,6 @@
 import React from 'react';
 import { UIManager, Platform, Alert } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -200,6 +201,12 @@ export default function App() {
   let [fontsLoaded] = useFonts({
     PlayfairDisplay_700Bold
   });
+
+  const unsubscribe = NetInfo.addEventListener(state => {
+    if (!state.isInternetReachable)
+      alert('Please turn on Wifi/Mobile Data')
+  });
+  
   return (
     <Provider store = {store}>
       <NavigationContainer theme = {styles}>
