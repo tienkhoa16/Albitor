@@ -2,13 +2,13 @@ import * as firebase from 'firebase';
 import firestore from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAwAB4hkHAOh1vkZWYAt0ii4jPLEKJxBTA",
-    authDomain: "fitnus-d2c2b.firebaseapp.com",
-    databaseURL: "https://fitnus-d2c2b.firebaseio.com",
-    projectId: "fitnus-d2c2b",
-    storageBucket: "fitnus-d2c2b.appspot.com",
-    messagingSenderId: "1028682263241",
-    appId: "1:1028682263241:web:c9d5e21cecd394d8c97b18"
+    apiKey: "AIzaSyC4Hu9xfTIUoQ0n61_BHPqb1ESApRXveXw",
+    authDomain: "fitnus-95b24.firebaseapp.com",
+    databaseURL: "https://fitnus-95b24.firebaseio.com",
+    projectId: "fitnus-95b24",
+    storageBucket: "fitnus-95b24.appspot.com",
+    messagingSenderId: "407964818113",
+    appId: "1:407964818113:web:d66da069d86f8092191240"
 };
 
 firebase.initializeApp(firebaseConfig)

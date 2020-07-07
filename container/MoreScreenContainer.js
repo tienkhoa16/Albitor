@@ -74,6 +74,16 @@ export default class MoreScreenContainer extends React.Component{
                 <TouchableOpacity
                     style = {styles.option}
                     onPress = {() => {
+                        this.props.navigation.navigate('Settings')
+                    }}
+                >
+                    <AntDesign name="setting" size={24} color="black" />
+                    <Text style = {styles.text}>Settings</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style = {styles.option}
+                    onPress = {() => {
                         Alert.alert(
                             'Logging out',
                             'Are you sure?',

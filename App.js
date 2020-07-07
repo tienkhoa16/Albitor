@@ -19,6 +19,7 @@ import ReportBugContainer from './container/ReportBugContainer';
 import AboutContainer from './container/AboutContainer';
 import ExemptionContainer from './container/ExemptionContainer';
 import EmergencyInfoContainer from './container/EmergencyInfoContainer';
+import SettingsContainer from './container/SettingsContainer';
 
 import AnnouncementForm from './announcement/upload_ui';
 import AnnouncementButton from './announcement/announcement_button';
@@ -127,7 +128,6 @@ function MainScreenTab() {
           tabBarIcon: ({ color }) => (
             <AntDesign name="table" size={24} color={color} />
           ),
-          unmountOnBlur: true,  
          }}
       />
       <Tab.Screen 
@@ -185,6 +185,10 @@ function MoreStack(){
       <Stack.Screen
         name="Emergency"
         component={EmergencyInfoContainer}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsContainer}
       />
     </Stack.Navigator>
   )

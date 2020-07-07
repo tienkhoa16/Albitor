@@ -1,6 +1,5 @@
 import axios from 'axios';
 import querystring from 'querystring';
-import moment from 'moment';
 import React from 'react';
 import { View, StyleSheet, Text, Dimensions, Alert, ScrollView, SafeAreaView } from 'react-native';
 import { CheckBox } from 'react-native-elements';
