@@ -4,6 +4,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import SegmentedPicker from 'react-native-segmented-picker';
 import { Entypo } from '@expo/vector-icons';
 
+import BlueButton from '../component/BlueButton';
+
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -18,7 +20,7 @@ function createTimeData(isAm){
         },
         {
             key: 'separator',
-            items:[{label: ':', value: null}],
+            items:[{label: ':', value: ':'}],
             flex: 1,
         },
         {
@@ -31,27 +33,38 @@ function createTimeData(isAm){
     
     for(let i = (isAm ? 0 : 12); i < (isAm ? 12 : 24); i++)
         options[0].items.push({
-            label: i.toString(), 
+            label: paddingZeros(i),
             value: i.toString()
         })
         
     for(let i=0;i<60;i++)
         options[2].items.push({
-            label: i.toString(), 
+            label: paddingZeros(i), 
             value: i.toString()
         })
 	return options;
 };
 
+function paddingZeros(hour){
+    if (hour >= 10)
+        return hour.toString()
+    else
+        return '0' + hour.toString()
+}
+
 
 export default class SettingsContainer extends React.Component{
     state = {
         reminderOn: false,
-        hourAm: new Date().getHours() > 12 ? new Date().getHours()-12 : new Date().getHours(),
+        hourAm: new Date().getHours() >= 12 ? new Date().getHours()-12 : new Date().getHours(),
         minuteAm: new Date().getMinutes(),
-        hourPm: new Date().getHours() > 12 ? new Date().getHours() : new Date().getHours()+12,
+        hourPm: new Date().getHours() >= 12 ? new Date().getHours() : new Date().getHours()+12,
         minutePm: new Date().getMinutes(),
     };
+
+    async componentDidMount() {
+        await this.read()
+    }
 
     amPicker = React.createRef();
     pmPicker = React.createRef();
@@ -92,6 +105,54 @@ export default class SettingsContainer extends React.Component{
             })
     }
 
+    handlePressButton =  async () => {
+        const {hourAm, minuteAm, hourPm, minutePm} = this.state
+        await this.remember(hourAm, minuteAm, hourPm, minutePm)
+        alert('Set reminders successful')
+    }
+
+    remember = async (hourAm, minuteAm, hourPm, minutePm) => {
+        let amTime = new Date().setHours(hourAm, minuteAm, 0)
+        let pmTime = new Date().setHours(hourPm, minutePm, 0)
+        const notiTime = { amTime, pmTime };
+        try {
+            await AsyncStorage.setItem(
+                'notiTime',
+                JSON.stringify(notiTime)
+            );
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    clear = async () => {
+        try {
+            await AsyncStorage.removeItem('notiTime');
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    read = async () => {
+        try {
+            const notiTime = await AsyncStorage.getItem('notiTime');
+    
+            if (notiTime) {
+                const myJson = JSON.parse(notiTime);
+
+                this.setState({
+                    reminderOn: true,
+                    hourAm: parseInt(new Date(myJson.amTime).getHours(), 10),
+                    minuteAm: parseInt(new Date(myJson.amTime).getMinutes(), 10),
+                    hourPm: parseInt(new Date(myJson.pmTime).getHours(), 10),
+                    minutePm: parseInt(new Date(myJson.pmTime).getMinutes(), 10),
+                });
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     render(){
         const {reminderOn, hourAm, minuteAm, hourPm, minutePm} = this.state
         
@@ -108,7 +169,28 @@ export default class SettingsContainer extends React.Component{
                         <Switch
                             style={styles.switch}
                             value={reminderOn}
-                            onValueChange={() => this.setState({reminderOn: !reminderOn})}
+                            onValueChange={async (v) => {
+                                if (!v) {
+                                    Alert.alert(
+                                        'Delete Reminders',
+                                        'Are you sure?',
+                                        [
+                                            {
+                                                text: 'No'
+                                            },
+                                            {
+                                                text: 'Yes', 
+                                                onPress: async () =>{
+                                                    this.setState({reminderOn: !reminderOn})
+                                                    await this.clear()
+                                                } 
+                                            }
+                                        ]
+                                    )
+                                }
+                                else
+                                    this.setState({reminderOn: !reminderOn})
+                            }}
                         />
                     </View>
                     {
@@ -123,7 +205,7 @@ export default class SettingsContainer extends React.Component{
                                             style={{flex:1, flexDirection: 'row'}}
                                             onPress={() => this.amPicker.current.show()}
                                         >
-                                            <Text style={styles.time}>{hourAm} : {minuteAm}</Text>
+                                            <Text style={styles.time}>{paddingZeros(hourAm)} : {paddingZeros(minuteAm)}</Text>
                                             <Entypo 
                                                 name="chevron-small-down" 
                                                 size={24} 
@@ -147,7 +229,7 @@ export default class SettingsContainer extends React.Component{
                                             style={{flex:1, flexDirection: 'row'}}
                                             onPress={() => this.pmPicker.current.show()}
                                         >
-                                            <Text style={styles.time}>{hourPm} : {minutePm}</Text>
+                                            <Text style={styles.time}>{paddingZeros(hourPm)} : {paddingZeros(minutePm)}</Text>
                                             <Entypo 
                                                 name="chevron-small-down" 
                                                 size={24} 
@@ -163,6 +245,13 @@ export default class SettingsContainer extends React.Component{
                                         onValueChange={this.onChangePm}
                                         options={createTimeData(false)}
                                     />
+
+                                    <BlueButton
+                                        style={styles.button}
+                                        onPress={this.handlePressButton}
+                                    >
+                                        Set
+                                    </BlueButton>
                                 </View>
                             ) :
                             (
@@ -229,6 +318,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'PlayfairDisplay_700Bold',
         paddingHorizontal: 10,
+    },
+    button:{
+        marginTop: 30,
+        borderRadius: 5,
+        alignSelf: 'center',
     },
 });
 
