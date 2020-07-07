@@ -5,8 +5,6 @@ import moment from 'moment';
 import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, 
     Keyboard, TouchableWithoutFeedback, ScrollView, Image, Switch, BackHandler, Animated } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
     
 import BlueButton from '../component/BlueButton';
 
