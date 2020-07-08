@@ -9,11 +9,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import { CheckBox } from 'react-native-btr';
 import store from '../store';
 import * as Permissions from 'expo-permissions';
+import moment from 'moment';
 import { Notifications } from 'expo';
 import ExpandingTextInput from './ExpandingTextInput';
 import BlueButton from '../component/BlueButton';
 import Constants from 'expo-constants';
 import _ from 'lodash';
+
+function getDateTime(){
+  const date = moment()
+      .format('LLL');
+  return date
+}
 
 export default class UpdateAnnouncement extends Component {
   constructor(props) {
@@ -30,6 +37,7 @@ export default class UpdateAnnouncement extends Component {
       notificationToken: null,
       notification: {},
       createdBy: '',
+      userList: null,
     }
     YellowBox.ignoreWarnings(['Setting a timer']);
     const _console = _.clone(console);
@@ -57,7 +65,6 @@ export default class UpdateAnnouncement extends Component {
         alert('Failed to get push token for push notifications!');
       }
       const token = await Notifications.getExpoPushTokenAsync();
-      console.log(token); // test token
       this.setState({ notificationToken: token });
     }
     else {
@@ -88,7 +95,7 @@ export default class UpdateAnnouncement extends Component {
         title: this.state.title,
         hyperlink: this.state.hyperlink,
         description: this.state.description,
-        created: firebaseDb.firestore.FieldValue.serverTimestamp(),
+        created: getDateTime(),
         lastEditedBy: store.getState().logIn.name,
         hasBeenEdited: true,
       })
@@ -105,8 +112,8 @@ export default class UpdateAnnouncement extends Component {
     Alert.alert('Edit announceemnt',
       'Edit this announcement?',
     [
-      {text: "Yes", onPress: () => this.handleUpdateAnnouncement(itemid)},
-      {text: "Cancel"}
+      {text: "Cancel"},
+      {text: "Yes", onPress: () => this.handleUpdateAnnouncement(itemid)}
     ],
     {
       cancellable: true
@@ -124,22 +131,27 @@ export default class UpdateAnnouncement extends Component {
   }
 
   sendPushNotification = async () => {
-    const message = {
-      to: this.state.notificationToken,
-      sound: 'default',
-      title: 'New announcement updated',
-      body: `${this.state.createdBy} has updated an announcement`,
-      _displayInForeground: true,
-    };
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
+    const name = store.getState().logIn.name
+    const ids = this.state.userList.map(item => item.id)
+    const subject = this.state.title
+    ids.forEach(async function(id, index) {
+      const message = {
+        to: id,
+        sound: 'default',
+        title: 'New announcement updated',
+        body: `${name} has updated ${subject}`,
+        _displayInForeground: true,
+      };
+      const response = await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-encoding': 'gzip, deflate',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
+    })
   };
 
   componentDidMount() {
@@ -148,6 +160,23 @@ export default class UpdateAnnouncement extends Component {
     this.handleSetCreator(store.getState().logIn.name)
     this.getNotificationPermission();
     this.notificationSubscription = Notifications.addListener(this.handleNotification);
+    this.unsubscribeUser = firebaseDb.firestore().collection('users').onSnapshot(this.updateDevices)
+  }
+
+  updateDevices = () =>
+    firebaseDb
+      .firestore()
+      .collection('users')
+      .get()
+      .then (querySnapshot => {
+        const results = []
+        querySnapshot.docs.map(documentSnapshot => results.push({
+        id: documentSnapshot.id}))
+        this.setState({ isLoading: false, userList: results })
+      }).catch(err => console.error(err))
+
+  componentWillUnmount() {
+    this.unsubscribeUser();
   }
 
   render() {

@@ -191,14 +191,13 @@ export default class ExemptionContainer extends React.Component{
                                 {'\u2022'} For perpetual exemptions, you only need to do it once. No further action is needed.
                             </Text>
                         </View>
+                        <BlueButton
+                            style = {styles.button}
+                            onPress = {this.handlePressSubmitButton}
+                        >
+                            Submit
+                        </BlueButton>
                     </View>
-                    
-                    <BlueButton
-                        style = {styles.button}
-                        onPress = {this.handlePressSubmitButton}
-                    >
-                        Submit
-                    </BlueButton>
                 </ScrollView>
             </SafeAreaView>
         )
@@ -211,28 +210,22 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     button:{
-        marginTop: 30,
-        marginBottom: 30,
+        marginTop: 20,
         borderRadius: 5,
-        width: 150,
         alignSelf: 'center',
     },
     name:{
         fontSize: 15,
         color: 'black',
-        marginTop: 10,
-        marginLeft: 10,
-        marginRight: 10,
-        marginBottom: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
         fontWeight: 'bold',
     },
     text:{
         fontSize: 15,
         color: 'black',
-        marginTop: 5,
-        marginLeft: 10,
-        marginRight: 10,
-        marginBottom: 10,
+        paddingVertical: 3,
+        paddingHorizontal: 10,
         textAlign: 'justify',
     },
     heading:{
@@ -255,7 +248,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent', 
         borderWidth: 0, 
         marginLeft: 0, 
-        marginTop: -5,
+        marginTop: -10,
     },
     checkBoxText: {
         color: 'black', 

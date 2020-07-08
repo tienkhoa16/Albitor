@@ -65,7 +65,7 @@ function AnnouncementScreen({ navigation }) {
           name='Update Announcement'
           component={UpdateAnnouncement}
           options={{ title: 'Update' }}
-          initialParams={{ itemid: null, title: null, hyperlink: null, description: null }}
+          initialParams={{ itemid: null, title: null, hyperlink: null, description: null, edited: null, editedBy: null }}
         />
       </AnnouncementStackScreen.Navigator>
   );

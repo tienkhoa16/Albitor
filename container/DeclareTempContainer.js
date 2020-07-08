@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     animatedView: {
         width: 260,
         position: "absolute",
-        top: screenHeight,
+        top: screenHeight-30,
         padding: 10,
         alignSelf: 'center',
         backgroundColor: "#dddddd",

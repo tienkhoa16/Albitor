@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     },
     heading:{
         fontSize: 25,
-        color: 'green',
+        color: 'brown',
         marginTop: 20,
         textAlign: 'center',
         fontFamily: 'PlayfairDisplay_700Bold',

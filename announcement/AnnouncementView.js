@@ -7,8 +7,9 @@ import firebaseDb from '../firebaseDb';
 import HeaderDeleteButton from './Header_DeleteButton';
 import HeaderEditButton from './Header_EditButton';
 import { AntDesign } from '@expo/vector-icons';
-
 import store from '../store';
+import * as Permissions from 'expo-permissions';
+import { Notifications } from 'expo';
 
 const admin = ['E0426339', 'E0407678']
 
@@ -20,6 +21,7 @@ export default class AnnouncementView extends Component {
       title: '',
       hyperlink: '',
       description: '',
+      userList: null,
     }
     this.props.navigation.setOptions({
       headerRight: () => (
@@ -58,8 +60,8 @@ export default class AnnouncementView extends Component {
     Alert.alert('Delete announcement',
       'Delete this announcement?',
     [
-      {text: "Yes", onPress: () => this.handleDeleteAnnouncement(id)},
-      {text: "Cancel"}
+      {text: "Cancel"},
+      {text: "Yes", onPress: () => this.handleDeleteAnnouncement(id)}
     ],
     {
       cancellable: true
@@ -83,13 +85,19 @@ export default class AnnouncementView extends Component {
     this.handleUpdateInfo(id, title, hyperlink, description);
   }
 
-
   render() {
-    const {id, createdAt, createdBy, title, hyperlink, description} = this.props.route.params;
+    const {id, createdAt, createdBy, title, hyperlink, description, edited, editedBy} = this.props.route.params;
     return(
       <View style={styles.container}>
         <Text style={styles.TitleStyle}>{title}</Text>
-        <Text>Posted by {createdBy} on {createdAt}</Text>
+        {
+          edited ? (
+            <Text>Last edited by {editedBy} on {createdAt}</Text>
+          )
+          : (
+            <Text>Posted by {createdBy} on {createdAt}</Text>
+          )
+        }
         <Text style={styles.HyperlinkStyle} onPress={() => Linking.openURL(hyperlink)}>**Click here to open document**</Text>
         <Text style={styles.AnnouncementStyle}>{description}</Text>
       </View>

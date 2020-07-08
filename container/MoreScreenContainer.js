@@ -102,8 +102,6 @@ export default class MoreScreenContainer extends React.Component{
                     <AntDesign name="logout" size={24} color='black' />
                     <Text style = {styles.text}>Log out</Text>
                 </TouchableOpacity>
-
-                
             </SafeAreaView>
         );
     }

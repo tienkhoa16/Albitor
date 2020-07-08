@@ -17,6 +17,7 @@ import { Text,
 import { NavigationContainer } from '@react-navigation/native';
 import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';
+import moment from 'moment';
 import Constants from 'expo-constants';
 import firebaseDb from '../firebaseDb';
 import ExpandingTextInput from './ExpandingTextInput';
@@ -25,6 +26,12 @@ import store from '../store';
 import _ from 'lodash';
 
 import BlueButton from '../component/BlueButton';
+
+function getDateTime(){
+    const date = moment()
+        .format('LLL');
+    return date
+}
 
 class AnnouncementForm extends Component {
   constructor(props) {
@@ -41,6 +48,8 @@ class AnnouncementForm extends Component {
       createdBy: '',
       checked: false,
       submitButtonPressed: false,
+      userList: null,
+      isLoading: true,
     };
     YellowBox.ignoreWarnings(['Setting a timer']);
     const _console = _.clone(console);
@@ -68,14 +77,7 @@ class AnnouncementForm extends Component {
         alert('Failed to get push token for push notifications!');
       }
       const token = await Notifications.getExpoPushTokenAsync();
-      console.log(token); // test token
       this.setState({ notificationToken: token });
-      firebaseDb.firestore()
-        .collection('users')
-        .doc(store.getState().logIn.username)
-        .set({
-          notificationToken: token
-        }, {merge: true })
     }
     else {
       alert('Must use physical device for notifications')
@@ -95,6 +97,7 @@ class AnnouncementForm extends Component {
     this.handleSetCreator(store.getState().logIn.name)
     this.getNotificationPermission();
     this.notificationSubscription = Notifications.addListener(this.handleNotification);
+    this.updateDevices();
   }
 
   handleNotification = notification => {
@@ -102,32 +105,41 @@ class AnnouncementForm extends Component {
     this.setState({ notification: notification });
   }
 
-  sendPushNotification = async () => {
-    const message = {
-      to: this.state.notificationToken,
-      sound: 'default',
-      title: 'New announcement updated',
-      body: `${this.state.createdBy} has posted a new announcement`,
-      _displayInForeground: true,
-    };
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-  };
+  updateDevices = () =>
+    firebaseDb
+      .firestore()
+      .collection('users')
+      .get()
+      .then (querySnapshot => {
+        const results = []
+        querySnapshot.docs.map(documentSnapshot => results.push({
+        id: documentSnapshot.id}))
+        this.setState({ isLoading: false, userList: results })
+      }).catch(err => console.error(err))
 
-  handleAddTokenIfNotExist = (token) =>
-  firebaseDb.firestore()
-    .collection('users')
-    .doc(store.getState().logIn.username)
-    .set({
-      notificationToken: token
-    }, {merge: true })
+  sendPushNotification = async () => {
+    const name = this.state.createdBy;
+    const subject = this.state.title;
+    const ids = this.state.userList.map(item => item.id)
+    ids.forEach(async function(id, index) {
+      const message = {
+        to: id,
+        sound: 'default',
+        title: 'New announcement uploaded',
+        body: `${name} has uploaded ${subject}`,
+        _displayInForeground: true,
+      };
+      const response = await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-encoding': 'gzip, deflate',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
+    })
+  };
 
   handleCreateAnnouncement = () =>
     firebaseDb.firestore()
@@ -136,7 +148,7 @@ class AnnouncementForm extends Component {
         description: this.state.description,
         hyperlink: this.state.hyperlink,
         title: this.state.title,
-        created: firebaseDb.firestore.FieldValue.serverTimestamp(),
+        created: getDateTime(),
         createdBy: store.getState().logIn.name,
         lastEditBy: '',
         hasBeenEdited: false,

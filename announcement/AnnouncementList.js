@@ -26,19 +26,20 @@ export default class AnnouncementListContainer extends Component {
         title: '',
         hyperlink: '',
         description: '',
-    };
-    YellowBox.ignoreWarnings(['Setting a timer']);
-    const _console = _.clone(console);
-    console.warn = message => {
-      if (message.indexOf('Setting a timer') <= -1) {
-        _console.warn(message);
-      }
+        userList: null,
     };
     this.props.navigation.setOptions({
       headerStyle: {
         backgroundColor: 'orange',
       },
     });
+    YellowBox.ignoreWarnings(['Setting a timer']);
+      const _console = _.clone(console);
+      console.warn = message => {
+        if (message.indexOf('Setting a timer') <= -1) {
+          _console.warn(message);
+        }
+      };
 
   }
 
@@ -54,14 +55,15 @@ export default class AnnouncementListContainer extends Component {
         alert('Failed to get push token for push notifications!');
       }
       const token = await Notifications.getExpoPushTokenAsync();
-      console.log(token); // test token
+      console.log(token);
       this.setState({ notificationToken: token });
       firebaseDb.firestore()
         .collection('users')
-        .doc(store.getState().logIn.username)
+        .doc(token)
         .set({
-          notificationToken: token
-        }, {merge: true })
+          username: store.getState().logIn.username,
+        })
+        .catch((err) => console.error(err));
     }
     else {
       alert('Must use physical device for notifications')
@@ -77,6 +79,17 @@ export default class AnnouncementListContainer extends Component {
     }
   };
 
+  updateDevices = () =>
+    firebaseDb
+      .firestore()
+      .collection('users')
+      .get()
+      .then (querySnapshot => {
+        const results = []
+        querySnapshot.docs.map(documentSnapshot => results.push({
+        id: documentSnapshot.id}))
+        this.setState({ isLoading: false, userList: results })
+      }).catch(err => console.error(err))
 
   _toggleBottomNavigationView = () => {
     this.setState({ bottomSheetVisible: !this.state.bottomSheetVisible });
@@ -117,15 +130,17 @@ export default class AnnouncementListContainer extends Component {
       .collection('notice')
       .doc(id)
       .delete()
-      .then(() => this.updateAnnouncementList())
+      .then(() => {
+        this.updateAnnouncementList()
+      })
       .catch(err => console.error(err))
 
   confirmDelete = (id) => {
     Alert.alert('Delete announcement',
       'Delete this announcement?',
     [
-      {text: "Yes", onPress: () => this.handleDeleteAnnouncement(id)},
-      {text: "Cancel"}
+      {text: "Cancel"},
+      {text: "Yes", onPress: () => this.handleDeleteAnnouncement(id)}
     ],
     {
       cancellable: true
@@ -134,13 +149,14 @@ export default class AnnouncementListContainer extends Component {
 
   componentDidMount() {
     this.getNotificationPermission();
-    this.props.navigation.addListener('focus', () => this.updateAnnouncementList())
+    this.unsubscribe = firebaseDb.firestore().collection('notice').onSnapshot(this.updateAnnouncementList)
+    this.unsubscribeUser = firebaseDb.firestore().collection('users').onSnapshot(this.updateDevices)
   }
 
   componentWillUnmount() {
-    this.setState({ isLoading: true })
+    this.unsubscribe();
+    this.unsubscribeUser();
   }
-
 
   render() {
     const { isLoading, announcement } = this.state
@@ -170,8 +186,10 @@ export default class AnnouncementListContainer extends Component {
                   title: item.title,
                   hyperlink: item.hyperlink,
                   description: item.description,
-                  createdAt:  Date(item.created.toDate()).toString(),
-                  createdBy: item.createdBy
+                  createdAt: item.created,
+                  createdBy: item.createdBy,
+                  edited: item.hasBeenEdited,
+                  editedBy: item.lastEditedBy,
                 })
               }}>
                 <View style={styles.infoBar}>
@@ -187,7 +205,7 @@ export default class AnnouncementListContainer extends Component {
                     )
                   }
                   <View style={styles.DayStyle}>
-                    <Text style={styles.date}>{new Date(item.created.toDate()).toString().substr(0, 21)}</Text>
+                    <Text style={styles.date}>{item.created}</Text>
                   </View>
                 </View>
                 <Text style={styles.TitleStyle}>{item.title}</Text>
@@ -268,12 +286,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   DayStyle: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-end',
+    flexWrap: 'wrap',
   },
   CreatorStyle: {
+    flex: 2,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
   },
   ContentBox: {
     flexDirection: 'row',
