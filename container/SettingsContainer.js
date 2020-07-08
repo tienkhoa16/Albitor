@@ -1,8 +1,13 @@
 import React from 'react';
-import { View, StyleSheet, Text, Dimensions, Alert, Switch, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, Dimensions, Alert, Switch, SafeAreaView, TouchableOpacity,
+    Vibration, Platform } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import SegmentedPicker from 'react-native-segmented-picker';
 import { Entypo } from '@expo/vector-icons';
+import * as Permissions from 'expo-permissions';
+import { Notifications } from 'expo';
+import Constants from 'expo-constants';
+
 
 import BlueButton from '../component/BlueButton';
 
@@ -56,14 +61,24 @@ function paddingZeros(hour){
 export default class SettingsContainer extends React.Component{
     state = {
         reminderOn: false,
+        reminderSet: false,
         hourAm: new Date().getHours() >= 12 ? new Date().getHours()-12 : new Date().getHours(),
         minuteAm: new Date().getMinutes(),
         hourPm: new Date().getHours() >= 12 ? new Date().getHours() : new Date().getHours()+12,
         minutePm: new Date().getMinutes(),
+        hasNotificationPermission: null,
+        notificationToken: null,
+        notification: {},
+        reminderMessage: {
+            title: 'Temperature Declaration Time',
+            body: "You haven't declared your temperature twice today",
+        }
     };
 
     async componentDidMount() {
         await this.read()
+        this.getNotificationPermission();
+        this.notificationSubscription = Notifications.addListener(this.handleNotification);
     }
 
     amPicker = React.createRef();
@@ -108,6 +123,8 @@ export default class SettingsContainer extends React.Component{
     handlePressButton =  async () => {
         const {hourAm, minuteAm, hourPm, minutePm} = this.state
         await this.remember(hourAm, minuteAm, hourPm, minutePm)
+        await this.setReminder()
+        this.setState({reminderSet: true})
         alert('Set reminders successful')
     }
 
@@ -128,6 +145,8 @@ export default class SettingsContainer extends React.Component{
     clear = async () => {
         try {
             await AsyncStorage.removeItem('notiTime');
+            this.setState({reminderSet: false})
+            Notifications.cancelAllScheduledNotificationsAsync()
         } catch (e) {
             console.log(e);
         }
@@ -142,6 +161,7 @@ export default class SettingsContainer extends React.Component{
 
                 this.setState({
                     reminderOn: true,
+                    reminderSet: true,
                     hourAm: parseInt(new Date(myJson.amTime).getHours(), 10),
                     minuteAm: parseInt(new Date(myJson.amTime).getMinutes(), 10),
                     hourPm: parseInt(new Date(myJson.pmTime).getHours(), 10),
@@ -153,8 +173,65 @@ export default class SettingsContainer extends React.Component{
         }
     };
 
+    getNotificationPermission = async () => {
+        if (Constants.isDevice) {
+            const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+            this.setState({ hasNotificationPermission: status === 'granted'});
+            if (!this.state.hasNotificationPermission) {
+                const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+                this.setState({ hasNotificationPermission: status === 'granted'});
+            }
+            if (!this.state.hasNotificationPermission) {
+                alert('Failed to get push token for push notifications!');
+            }
+            const token = await Notifications.getExpoPushTokenAsync();
+            console.log(token); // test token
+            this.setState({ notificationToken: token });
+            }
+        else {
+            alert('Must use physical device for notifications')
+        }
+    
+        if ( Platform.OS === 'android' ) {
+            Notifications.createChannelAndroidAsync('default', {
+                name: 'default',
+                sound: true,
+                priority: 'max',
+                vibrate: [0, 250, 250, 250],
+            });
+        }
+    };
+
+    handleNotification = notification => {
+        Vibration.vibrate();
+        this.setState({ notification: notification });
+    }
+
+    setReminder = async () => {
+        const {hourAm, minuteAm, hourPm, minutePm, hasNotificationPermission, reminderMessage} = this.state
+
+        if(hasNotificationPermission){
+            Notifications.cancelAllScheduledNotificationsAsync()
+            
+            Notifications.scheduleLocalNotificationAsync(
+                reminderMessage, 
+                {
+                   time: new Date().setHours(hourAm, minuteAm, 0, 0),
+                   repeat: 'day',
+                }
+            )
+            Notifications.scheduleLocalNotificationAsync(
+                reminderMessage, 
+                {
+                   time: new Date().setHours(hourPm, minutePm, 0, 0),
+                   repeat: 'day',
+                }
+            )
+        }
+    };
+
     render(){
-        const {reminderOn, hourAm, minuteAm, hourPm, minutePm} = this.state
+        const {reminderOn, hourAm, minuteAm, hourPm, minutePm, reminderSet} = this.state
         
         return(
             <SafeAreaView style = {styles.container}>
@@ -170,7 +247,7 @@ export default class SettingsContainer extends React.Component{
                             style={styles.switch}
                             value={reminderOn}
                             onValueChange={async (v) => {
-                                if (!v) {
+                                if (!v && reminderSet) {
                                     Alert.alert(
                                         'Delete Reminders',
                                         'Are you sure?',
