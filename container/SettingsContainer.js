@@ -98,34 +98,19 @@ export default class SettingsContainer extends React.Component{
         })
     }
 
-    onChangeAm = ({ column, value }) => {
-        if (column == 'col_1')
-            this.setState({
-                hourAm: parseInt(value, 10),
-            })
-        else   
-            this.setState({
-                minuteAm: parseInt(value, 10),
-            })
-    }
-
-    onChangePm = ({ column, value }) => {
-        if (column == 'col_1')
-            this.setState({
-                hourPm: parseInt(value, 10),
-            })
-        else   
-            this.setState({
-                minutePm: parseInt(value, 10),
-            })
-    }
-
     handlePressButton =  async () => {
         const {hourAm, minuteAm, hourPm, minutePm} = this.state
-        await this.remember(hourAm, minuteAm, hourPm, minutePm)
-        await this.setReminder()
-        this.setState({reminderSet: true})
-        alert('Set reminders successful')
+        Notifications.cancelAllScheduledNotificationsAsync()
+        .then(() => {
+            console.log('Done clearing local notifications.');
+            this.remember(hourAm, minuteAm, hourPm, minutePm)
+            this.setReminder()
+            this.setState({reminderSet: true})
+            alert('Set reminders successful')
+          })
+        .catch(err => {
+            console.log('Unable to clear local notifications.');
+        })
     }
 
     remember = async (hourAm, minuteAm, hourPm, minutePm) => {
@@ -145,7 +130,13 @@ export default class SettingsContainer extends React.Component{
     clear = async () => {
         try {
             await AsyncStorage.removeItem('notiTime');
-            this.setState({reminderSet: false})
+            this.setState({
+                reminderSet: false,
+                hourAm: new Date().getHours() >= 12 ? new Date().getHours()-12 : new Date().getHours(),
+                minuteAm: new Date().getMinutes(),
+                hourPm: new Date().getHours() >= 12 ? new Date().getHours() : new Date().getHours()+12,
+                minutePm: new Date().getMinutes(),
+            })
             Notifications.cancelAllScheduledNotificationsAsync()
         } catch (e) {
             console.log(e);
@@ -210,21 +201,31 @@ export default class SettingsContainer extends React.Component{
     setReminder = async () => {
         const {hourAm, minuteAm, hourPm, minutePm, hasNotificationPermission, reminderMessage} = this.state
 
+        let currentTime = new Date().getTime()
+        let timeAm =  new Date().setHours(hourAm, minuteAm, 0, 0)
+        let timePm = new Date().setHours(hourPm, minutePm, 0, 0)
+
+        if (timeAm < currentTime)
+            timeAm = timeAm + 86400000
+        if (timePm < currentTime)
+            timePm = timePm + 86400000
+
+        console.log(new Date(timeAm)+0)
+        console.log(new Date(timePm)+0)
+
         if(hasNotificationPermission){
-            Notifications.cancelAllScheduledNotificationsAsync()
-            
             Notifications.scheduleLocalNotificationAsync(
                 reminderMessage, 
                 {
-                   time: new Date().setHours(hourAm, minuteAm, 0, 0),
-                   repeat: 'day',
+                    time: timeAm,
+                    repeat: 'day',
                 }
             )
             Notifications.scheduleLocalNotificationAsync(
                 reminderMessage, 
                 {
-                   time: new Date().setHours(hourPm, minutePm, 0, 0),
-                   repeat: 'day',
+                    time: timePm,
+                    repeat: 'day',
                 }
             )
         }
@@ -295,7 +296,6 @@ export default class SettingsContainer extends React.Component{
                                     <SegmentedPicker
                                         ref={this.amPicker}
                                         onConfirm={this.onConfirmAm}
-                                        onValueChange={this.onChangeAm}
                                         options={createTimeData(true)}
                                         
                                     />
@@ -319,7 +319,6 @@ export default class SettingsContainer extends React.Component{
                                     <SegmentedPicker
                                         ref={this.pmPicker}
                                         onConfirm={this.onConfirmPm}
-                                        onValueChange={this.onChangePm}
                                         options={createTimeData(false)}
                                     />
 

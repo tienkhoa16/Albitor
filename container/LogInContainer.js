@@ -85,8 +85,17 @@ export default class LogInContainer extends React.Component{
         haveCredentials: false,
     };
 
+    timerId;
+
     async componentDidMount() {
         await this.read();
+    }
+
+    componentWillUnmount() {
+        if (this.timerId) {                    
+            clearTimeout(this.timerId);      
+            this.timerId = 0;               
+        }       
     }
 
     handleUpdateUsername = (username) => this.setState({username, typing: true, firstTime: false});
@@ -135,6 +144,20 @@ export default class LogInContainer extends React.Component{
                 this.setState({
                     typing: false,
                 })
+                this.timerId = setTimeout(
+                    () => {
+                        if (!resp){
+                            Alert.alert(
+                                'Log in failed',
+                                'Please check your internet connection',
+                                [
+                                    {text: 'Try again'}
+                                ]
+                            )
+                        }
+                    },
+                    30000
+                )
             })()
         }
         else if(

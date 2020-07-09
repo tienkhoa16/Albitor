@@ -49,10 +49,12 @@ export default class PastDeclareContainer extends PureComponent {
     state = {
         tableData: ''
     }
+
+    intervalId;
     
     componentDidMount() {
         this.focusListener = this.props.navigation.addListener("focus", () =>{
-            setInterval(
+            this.intervalId = setInterval(
                 async() => {
                     this.setState({tableData: await getHistoryHtml(store.getState().logIn.cookie)}) 
                 },
@@ -64,6 +66,7 @@ export default class PastDeclareContainer extends PureComponent {
     componentWillUnmount() {
         // Remove the event listener before removing the screen from the stack
         this.focusListener();
+        clearInterval(this.intervalId);
     }
 
     render() {

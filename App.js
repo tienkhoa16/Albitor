@@ -207,7 +207,7 @@ export default function App() {
   });
 
   const unsubscribe = NetInfo.addEventListener(state => {
-    if (!state.isInternetReachable)
+    if (!state.isConnected)
       alert('Please turn on Wifi/Mobile Data')
   });
   
