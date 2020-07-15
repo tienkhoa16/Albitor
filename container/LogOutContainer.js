@@ -85,10 +85,7 @@ export default class LogInContainer extends React.Component{
         optionExt: false,
         username: '',
         password: '',
-        firstTime: true,
-        typing: false,
         authenticating: false,
-        signInSuccesful: false,
         rememberMe: false,
         backClickCount: 0,
     };
@@ -104,9 +101,9 @@ export default class LogInContainer extends React.Component{
         BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
     }
 
-    handleUpdateUsername = (username) => this.setState({username, typing: true, firstTime: false});
+    handleUpdateUsername = (username) => this.setState({username});
 
-    handleUpdatePassword = (password) => this.setState({password, typing: true, firstTime: false});
+    handleUpdatePassword = (password) => this.setState({password});
 
     handlePressButton = (prefix, username, password) => {
         if(
@@ -114,7 +111,7 @@ export default class LogInContainer extends React.Component{
             password
         ){
             (async () => {
-                this.setState({authenticating: true, typing: false})
+                this.setState({authenticating: true})
                 const resp = await auth(prefix, username, password)
                 
                 if ('set-cookie' in resp.headers){
@@ -128,7 +125,6 @@ export default class LogInContainer extends React.Component{
                     })
 
                     this.setState({
-                        signInSuccesful: true, 
                         authenticating: false, 
                     })
                     if(this.state.rememberMe)
@@ -142,15 +138,19 @@ export default class LogInContainer extends React.Component{
                     this.setState({
                         username: '',
                         password: '',
-                        signInSuccesful: false, 
                         authenticating: false,
                         rememberMe: false,
                         haveCredentials: false,
                     })
+                    Alert.alert(
+                        'Log in failed',
+                        'Invalid NUSNET or Password',
+                        [
+                            { text: "Try again" }
+                        ],
+                        { cancelable: false }
+                    )
                 }
-                this.setState({
-                    typing: false,
-                })
             })()
         }
         else if(
@@ -267,8 +267,8 @@ export default class LogInContainer extends React.Component{
     }
 
     render(){
-        const {prefix, optionStu, optionStf, optionExt, username, password, firstTime, typing, 
-            authenticating, signInSuccesful, rememberMe} = this.state
+        const {prefix, optionStu, optionStf, optionExt, username, password, 
+            authenticating, rememberMe} = this.state
 
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -340,18 +340,7 @@ export default class LogInContainer extends React.Component{
                     </BlueButton>
 
                     {
-                        (firstTime || typing) ? null : 
-                            (authenticating ? (<Spinner/>) : 
-                            (signInSuccesful ? null : 
-                            (optionStu || optionStf || optionExt) ? null : 
-                            (Alert.alert(
-                                'Log in failed',
-                                'Invalid NUSNET or Password',
-                                [
-                                    { text: "Try again" }
-                                ],
-                                { cancelable: false }
-                            ))))
+                        authenticating ? (<Spinner/>) : null
                     }
 
                     <Animated.View style={[styles.animatedView, {transform: [{translateY: this.springValue}]}]}>
