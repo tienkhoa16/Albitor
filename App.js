@@ -34,6 +34,8 @@ import store from './store';
 
 import * as SecureStore from 'expo-secure-store';
 
+import backgroundTask from './backgroundFetch/backgroundTask';
+
 import { useFonts, PlayfairDisplay_700Bold } from '@expo-google-fonts/playfair-display'
 
 import {decode, encode} from 'base-64'
@@ -210,6 +212,8 @@ export default function App() {
     if (!state.isConnected)
       alert('Please turn on Wifi/Mobile Data')
   });
+
+  backgroundTask('printRandom')
   
   return (
     <Provider store = {store}>

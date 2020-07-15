@@ -10,6 +10,8 @@ import BlueButton from '../component/BlueButton';
 
 import store from '../store';
 
+import HandleDeclaration from './HandleDeclaration';
+
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 const dateTime = getDateTime();
@@ -100,6 +102,7 @@ export default class DeclareTempContainer extends React.Component{
                     )
                 }
                 else{
+                    await HandleDeclaration()
                     Alert.alert(
                         "Declare Succesful",    //Alert Title
                         'Declared '+floatTemp+'\u2103 for '+this.state.timeOfDay+'M on '+this.state.date,    // Alert Message
@@ -123,8 +126,9 @@ export default class DeclareTempContainer extends React.Component{
         return true;
     }
 
-    componentDidMount(){      
+    async componentDidMount(){      
         BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+        await HandleDeclaration()
     }
 
     componentWillUnmount(){

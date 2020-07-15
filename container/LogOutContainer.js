@@ -18,7 +18,7 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 
-async function auth(username, password){
+async function auth(prefix, username, password){
     console.log("[AUTH]")
 
     let resp = {
@@ -26,7 +26,7 @@ async function auth(username, password){
     }
 
     // Basic check first
-    if (username[0] != 'E' && username[0] != 'e' || username.length != 8)
+    if (prefix == 'nusstu\\' && username[0] != 'E' && username[0] != 'e' || username.length != 8)
         return resp
     
     // Log out url
@@ -50,7 +50,7 @@ async function auth(username, password){
     }
 
     const data = querystring.stringify({
-        'UserName': 'nusstu\\' + username,
+        'UserName': prefix + username,
         'Password': password,
         'AuthMethod': "FormsAuthentication"
     })
@@ -79,6 +79,10 @@ function getName(data){
 
 export default class LogInContainer extends React.Component{
     state = {
+        prefix: 'nusstu\\',
+        optionStu: true,
+        optionStf: false,
+        optionExt: false,
         username: '',
         password: '',
         firstTime: true,
@@ -104,14 +108,14 @@ export default class LogInContainer extends React.Component{
 
     handleUpdatePassword = (password) => this.setState({password, typing: true, firstTime: false});
 
-    handlePressButton = (username, password) => {
+    handlePressButton = (prefix, username, password) => {
         if(
             username &&
             password
         ){
             (async () => {
                 this.setState({authenticating: true, typing: false})
-                const resp = await auth(username, password)
+                const resp = await auth(prefix, username, password)
                 
                 if ('set-cookie' in resp.headers){
                     store.dispatch({
@@ -128,10 +132,11 @@ export default class LogInContainer extends React.Component{
                         authenticating: false, 
                     })
                     if(this.state.rememberMe)
-                        this.remember(this.state.username, this.state.password)
+                        this.remember(prefix, username, password)
                     else   
                         this.clear()
-                    this.props.navigation.navigate('Declare', {screen: 'DeclareScreen'})
+                    this.rememberLogin(prefix, username, password)
+                    this.props.navigation.navigate('MainScreen', {screen: 'Declare'})
                 }
                 else{
                     this.setState({
@@ -140,6 +145,7 @@ export default class LogInContainer extends React.Component{
                         signInSuccesful: false, 
                         authenticating: false,
                         rememberMe: false,
+                        haveCredentials: false,
                     })
                 }
                 this.setState({
@@ -164,14 +170,28 @@ export default class LogInContainer extends React.Component{
         }
     }
 
-    remember = async (usernameRaw, passwordRaw) => {
+    remember = async (prefix, usernameRaw, passwordRaw) => {
         const username = base64.btoa(usernameRaw);
         const password = base64.btoa(passwordRaw);
-        const credentials = { username, password };
+        const credentials = { prefix, username, password };
         try {
             await SecureStore.setItemAsync(
                 'credentials',
                 JSON.stringify(credentials)
+            );
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    rememberLogin = async (prefix, usernameRaw, passwordRaw) => {
+        const username = base64.btoa(usernameRaw);
+        const password = base64.btoa(passwordRaw);
+        const login = { prefix, username, password };
+        try {
+            await SecureStore.setItemAsync(
+                'login',
+                JSON.stringify(login)
             );
         } catch (e) {
             console.log(e);
@@ -185,6 +205,33 @@ export default class LogInContainer extends React.Component{
             console.log(e);
         }
     };
+
+    handlePressStu = () => {
+        this.setState({
+            optionStu: true,
+            optionStf: false,
+            optionExt: false,
+            prefix: 'nusstu\\',
+        })
+    }
+
+    handlePressStf = () => {
+        this.setState({
+            optionStu: false,
+            optionStf: true,
+            optionExt: false,
+            prefix: 'nusstf\\',
+        })
+    }
+
+    handlePressExt = () => {
+        this.setState({
+            optionStu: false,
+            optionStf: false,
+            optionExt: true,
+            prefix: 'nusext\\',
+        })
+    }
 
     onBackPress = () => {
         this.state.backClickCount == 1 ? BackHandler.exitApp() : this._spring();
@@ -220,12 +267,45 @@ export default class LogInContainer extends React.Component{
     }
 
     render(){
-        const {username, password, firstTime, typing, authenticating, signInSuccesful, rememberMe} = this.state
+        const {prefix, optionStu, optionStf, optionExt, username, password, firstTime, typing, 
+            authenticating, signInSuccesful, rememberMe} = this.state
 
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <KeyboardAvoidingView style = {styles.container}>
                     <Image style = {styles.image} source = {require('../assets/nus_logo.png')} />
+
+                    <View style={{flexDirection: 'row'}}>
+                        <CheckBox
+                            title = "nusstu"
+                            checked={optionStu}
+                            onPress={() => this.handlePressStu()}
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            containerStyle={styles.checkboxPrefixContainer}
+                            textStyle={styles.checkboxPrefixText}
+                        />
+
+                        <CheckBox
+                            title = "nusstf"
+                            checked={optionStf}
+                            onPress={() => this.handlePressStf()}
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            containerStyle={styles.checkboxPrefixContainer}
+                            textStyle={styles.checkboxPrefixText}
+                        />
+
+                        <CheckBox
+                            title = "nusext"
+                            checked={optionExt}
+                            onPress={() => this.handlePressExt()}
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            containerStyle={styles.checkboxPrefixContainer}
+                            textStyle={styles.checkboxPrefixText}
+                        />
+                    </View>
 
                     <TextInput
                         style = {styles.textInput}
@@ -263,6 +343,7 @@ export default class LogInContainer extends React.Component{
                         (firstTime || typing) ? null : 
                             (authenticating ? (<Spinner/>) : 
                             (signInSuccesful ? null : 
+                            (optionStu || optionStf || optionExt) ? null : 
                             (Alert.alert(
                                 'Log in failed',
                                 'Invalid NUSNET or Password',
@@ -291,7 +372,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     image:{
-        marginBottom: 60,
+        marginBottom: 30,
     },
     textInput:{
         borderWidth: 1,
@@ -319,5 +400,16 @@ const styles = StyleSheet.create({
     },
     exitTitleText: {
         textAlign: "center",
+    },
+    checkboxPrefixContainer:{
+        backgroundColor: 'transparent', 
+        borderWidth: 0, 
+        paddingHorizontal: 0,
+    },
+    checkboxPrefixText:{
+        color: 'black', 
+        fontSize: 15, 
+        marginTop: -4,
+        marginLeft: 5,
     },
 });

@@ -8,12 +8,23 @@ import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';
 import Constants from 'expo-constants';
 
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
+
+import store from '../store';
+
+import HandleDeclaration from './HandleDeclaration'
 
 import BlueButton from '../component/BlueButton';
 
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
+
+const reminderMessage = {
+    title: 'Temperature Declaration Time 🔔',
+    body: "Time to declare your temperature",
+}
 
 
 function createTimeData(isAm){
@@ -57,6 +68,16 @@ function paddingZeros(hour){
         return '0' + hour.toString()
 }
 
+async function setNotification(scheduledTime, frequency = 'day') {
+    let id = await Notifications.scheduleLocalNotificationAsync(
+        reminderMessage, 
+        {
+            time: scheduledTime,
+            repeat: frequency,
+        }
+    )
+    return id
+}
 
 export default class SettingsContainer extends React.Component{
     state = {
@@ -69,16 +90,14 @@ export default class SettingsContainer extends React.Component{
         hasNotificationPermission: null,
         notificationToken: null,
         notification: {},
-        reminderMessage: {
-            title: 'Temperature Declaration Time',
-            body: "You haven't declared your temperature twice today",
-        }
     };
 
     async componentDidMount() {
         await this.read()
         this.getNotificationPermission();
         this.notificationSubscription = Notifications.addListener(this.handleNotification);
+        console.log(await BackgroundFetch.getStatusAsync())
+        console.log(await TaskManager.getRegisteredTasksAsync())
     }
 
     amPicker = React.createRef();
@@ -103,7 +122,7 @@ export default class SettingsContainer extends React.Component{
         Notifications.cancelAllScheduledNotificationsAsync()
         .then(() => {
             console.log('Done clearing local notifications.');
-            this.remember(hourAm, minuteAm, hourPm, minutePm)
+            this.rememberTime(hourAm, minuteAm, hourPm, minutePm)
             this.setReminder()
             this.setState({reminderSet: true})
             alert('Set reminders successful')
@@ -113,14 +132,32 @@ export default class SettingsContainer extends React.Component{
         })
     }
 
-    remember = async (hourAm, minuteAm, hourPm, minutePm) => {
-        let amTime = new Date().setHours(hourAm, minuteAm, 0)
-        let pmTime = new Date().setHours(hourPm, minutePm, 0)
-        const notiTime = { amTime, pmTime };
+    rememberTime = async (hourAm, minuteAm, hourPm, minutePm) => {
+        let currentTime = new Date().getTime()
+        let timeAm =  new Date().setHours(hourAm, minuteAm, 0, 0)
+        let timePm = new Date().setHours(hourPm, minutePm, 0, 0)
+
+        if (timeAm <= currentTime)
+            timeAm = timeAm + 86400000
+        if (timePm <= currentTime)
+            timePm = timePm + 86400000
+        const notiTime = { timeAm, timePm };
         try {
             await AsyncStorage.setItem(
                 'notiTime',
                 JSON.stringify(notiTime)
+            );
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    rememberNotiId = async (amId, pmId) => {
+        const notiId = { amId, pmId };
+        try {
+            await AsyncStorage.setItem(
+                'notiId',
+                JSON.stringify(notiId)
             );
         } catch (e) {
             console.log(e);
@@ -143,6 +180,22 @@ export default class SettingsContainer extends React.Component{
         }
     };
 
+    readLastRunBackground = async () => {
+        try {
+            const lastRun = await AsyncStorage.getItem('backgroundTask');
+    
+            if (lastRun) {
+                return parseInt(lastRun, 10)
+            }
+            else{
+                return 0
+            }
+        } catch (e) {
+            console.log(e);
+            return 0
+        }
+    }
+
     read = async () => {
         try {
             const notiTime = await AsyncStorage.getItem('notiTime');
@@ -153,11 +206,19 @@ export default class SettingsContainer extends React.Component{
                 this.setState({
                     reminderOn: true,
                     reminderSet: true,
-                    hourAm: parseInt(new Date(myJson.amTime).getHours(), 10),
-                    minuteAm: parseInt(new Date(myJson.amTime).getMinutes(), 10),
-                    hourPm: parseInt(new Date(myJson.pmTime).getHours(), 10),
-                    minutePm: parseInt(new Date(myJson.pmTime).getMinutes(), 10),
+                    hourAm: new Date(myJson.timeAm).getHours(),
+                    minuteAm: new Date(myJson.timeAm).getMinutes(),
+                    hourPm: new Date(myJson.timePm).getHours(),
+                    minutePm: new Date(myJson.timePm).getMinutes(),
                 });
+
+                console.log('Have set for AM: ', new Date(myJson.timeAm)+0)
+                console.log('Have set for PM: ', new Date(myJson.timePm)+0)
+                alert(
+                    'Have set for AM: '+(new Date(myJson.timeAm)).toString()+
+                    '\nHave set for PM: '+ (new Date(myJson.timePm)).toString()+
+                    '\nLast run background task: '+(new Date(await this.readLastRunBackground())).toString()
+                )
             }
         } catch (e) {
             console.log(e);
@@ -210,25 +271,19 @@ export default class SettingsContainer extends React.Component{
         if (timePm < currentTime)
             timePm = timePm + 86400000
 
-        console.log(new Date(timeAm)+0)
-        console.log(new Date(timePm)+0)
+        console.log('AM Noti time: ', new Date(timeAm)+0)
+        console.log('PM Noti time: ',new Date(timePm)+0)
 
         if(hasNotificationPermission){
-            Notifications.scheduleLocalNotificationAsync(
-                reminderMessage, 
-                {
-                    time: timeAm,
-                    repeat: 'day',
-                }
-            )
-            Notifications.scheduleLocalNotificationAsync(
-                reminderMessage, 
-                {
-                    time: timePm,
-                    repeat: 'day',
-                }
-            )
+            const amId = await setNotification(timeAm)
+            const pmId = await setNotification(timePm)
+
+            this.rememberNotiId(amId, pmId)
+
+            console.log('AM Noti id: ', amId)
+            console.log('PM Noti id: ', pmId)
         }
+        await HandleDeclaration()
     };
 
     render(){
