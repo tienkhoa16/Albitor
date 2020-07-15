@@ -96,6 +96,7 @@ export default class SettingsContainer extends React.Component{
         await this.read()
         this.getNotificationPermission();
         this.notificationSubscription = Notifications.addListener(this.handleNotification);
+        await HandleDeclaration()
         console.log(await BackgroundFetch.getStatusAsync())
         console.log(await TaskManager.getRegisteredTasksAsync())
     }

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import querystring from 'querystring';
 import React from 'react';
-import moment from 'moment';
 import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, 
     Keyboard, TouchableWithoutFeedback, ScrollView, Image, Switch, BackHandler, Animated } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -14,16 +13,8 @@ import HandleDeclaration from './HandleDeclaration';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
-const dateTime = getDateTime();
 
 
-
-function getDateTime(){
-    const date = moment()
-        .utcOffset('+08:00')
-        .format('DD/MM/YYYY A');
-    return date
-}
 
 async function submitTemp(temp, date, timeOfDay, symptoms, famSymptoms){
     const sessionId = store.getState().logIn.cookie
@@ -55,13 +46,21 @@ async function submitTemp(temp, date, timeOfDay, symptoms, famSymptoms){
     return resp.status
 }
 
+function paddingZeros(hour){
+    if (hour >= 10)
+        return hour.toString()
+    else
+        return '0' + hour.toString()
+}
+
 
 export default class DeclareTempContainer extends React.Component{
     state = {
         temp: '',
-        date: dateTime.substr(0,dateTime.length-3),
-        timeOfDay: dateTime.charAt(dateTime.length-2),
-        isPm: (dateTime.charAt(dateTime.length-2) === 'P'),
+        date: paddingZeros(new Date().getDate()) + '/' + paddingZeros(new Date().getMonth()) 
+            + '/' + new Date().getFullYear(),
+        timeOfDay: (new Date().getHours() < 12 ? 'A' : 'P'),
+        isPm: (new Date().getHours() < 12 ? false : true),
         symptoms: 'N',
         famSymptoms: 'N',
         symptoms_bool: false,

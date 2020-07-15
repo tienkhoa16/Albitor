@@ -12,8 +12,6 @@ const reminderMessage = {
     body: "Time to declare your temperature",
 }
 
-const currentTime = new Date().getTime()
-
 let timeAm_old = 0
 let timePm_old = 0
 
@@ -62,11 +60,17 @@ async function cancelNoti(notiId){
 }
 
 async function setReminder (notiTime) {
-    // console.log(new Date(notiTime).getTime())
-    let time = new Date(notiTime).getTime() + 86400000
+    let currentDate = new Date().getDate()
+    let time = new Date(notiTime).getTime()
 
-    while (time <= currentTime)
-        time = new Date(notiTime).getTime() + 86400000
+    while (new Date(time).getDate() != currentDate){
+        if (new Date(time).getDate() < currentDate)
+            time += 86400000
+        else    
+            time -= 86400000
+    }
+
+    time += 86400000
 
     console.log('New Noti time: ', new Date(time)+0)
 
@@ -143,25 +147,16 @@ export default async function HandleDeclaration () {
 
             const countCenter = (history.match(/<td align="center">/g) || []).length
             
-            
             if (countCenter == 6){
-                if(new Date(currentTime).getDate() >= new Date(timeAm_old).getDate()){
-                    await cancelNoti(amId_old)
-                    await cancelNoti(pmId_old)
+                await cancelNoti(amId_old)
+                await cancelNoti(pmId_old)
 
-                    await setReminder(timeAm_old)
-                    await setReminder(timePm_old)
-                }
-                else if(new Date(currentTime).getDate() >= new Date(timePm_old).getDate()){
-                    await cancelNoti(pmId_old)
-                    await setReminder(timePm_old)
-                }
+                await setReminder(timeAm_old)
+                await setReminder(timePm_old)
             }
             else if (countCenter == 3){
-                if(new Date(currentTime).getDate() >= new Date(timeAm_old).getDate()){
-                    await cancelNoti(amId_old)
-                    await setReminder(timeAm_old)
-                }
+                await cancelNoti(amId_old)
+                await setReminder(timeAm_old)
             }
         }
     }
