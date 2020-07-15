@@ -61,10 +61,11 @@ async function cancelNoti(notiId){
 
 async function setReminder (notiTime) {
     let currentDate = new Date().getDate()
+    let currentTime = new Date().getTime()
     let time = new Date(notiTime).getTime()
 
     while (new Date(time).getDate() != currentDate){
-        if (new Date(time).getDate() < currentDate)
+        if (time < currentTime)
             time += 86400000
         else    
             time -= 86400000

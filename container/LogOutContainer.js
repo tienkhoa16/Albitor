@@ -267,8 +267,7 @@ export default class LogInContainer extends React.Component{
     }
 
     render(){
-        const {prefix, optionStu, optionStf, optionExt, username, password, 
-            authenticating, rememberMe} = this.state
+        const {prefix, optionStu, optionStf, optionExt, username, password, authenticating, rememberMe} = this.state
 
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -334,7 +333,7 @@ export default class LogInContainer extends React.Component{
 
                     <BlueButton 
                         style = {styles.button}
-                        onPress = {() => this.handlePressButton(username, password)}
+                        onPress = {() => this.handlePressButton(prefix, username, password)}
                     >
                         Log In
                     </BlueButton>

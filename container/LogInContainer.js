@@ -83,7 +83,6 @@ export default class LogInContainer extends React.Component{
         password: '',
         authenticating: false,
         rememberMe: false,
-        haveCredentials: false,
     };
 
     async componentDidMount() {
@@ -129,7 +128,6 @@ export default class LogInContainer extends React.Component{
                         password: '',
                         authenticating: false,
                         rememberMe: false,
-                        haveCredentials: false,
                     })
                     Alert.alert(
                         'Log in failed',
@@ -180,7 +178,6 @@ export default class LogInContainer extends React.Component{
                     username: decodedUsername,
                     password: decodedPassword,
                     rememberMe: true,
-                    haveCredentials: true,
                 });
                 this.handlePressButton(prefix, decodedUsername, decodedPassword)
             }
@@ -260,8 +257,7 @@ export default class LogInContainer extends React.Component{
     }
 
     render(){
-        const {prefix, optionStu, optionStf, optionExt, username, password, 
-            authenticating, rememberMe, haveCredentials} = this.state
+        const {prefix, optionStu, optionStf, optionExt, username, password, authenticating, rememberMe} = this.state
         return(
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <KeyboardAvoidingView style = {styles.container}>
