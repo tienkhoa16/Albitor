@@ -50,6 +50,10 @@ async function readNotiId() {
             amId_old = myJson.amId
             pmId_old = myJson.pmId
         }
+        else{
+            amId_old = null
+            pmId_old = null
+        }
     } catch (e) {
         console.log(e);
     }
@@ -82,6 +86,8 @@ async function setReminder (notiTime) {
         await rememberTime(time, timePm_old)
     }
     else{
+        await readTime()
+        await readNotiId()
         await rememberNotiId(amId_old, id)
         await rememberTime(timeAm_old, time)
     }

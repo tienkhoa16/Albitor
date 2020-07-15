@@ -93,10 +93,10 @@ export default class SettingsContainer extends React.Component{
     };
 
     async componentDidMount() {
+        await HandleDeclaration()
         await this.read()
         this.getNotificationPermission();
         this.notificationSubscription = Notifications.addListener(this.handleNotification);
-        await HandleDeclaration()
         console.log(await BackgroundFetch.getStatusAsync())
         console.log(await TaskManager.getRegisteredTasksAsync())
     }
@@ -168,6 +168,7 @@ export default class SettingsContainer extends React.Component{
     clear = async () => {
         try {
             await AsyncStorage.removeItem('notiTime');
+            await AsyncStorage.removeItem('notiId');
             this.setState({
                 reminderSet: false,
                 hourAm: new Date().getHours() >= 12 ? new Date().getHours()-12 : new Date().getHours(),
