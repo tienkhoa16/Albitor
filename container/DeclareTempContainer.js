@@ -197,7 +197,7 @@ export default class DeclareTempContainer extends React.Component{
                                                     this.setState({timeOfDay: 'A'})
                                             }}
                                             style={{marginTop: 7, alignSelf: 'flex-start'}}
-                                            trackColor = {{false: '#f4ea8e', true: '#5fdde5'}}
+                                            trackColor = {{false: '#fbd46d', true: '#5fdde5'}}
                                             thumbColor = {isPm ? '#111d5e':'#fcbf1e'}
                                         />
                                         {
@@ -213,7 +213,7 @@ export default class DeclareTempContainer extends React.Component{
                                         <TextInput 
                                             style = {styles.textInput}
                                             placeholder = "Your temperature"
-                                            placeholderTextColor = 'white'
+                                            placeholderTextColor = 'grey'
                                             onChangeText = {this.handleTemp}
                                             value = {temp}
                                             keyboardType = 'numeric'
@@ -224,7 +224,7 @@ export default class DeclareTempContainer extends React.Component{
                                                 onPress= { () => { this.props.navigation.navigate('Camera') } }
                                                 activeOpacity={0.5}
                                             >
-                                                <MaterialCommunityIcons name='camera' size={30} color='white' />
+                                                <MaterialCommunityIcons name='camera' size={30} color='black' />
                                             </TouchableOpacity>
                                         </View>
                                     </View>
@@ -240,13 +240,13 @@ export default class DeclareTempContainer extends React.Component{
                                                     this.setState({symptoms: 'N'})
                                             }}
                                             style={{marginTop: 18, alignSelf: 'flex-start'}}
-                                            trackColor = {{false: 'visible', true: 'pink'}}
-                                            thumbColor = {symptoms_bool ? 'red':'mediumseagreen'}
+                                            trackColor = {{false: '#e7dfd5', true: '#ff7e75'}}
+                                            thumbColor = {symptoms_bool ? '#c2180c':'grey'}
                                         />
                                         {
                                             symptoms_bool ? 
-                                                (<Text style = {{marginTop: 18, fontSize: 17, color:'#fafba4'}}>Yes</Text>) : 
-                                                (<Text style = {{marginTop: 18, fontSize: 17, color:'white'}}>No</Text>)
+                                                (<Text style = {{marginTop: 18, fontSize: 17, fontWeight: 'bold'}}>Yes</Text>) : 
+                                                (<Text style = {{marginTop: 18, fontSize: 17, fontWeight: 'bold'}}>No</Text>)
                                         }   
                                     </View>
 
@@ -261,13 +261,13 @@ export default class DeclareTempContainer extends React.Component{
                                                     this.setState({famSymptoms: 'N'})
                                             }}
                                             style={{marginTop: 50, alignSelf: 'flex-start'}}
-                                            trackColor = {{false: 'visible', true: 'pink'}}
-                                            thumbColor = {famSymptoms_bool ? 'red':'mediumseagreen'}
+                                            trackColor = {{false: '#e7dfd5', true: '#ff7e75'}}
+                                            thumbColor = {famSymptoms_bool ? '#c2180c':'grey'}
                                         />
                                         {
                                             famSymptoms_bool ? 
-                                                (<Text style = {{marginTop: 50, fontSize: 17, color:'#fafba4'}}>Yes</Text>) : 
-                                                (<Text style = {{marginTop: 50, fontSize: 17, color:'white'}}>No</Text>)
+                                                (<Text style = {{marginTop: 50, fontSize: 17, fontWeight: 'bold'}}>Yes</Text>) : 
+                                                (<Text style = {{marginTop: 50, fontSize: 17, fontWeight: 'bold'}}>No</Text>)
                                         }   
                                     </View>
                                 </View>
@@ -309,14 +309,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 3,
         fontSize: 14,
-        color: 'white',
         marginBottom: 10,
         marginTop: 10,
         textAlign: 'center',
-        borderTopColor: '#ba6b57',
-        borderRightColor: '#ba6b57',
-        borderLeftColor: '#ba6b57',
-        borderBottomColor: 'white',
+        borderTopColor: 'white',
+        borderRightColor: 'white',
+        borderLeftColor: 'white',
+        borderBottomColor: 'black',
     },
     button:{
         marginTop: 30,
@@ -336,7 +335,6 @@ const styles = StyleSheet.create({
     },
     text:{
         fontSize: 15,
-        color: 'white',
         marginTop: 10,
         marginLeft: 10,
         marginRight: 0,
@@ -346,7 +344,7 @@ const styles = StyleSheet.create({
     },
     heading:{
         fontSize: 25,
-        color: 'red',
+        color: '#e32012',
         marginTop: 30,
         textAlign: 'center',
         fontFamily: 'PlayfairDisplay_700Bold',
@@ -359,8 +357,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         borderWidth: 1.2,
         borderRadius: 10,
-        backgroundColor: '#ba6b57',
-        shadowOpacity: 0.1,
+        backgroundColor: '#ffffff',
     },
     CamButton: {
         alignSelf: 'center',
@@ -380,7 +377,6 @@ const styles = StyleSheet.create({
     amPm: {
         marginTop: 7, 
         fontSize: 17, 
-        color:'#ffffff',
         fontWeight: 'bold',
     },
 });
