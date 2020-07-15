@@ -155,8 +155,7 @@ export default async function HandleDeclaration () {
             const countCenter = (history.match(/<td align="center">/g) || []).length
             
             if (countCenter == 6){
-                await cancelNoti(amId_old)
-                await cancelNoti(pmId_old)
+                Notifications.cancelAllScheduledNotificationsAsync()
 
                 await setReminder(timeAm_old)
                 await setReminder(timePm_old)
