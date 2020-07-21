@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@adammcarth/react-native-segmented-picker": "2.0.1",
     "@expo-google-fonts/playfair-display": "^0.1.0",
     "@react-native-community/async-storage": "^1.11.0",
     "@react-native-community/masked-view": "^0.1.6",
@@ -23,11 +24,13 @@
     "base-64": "^0.1.0",
     "expo": "^37.0.12",
     "expo-auth-session": "~1.2.1",
+    "expo-background-fetch": "~8.1.0",
     "expo-camera": "~8.2.0",
     "expo-font": "~8.1.0",
     "expo-media-library": "~8.1.0",
     "expo-permissions": "~8.1.0",
     "expo-secure-store": "~8.1.0",
+    "expo-task-manager": "~8.1.0",
     "expo-web-browser": "~8.2.1",
     "firebase": "7.9.0",
     "install": "^0.13.0",
@@ -45,7 +48,7 @@
     "react-native-render-html-table-bridge": "0.6.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.2.0",
-    "react-native-segmented-picker": "^2.0.0",
+    "react-native-segmented-picker": "^2.0.1",
     "react-native-snackbar": "^2.2.2",
     "react-native-snackbar-component": "^1.1.10",
     "react-native-web": "^0.11.7",
@@ -53,9 +56,7 @@
     "react-navigation": "^4.3.9",
     "react-navigation-animated-switch": "^0.6.0",
     "react-redux": "^7.2.0",
-    "redux": "^4.0.5",
-    "expo-background-fetch": "~8.1.0",
-    "expo-task-manager": "~8.1.0"
+    "redux": "^4.0.5"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.1.0",

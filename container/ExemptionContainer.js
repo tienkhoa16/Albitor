@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     },
     heading:{
         fontSize: 25,
-        color: 'green',
+        color: '#e32012',
         marginTop: 20,
         textAlign: 'center',
         fontFamily: 'PlayfairDisplay_700Bold',

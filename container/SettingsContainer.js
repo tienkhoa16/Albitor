@@ -354,7 +354,7 @@ export default class SettingsContainer extends React.Component{
                                         ref={this.amPicker}
                                         onConfirm={this.onConfirmAm}
                                         options={createTimeData(true)}
-                                        
+                                        defaultSelections={{'col_1': hourAm.toString(), 'col_2': minuteAm.toString()}}
                                     />
 
                                     <View style = {{flexDirection: 'row', alignContent: 'space-between', marginTop: 10}}>
@@ -377,6 +377,7 @@ export default class SettingsContainer extends React.Component{
                                         ref={this.pmPicker}
                                         onConfirm={this.onConfirmPm}
                                         options={createTimeData(false)}
+                                        defaultSelections={{'col_1': hourPm.toString(), 'col_2': minutePm.toString()}}
                                     />
 
                                     <BlueButton
@@ -446,7 +447,7 @@ const styles = StyleSheet.create({
     },
     heading:{
         fontSize: 25,
-        color: 'brown',
+        color: '#e32012',
         marginTop: 20,
         textAlign: 'center',
         fontFamily: 'PlayfairDisplay_700Bold',
@@ -458,53 +459,3 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
 });
-
-// import React, { Component } from 'react';
-// import SegmentedPicker from 'react-native-segmented-picker';
-// import {Text, View} from 'react-native';
- 
-// export default class Demo extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.segmentedPicker = React.createRef();
-//   }
- 
-//   onConfirm = (selections) => {
-//     console.info(selections);
-//   }
- 
-//   render() {
-//     return (
-//       <View>
-//         <Text
-//             style={{marginTop: 300}}
-//             onPress={() => this.segmentedPicker.current.show()}>
-//             Click me
-//         </Text>
-
-//         <SegmentedPicker
-//             ref={this.segmentedPicker}
-//             onConfirm={this.onConfirm}
-//             defaultSelections={{'col_1': 'option_3', 'col_2': 'option_5'}}
-//             options={[
-//             {
-//                 key: 'col_1',
-//                 items: [
-//                     { label: 'Option 1', value: 'option_1' },
-//                     { label: 'Option 2', value: 'option_2' },
-//                     { label: 'Option 3', value: 'option_3' },
-//                 ],
-//             },
-//             {
-//                 key: 'col_2',
-//                 items: [
-//                     { label: 'Option 4', value: 'option_4' },
-//                     { label: 'Option 5', value: 'option_5' },
-//                 ],
-//             },
-//             ]}
-//         />
-//       </View>
-//     );
-//   }
-// }

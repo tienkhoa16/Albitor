@@ -57,7 +57,7 @@ function paddingZeros(hour){
 export default class DeclareTempContainer extends React.Component{
     state = {
         temp: '',
-        date: paddingZeros(new Date().getDate()) + '/' + paddingZeros(new Date().getMonth()) 
+        date: paddingZeros(new Date().getDate()) + '/' + paddingZeros(new Date().getMonth() + 1) 
             + '/' + new Date().getFullYear(),
         timeOfDay: (new Date().getHours() < 12 ? 'A' : 'P'),
         isPm: (new Date().getHours() < 12 ? false : true),
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     heading:{
         fontSize: 25,
         color: '#e32012',
-        marginTop: 30,
+        marginTop: 15,
         textAlign: 'center',
         fontFamily: 'PlayfairDisplay_700Bold',
     },

@@ -35,6 +35,10 @@ async function readTime() {
             timeAm_old = new Date(myJson.timeAm)
             timePm_old = new Date(myJson.timePm)
         }
+        else{
+            timeAm_old = 0
+            timePm_old = 0
+        }
     } catch (e) {
         console.log(e);
     }
@@ -82,6 +86,8 @@ async function setReminder (notiTime) {
     const id = await setNotification(time)
 
     if (new Date(time).getHours() < 12){
+        await readTime()
+        await readNotiId()
         await rememberNotiId(id, pmId_old)
         await rememberTime(time, timePm_old)
     }
