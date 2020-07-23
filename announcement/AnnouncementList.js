@@ -235,7 +235,7 @@ export default class AnnouncementListContainer extends Component {
                     description: this.state.description
                   });
               }}>
-                <Text style={styles.bottomButton}>Edit</Text>
+                <Text style={styles.bottomButton}>Update</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.ButtonBoxDelete}

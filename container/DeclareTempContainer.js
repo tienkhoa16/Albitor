@@ -5,7 +5,7 @@ import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingVi
     Keyboard, TouchableWithoutFeedback, ScrollView, Image, Switch, BackHandler, Animated } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
     
-import BlueButton from '../component/BlueButton';
+import RedButton from '../component/RedButton';
 
 import store from '../store';
 
@@ -272,12 +272,12 @@ export default class DeclareTempContainer extends React.Component{
                                 </View>
                             </View>
                             
-                            <BlueButton
+                            <RedButton
                                 style = {styles.button}
                                 onPress = {this.handlePressSubmitButton}
                             >
                                 Submit
-                            </BlueButton>
+                            </RedButton>
                         </View>
                         
                         <View style = {{flex: 4, marginTop: 20, alignSelf: 'center'}}>
@@ -324,10 +324,8 @@ const styles = StyleSheet.create({
     },
     textWelcome:{
         fontSize: 15,
-        color: 'green',
         marginTop: 10,
-        marginLeft: 10,
-        marginRight: 10,
+        paddingHorizontal: 10,
         fontStyle: 'italic',
         textAlign: 'left',
         fontWeight: 'bold',

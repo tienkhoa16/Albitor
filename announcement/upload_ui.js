@@ -21,11 +21,11 @@ import moment from 'moment';
 import Constants from 'expo-constants';
 import firebaseDb from '../firebaseDb';
 import ExpandingTextInput from './ExpandingTextInput';
-import { CheckBox } from 'react-native-btr';
+import { CheckBox } from 'react-native-elements';
 import store from '../store';
 import _ from 'lodash';
 
-import BlueButton from '../component/BlueButton';
+import RedButton from '../component/RedButton';
 
 function getDateTime(){
     const date = moment()
@@ -220,14 +220,16 @@ class AnnouncementForm extends Component {
 
               <View style={styles.options}>
                 <CheckBox
-                  checked={this.state.checked}
-                  onPress={() => this.setState({ checked: !this.state.checked })}
-                  color='#009688'
+                    checked={this.state.checked}
+                    onPress={() => this.setState({ checked: !this.state.checked })}
+                    checkedColor='#009688'
+                    title = "Send update notification to all users"
+                    containerStyle={{backgroundColor: 'transparent'}}
+                    textStyle={{fontSize: 16, color: 'black'}}
                 />
-                <Text>      Send update notification to all users</Text>
               </View>
 
-              <BlueButton
+              <RedButton
                   style = {styles.button}
                   onPress = {() => {
                     this.setState({submitButtonPressed: true })
@@ -240,7 +242,7 @@ class AnnouncementForm extends Component {
                   }}
               >
                   Submit
-              </BlueButton>
+              </RedButton>
               <View style={{ flex: 1 }} />
             </View>
           </TouchableWithoutFeedback>
@@ -295,8 +297,8 @@ const styles = StyleSheet.create({
   options: {
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingTop: 20,
-    paddingBottom: 30,
+    marginTop: 10,
+    marginBottom: 10,
   },
   SubmitButton: {
     alignSelf: "center",

@@ -6,13 +6,13 @@ import { View, FlatList, ActivityIndicator, Text,
          TextInput, Button, Vibration } from 'react-native';
 import firebaseDb from '../firebaseDb';
 import { NavigationContainer } from '@react-navigation/native';
-import { CheckBox } from 'react-native-btr';
+import { CheckBox } from 'react-native-elements';
 import store from '../store';
 import * as Permissions from 'expo-permissions';
 import moment from 'moment';
 import { Notifications } from 'expo';
 import ExpandingTextInput from './ExpandingTextInput';
-import BlueButton from '../component/BlueButton';
+import RedButton from '../component/RedButton';
 import Constants from 'expo-constants';
 import _ from 'lodash';
 
@@ -186,7 +186,6 @@ export default class UpdateAnnouncement extends Component {
         <ScrollView style={styles.container}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.innerLayout}>
-              <Text style={styles.Header}>UPDATE</Text>
               <Text style = {styles.TitleText}>Subject: *</Text>
               <ExpandingTextInput
                 multiline
@@ -235,19 +234,21 @@ export default class UpdateAnnouncement extends Component {
                 <CheckBox
                   checked={this.state.checked}
                   onPress={() => this.setState({ checked: !this.state.checked })}
-                  color='#009688'
+                  checkedColor='#009688'
+                  title = "Send update notification to all users"
+                  containerStyle={{backgroundColor: 'transparent'}}
+                  textStyle={{fontSize: 16, color: 'black'}}
                 />
-                <Text>      Send update notification to all users</Text>
               </View>
 
-              <BlueButton
+              <RedButton
                 style = {styles.button}
                 onPress = {() => {
                   this.confirmEdit(itemid)
                 }}
               >
                   UPDATE
-              </BlueButton>
+              </RedButton>
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>
@@ -264,11 +265,6 @@ const styles = StyleSheet.create({
   inner: {
     flex: 1,
     justifyContent: 'flex-end',
-  },
-  Header: {
-    fontSize: 26,
-    textAlign: 'center',
-    color: 'blue'
   },
   alertText: {
     color: 'red',
@@ -297,8 +293,8 @@ const styles = StyleSheet.create({
   options: {
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingTop: 20,
-    paddingBottom: 30,
+    marginTop: 10,
+    marginBottom: 10,
   },
   Box: {
     borderTopColor: 'transparent',

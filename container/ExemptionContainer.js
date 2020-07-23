@@ -4,7 +4,7 @@ import React from 'react';
 import { View, StyleSheet, Text, Dimensions, Alert, ScrollView, SafeAreaView } from 'react-native';
 import { CheckBox } from 'react-native-elements';
     
-import BlueButton from '../component/BlueButton';
+import RedButton from '../component/RedButton';
 
 import store from '../store';
 
@@ -191,12 +191,12 @@ export default class ExemptionContainer extends React.Component{
                                 {'\u2022'} For perpetual exemptions, you only need to do it once. No further action is needed.
                             </Text>
                         </View>
-                        <BlueButton
+                        <RedButton
                             style = {styles.button}
                             onPress = {this.handlePressSubmitButton}
                         >
                             Submit
-                        </BlueButton>
+                        </RedButton>
                     </View>
                 </ScrollView>
             </SafeAreaView>

@@ -15,7 +15,7 @@ import store from '../store';
 
 import HandleDeclaration from './HandleDeclaration'
 
-import BlueButton from '../component/BlueButton';
+import RedButton from '../component/RedButton';
 
 
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -380,12 +380,12 @@ export default class SettingsContainer extends React.Component{
                                         defaultSelections={{'col_1': hourPm.toString(), 'col_2': minutePm.toString()}}
                                     />
 
-                                    <BlueButton
+                                    <RedButton
                                         style={styles.button}
                                         onPress={this.handlePressButton}
                                     >
                                         Set
-                                    </BlueButton>
+                                    </RedButton>
                                 </View>
                             ) :
                             (

@@ -3,7 +3,7 @@ import {ScrollView, StyleSheet, Alert, View, Dimensions, Text,
     KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, TextInput } from 'react-native';
 import firebaseDb from '../firebaseDb';
 
-import BlueButton from '../component/BlueButton'
+import RedButton from '../component/RedButton'
 
 import store from '../store';
 
@@ -76,14 +76,14 @@ export default class UpdateAnnouncement extends Component {
                                 value={this.state.description}
                             />
 
-                            <BlueButton
+                            <RedButton
                                 style = {styles.button}
                                 onPress = {() => {
                                     this.handleCreateBug();
                                 }}
                             >
                                 Report
-                            </BlueButton>
+                            </RedButton>
                         </View>
                     </TouchableWithoutFeedback>
                 </ScrollView>
