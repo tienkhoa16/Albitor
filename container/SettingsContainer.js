@@ -24,6 +24,10 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 const reminderMessage = {
     title: 'Temperature Declaration Time 🔔',
     body: "Time to declare your temperature",
+    android: {
+        channelId: 'reminders',
+        icon: "../assets/thermometer.png",
+    }
 }
 
 
@@ -247,8 +251,8 @@ export default class SettingsContainer extends React.Component{
         }
     
         if ( Platform.OS === 'android' ) {
-            Notifications.createChannelAndroidAsync('default', {
-                name: 'default',
+            Notifications.createChannelAndroidAsync('reminders', {
+                name: 'Reminders',
                 sound: true,
                 priority: 'max',
                 vibrate: [0, 250, 250, 250],
@@ -263,6 +267,8 @@ export default class SettingsContainer extends React.Component{
 
     setReminder = async () => {
         const {hourAm, minuteAm, hourPm, minutePm, hasNotificationPermission, reminderMessage} = this.state
+
+        await Notifications.cancelAllScheduledNotificationsAsync()
 
         let currentTime = new Date().getTime()
         let timeAm =  new Date().setHours(hourAm, minuteAm, 0, 0)

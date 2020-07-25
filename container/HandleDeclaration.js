@@ -10,6 +10,10 @@ import getHistoryHtml from './GetHistoryHtml';
 const reminderMessage = {
     title: 'Temperature Declaration Time',
     body: "Time to declare your temperature",
+    android: {
+        channelId: 'reminders',
+        icon: "../assets/thermometer.png",
+    }
 }
 
 let timeAm_old = 0
@@ -161,7 +165,7 @@ export default async function HandleDeclaration () {
             const countCenter = (history.match(/<td align="center">/g) || []).length
             
             if (countCenter == 6){
-                Notifications.cancelAllScheduledNotificationsAsync()
+                await Notifications.cancelAllScheduledNotificationsAsync()
 
                 await setReminder(timeAm_old)
                 await setReminder(timePm_old)
