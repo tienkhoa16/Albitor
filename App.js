@@ -1,6 +1,7 @@
 import React from 'react';
 import { UIManager, Platform, Alert } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+import { Notifications } from 'expo';
 
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -26,6 +27,12 @@ import AnnouncementButton from './announcement/announcement_button';
 import AnnouncementListContainer from './announcement/AnnouncementList';
 import UpdateAnnouncement from './announcement/UpdateAnnouncement';
 import AnnouncementView from './announcement/AnnouncementView';
+
+import SignUpScreen from './chat/SignUpScreen';
+import SignInScreen from './chat/SignInScreen';
+import LoadScreen from './chat/LoadScreen';
+import ChatListScreen from './chat/ChatListScreen';
+import ChatRoom from './chat/ChatRoom';
 
 import CameraUI from './camera/camera_ui';
 
@@ -143,6 +150,16 @@ function MainScreenTab() {
          }}
       />
       <Tab.Screen
+        name='Chat'
+        component={ChatComponent}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="message1" size={24} color={color} />
+          ),
+          unmountOnBlur: true,
+         }}
+      />
+      <Tab.Screen
         name="More"
         component={MoreStack}
         options={{
@@ -153,6 +170,42 @@ function MainScreenTab() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+const ChatStack = createStackNavigator();
+
+function ChatComponent({ navigation }) {
+  return (
+    <ChatStack.Navigator
+      initialRouteName='LoadScreen'
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <ChatStack.Screen
+        name='LoadScreen'
+        component={LoadScreen}
+      />
+      <ChatStack.Screen
+        name='SignUpScreen'
+        component={SignUpScreen}
+      />
+      <ChatStack.Screen
+        name='SignInScreen'
+        component={SignInScreen}
+      />
+      <ChatStack.Screen
+        name='ChatListScreen'
+        component={ChatListScreen}
+      />
+      <ChatStack.Screen
+        name='ChatRoom'
+        component={ChatRoom}
+        initialParams={{ f_uid: '', f_name: '', f_email: '', u_uid: '', u_name: '', u_email: '', token: '' }}
+        options={({ route }) => ({ title: route.params.f_name })}
+      />
+    </ChatStack.Navigator>
   );
 }
 
@@ -213,7 +266,7 @@ export default function App() {
       alert('Please turn on Wifi/Mobile Data')
   });
 
-  backgroundTask('printRandom')
+  backgroundTask('printRandom');
   
   return (
     <Provider store = {store}>

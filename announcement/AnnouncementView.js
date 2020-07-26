@@ -1,6 +1,6 @@
 import React, { Component, useEffect } from 'react';
 import { View, FlatList, ActivityIndicator, Text, StyleSheet, Alert,
-         TouchableOpacity, Button, SafeAreaView, YellowBox, Linking } from 'react-native';
+         TouchableOpacity, Button, SafeAreaView, YellowBox, Linking, BackHandler } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import firebaseDb from '../firebaseDb';
@@ -11,7 +11,6 @@ import store from '../store';
 import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';
 
-const admin = ['E0426339', 'E0407678']
 
 export default class AnnouncementView extends Component {
   constructor(props) {
@@ -22,29 +21,50 @@ export default class AnnouncementView extends Component {
       hyperlink: '',
       description: '',
       userList: null,
+      adminList: null,
     }
     this.props.navigation.setOptions({
-      headerRight: () => (
-        admin.includes(store.getState().logIn.username) ? 
-          (
-            <View style={{ flexDirection: 'row' }}>
-              <HeaderDeleteButton onPress={async () => this.confirmDelete(this.state.id)} />
-              <HeaderEditButton onPress={async () => {
-                const {id, title, hyperlink, description} = this.props.route.params;
-                this.props.navigation.navigate('Update Announcement', {
-                  itemid: id,
-                  title: title,
-                  hyperlink: hyperlink,
-                  description: description
-                });
-                }} />
-            </View>
+      headerRight: () => {
+        const admins = this.state.adminList;
+        return (
+          (admins) ? (
+            ((admins.includes(store.getState().logIn.username)) || (store.getState().logIn.prefix == "nusstf\\")) ?
+            (
+              <View style={{ flexDirection: 'row' }}>
+                <HeaderDeleteButton onPress={async () => this.confirmDelete(this.state.id)} />
+                <HeaderEditButton onPress={async () => {
+                  const {id, title, hyperlink, description} = this.props.route.params;
+                  this.props.navigation.navigate('Update Announcement', {
+                    itemid: id,
+                    title: title,
+                    hyperlink: hyperlink,
+                    description: description
+                  });
+                  }} />
+              </View>
+            ) : null
           ) : null
-      ),
+        )
+      },
+      headerLeft: null,
       headerStyle: {
         backgroundColor: 'orange',
       },
     });
+  }
+
+  updateAdminList = () => {
+    firebaseDb
+      .firestore()
+      .collection('announcement_admin')
+      .get()
+      .then (querySnapshot => {
+        const results = []
+        querySnapshot.docs.map(documentSnapshot => results.push({
+          ...documentSnapshot.data()
+        }))
+        this.setState({ adminList: results.map(item => item.username) })
+      }).catch(err => console.error(err))
   }
 
   handleDeleteAnnouncement = id =>
@@ -81,8 +101,20 @@ export default class AnnouncementView extends Component {
   }
 
   componentDidMount() {
+    this.unsubscribeAdmin = firebaseDb.firestore().collection('announcement_admin').onSnapshot(this.updateAdminList)
     const {id, title, hyperlink, description} = this.props.route.params;
     this.handleUpdateInfo(id, title, hyperlink, description);
+    BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeAdmin();
+    BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+  }
+
+  onBackPress = () => {
+    this.props.navigation.navigate('Announcement List')
+    return true
   }
 
   render() {
@@ -98,7 +130,16 @@ export default class AnnouncementView extends Component {
             <Text>Posted by {createdBy} on {createdAt}</Text>
           )
         }
-        <Text style={styles.HyperlinkStyle} onPress={() => Linking.openURL(hyperlink)}>**Click here to open document**</Text>
+        {
+          (hyperlink == 'null' || !hyperlink.includes('https://')) ?
+            (
+              null
+            )
+            :
+            (
+              <Text style={styles.HyperlinkStyle} onPress={() => Linking.openURL(hyperlink)}>**Click here to open document**</Text>
+            )
+        }
         <Text style={styles.AnnouncementStyle}>{description}</Text>
       </View>
     );

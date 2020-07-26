@@ -40,6 +40,7 @@ class AnnouncementForm extends Component {
       title: '',
       hyperlink: '',
       description: '',
+      id: '',
       created: '',
       checked: false,
       hasNotificationPermission: null,
@@ -82,15 +83,6 @@ class AnnouncementForm extends Component {
     else {
       alert('Must use physical device for notifications')
     }
-
-    if ( Platform.OS === 'android' ) {
-      Notifications.createChannelAndroidAsync('default', {
-        name: 'default',
-        sound: true,
-        priority: 'max',
-        vibrate: [0, 250, 250, 250],
-      });
-    }
   };
 
   componentDidMount() {
@@ -120,6 +112,9 @@ class AnnouncementForm extends Component {
   sendPushNotification = async () => {
     const name = this.state.createdBy;
     const subject = this.state.title;
+    const hyperlink = this.state.hyperlink;
+    const des = this.state.description;
+    const itemid = this.state.id;
     const ids = this.state.userList.map(item => item.id)
     ids.forEach(async function(id, index) {
       const message = {
@@ -127,6 +122,21 @@ class AnnouncementForm extends Component {
         sound: 'default',
         title: 'New announcement uploaded',
         body: `${name} has uploaded ${subject}`,
+        data: {
+          data: 'announcement',
+          id: itemid,
+          title: subject,
+          hyperlink: hyperlink,
+          description: des,
+          created: getDateTime(),
+          createdBy: store.getState().logIn.name,
+          lastEditBy: '',
+          hasBeenEdited: false
+        },
+        android: {
+          channelId: 'announcement',
+          icon: "../assets/thermometer.png",
+        },
         _displayInForeground: true,
       };
       const response = await fetch('https://exp.host/--/api/v2/push/send', {
@@ -152,9 +162,14 @@ class AnnouncementForm extends Component {
         createdBy: store.getState().logIn.name,
         lastEditBy: '',
         hasBeenEdited: false,
+        createdAtFirebaseTimeStamp: firebaseDb.firestore.FieldValue.serverTimestamp()
       })
-      .then(() => {
+      .then((docRef) => {
+        this.handleSetID(docRef.id)
         alert('Add new announcement successful!')
+        if (this.state.checked) {
+          this.sendPushNotification();
+        }
         this.props.navigation.navigate('Announcement List')
       })
       .catch((err) => console.error(err));
@@ -163,6 +178,7 @@ class AnnouncementForm extends Component {
   handleUpdateHyperlink = (hyperlink) => this.setState({hyperlink});
   handleUpdateDescription = (description) => this.setState({description});
   handleSetCreator = (createdBy) =>  this.setState({createdBy});
+  handleSetID = (id) => this.setState({id})
 
   render() {
     return (
@@ -186,7 +202,7 @@ class AnnouncementForm extends Component {
                 ) : null
               }
 
-              <Text style = {styles.HyperlinkText}>PDF file: *</Text>
+              <Text style = {styles.HyperlinkText}>PDF file: (Fill in null if no PDF is required)</Text>
               <ExpandingTextInput
                 multiline
                 style = {styles.Box}
@@ -235,9 +251,6 @@ class AnnouncementForm extends Component {
                     this.setState({submitButtonPressed: true })
                     if (this.state.title.length && this.state.hyperlink.length && this.state.description.length) {
                       this.handleCreateAnnouncement();
-                    }
-                    if (this.state.checked) {
-                      this.sendPushNotification();
                     }
                   }}
               >

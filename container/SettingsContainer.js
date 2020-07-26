@@ -220,11 +220,11 @@ export default class SettingsContainer extends React.Component{
 
                 console.log('Have set for AM: ', new Date(myJson.timeAm)+0)
                 console.log('Have set for PM: ', new Date(myJson.timePm)+0)
-                alert(
-                    'Have set for AM: '+(new Date(myJson.timeAm)).toString()+
-                    '\nHave set for PM: '+ (new Date(myJson.timePm)).toString()+
-                    '\nLast run background task: '+(new Date(await this.readLastRunBackground())).toString()
-                )
+//                alert(
+//                    'Have set for AM: '+(new Date(myJson.timeAm)).toString()+
+//                    '\nHave set for PM: '+ (new Date(myJson.timePm)).toString()+
+//                    '\nLast run background task: '+(new Date(await this.readLastRunBackground())).toString()
+//                )
             }
         } catch (e) {
             console.log(e);
@@ -248,15 +248,6 @@ export default class SettingsContainer extends React.Component{
             }
         else {
             alert('Must use physical device for notifications')
-        }
-    
-        if ( Platform.OS === 'android' ) {
-            Notifications.createChannelAndroidAsync('reminders', {
-                name: 'Reminders',
-                sound: true,
-                priority: 'max',
-                vibrate: [0, 250, 250, 250],
-            });
         }
     };
 

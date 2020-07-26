@@ -13,7 +13,6 @@ import AnnouncementButton from './announcement_button';
 import _ from 'lodash';
 import store from '../store';
 
-const admin = ['E0426339', 'E0407678']
 
 export default class AnnouncementListContainer extends Component {
   constructor(props) {
@@ -27,6 +26,7 @@ export default class AnnouncementListContainer extends Component {
         hyperlink: '',
         description: '',
         userList: null,
+        adminList: null,
     };
     this.props.navigation.setOptions({
       headerStyle: {
@@ -40,7 +40,6 @@ export default class AnnouncementListContainer extends Component {
           _console.warn(message);
         }
       };
-
   }
 
   getNotificationPermission = async () => {
@@ -67,15 +66,6 @@ export default class AnnouncementListContainer extends Component {
     }
     else {
       alert('Must use physical device for notifications')
-    }
-
-    if ( Platform.OS === 'android' ) {
-      Notifications.createChannelAndroidAsync('default', {
-        name: 'default',
-        sound: true,
-        priority: 'max',
-        vibrate: [0, 250, 250, 250],
-      });
     }
   };
 
@@ -114,7 +104,7 @@ export default class AnnouncementListContainer extends Component {
     firebaseDb
       .firestore()
       .collection('notice')
-      .orderBy('created', 'desc')
+      .orderBy('createdAtFirebaseTimeStamp', 'desc')
       .get()
       .then (querySnapshot => {
         const results = []
@@ -123,6 +113,20 @@ export default class AnnouncementListContainer extends Component {
         id: documentSnapshot.id}))
         this.setState({ isLoading: false, announcement: results })
       }).catch(err => console.error(err))
+
+  updateAdminList = () => {
+    firebaseDb
+      .firestore()
+      .collection('announcement_admin')
+      .get()
+      .then (querySnapshot => {
+        const results = []
+        querySnapshot.docs.map(documentSnapshot => results.push({
+          ...documentSnapshot.data()
+        }))
+        this.setState({ adminList: results.map(item => item.username) })
+      }).catch(err => console.error(err))
+  }
 
   handleDeleteAnnouncement = id =>
     firebaseDb
@@ -151,15 +155,19 @@ export default class AnnouncementListContainer extends Component {
     this.getNotificationPermission();
     this.unsubscribe = firebaseDb.firestore().collection('notice').onSnapshot(this.updateAnnouncementList)
     this.unsubscribeUser = firebaseDb.firestore().collection('users').onSnapshot(this.updateDevices)
+    this.unsubscribeAdmin = firebaseDb.firestore().collection('announcement_admin').onSnapshot(this.updateAdminList)
   }
 
   componentWillUnmount() {
     this.unsubscribe();
     this.unsubscribeUser();
+    this.unsubscribeAdmin();
   }
 
   render() {
     const { isLoading, announcement } = this.state
+    const adminList = this.state.adminList
+    console.log(adminList)
 
     if (isLoading)
       return <ActivityIndicator />
@@ -172,12 +180,14 @@ export default class AnnouncementListContainer extends Component {
             <TouchableOpacity
               style={styles.itemContainer}
               onLongPress={() => {
-                if (admin.includes(store.getState().logIn.username)) {
-                  this.handleSetID(item.id);
-                  this.handleSetTitle(item.title);
-                  this.handleSetHyperlink(item.hyperlink);
-                  this.handleSetDescription(item.description);
-                  this._toggleBottomNavigationView();
+                if (adminList) {
+                  if (adminList.includes(store.getState().logIn.username) || store.getState().logIn.prefix == "nusstf\\") {
+                    this.handleSetID(item.id);
+                    this.handleSetTitle(item.title);
+                    this.handleSetHyperlink(item.hyperlink);
+                    this.handleSetDescription(item.description);
+                    this._toggleBottomNavigationView();
+                  }
                 }
               }}
               onPress={() => {
@@ -255,9 +265,11 @@ export default class AnnouncementListContainer extends Component {
           </View>
         </BottomSheet>
         {
-          admin.includes(store.getState().logIn.username) ? 
-            (<AnnouncementButton onPress={ () => {this.props.navigation.navigate('Add Announcement')} }>
-            </AnnouncementButton>) : null
+          adminList ? (
+            ((adminList.includes(store.getState().logIn.username)) || (store.getState().logIn.prefix == "nusstf\\")) ?
+              (<AnnouncementButton onPress={ () => {this.props.navigation.navigate('Add Announcement')} }>
+              </AnnouncementButton>) : null
+          ) : null
         }
       </SafeAreaView>
     );
@@ -267,12 +279,12 @@ export default class AnnouncementListContainer extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingLeft: 5,
-    paddingRight: 5,
+    marginLeft: 5,
+    marginRight: 5,
   },
   itemContainer: {
     flex: 1,
-    padding: 5,
+    marginTop: 5,
   },
   optionIcon: {
     alignItems: 'center',
