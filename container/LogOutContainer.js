@@ -121,6 +121,7 @@ export default class LogInContainer extends React.Component{
                             updateName: getName(resp.data),
                             updateCookie: resp.headers['set-cookie'][0].split(";")[0],
                             updateUsername: username.toUpperCase(),
+                            updatePrefix: prefix,
                         }
                     })
 

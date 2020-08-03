@@ -2,8 +2,13 @@ import axios from 'axios';
 import querystring from 'querystring';
 import React from 'react';
 import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, 
-    Keyboard, TouchableWithoutFeedback, ScrollView, Image, Switch, BackHandler, Animated } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+    Keyboard, TouchableWithoutFeedback, ScrollView, Image, Switch, BackHandler, Animated, YellowBox } from 'react-native';
+import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import * as Permissions from 'expo-permissions';
+import { Notifications } from 'expo';
+import Constants from 'expo-constants';
+import firebaseDb from '../firebaseDb';
+import _ from 'lodash';
     
 import RedButton from '../component/RedButton';
 
@@ -55,19 +60,81 @@ function paddingZeros(hour){
 
 
 export default class DeclareTempContainer extends React.Component{
-    state = {
-        temp: '',
-        date: paddingZeros(new Date().getDate()) + '/' + paddingZeros(new Date().getMonth() + 1) 
-            + '/' + new Date().getFullYear(),
-        timeOfDay: (new Date().getHours() < 12 ? 'A' : 'P'),
-        isPm: (new Date().getHours() < 12 ? false : true),
-        symptoms: 'N',
-        famSymptoms: 'N',
-        symptoms_bool: false,
-        famSymptoms_bool: false,
-        backClickCount: 0,
-    };
+    constructor(props){
+        super(props);
+        this.state = {
+            temp: '',
+            date: paddingZeros(new Date().getDate()) + '/' + paddingZeros(new Date().getMonth() + 1) 
+                + '/' + new Date().getFullYear(),
+            timeOfDay: (new Date().getHours() < 12 ? 'A' : 'P'),
+            isPm: (new Date().getHours() < 12 ? false : true),
+            symptoms: 'N',
+            famSymptoms: 'N',
+            symptoms_bool: false,
+            famSymptoms_bool: false,
+            backClickCount: 0,
+        };
 
+        YellowBox.ignoreWarnings(['Setting a timer']);
+        const _console = _.clone(console);
+        console.warn = message => {
+            if (message.indexOf('Setting a timer') <= -1) {
+                _console.warn(message);
+            }
+        };
+    }
+
+    getNotificationPermission = async () => {
+        if (Constants.isDevice) {
+            const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+            this.setState({ hasNotificationPermission: status === 'granted'});
+            if (!this.state.hasNotificationPermission) {
+                const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+                this.setState({ hasNotificationPermission: status === 'granted'});
+            }
+            if (!this.state.hasNotificationPermission) {
+                alert('Failed to get push token for push notifications!');
+            }
+            const token = await Notifications.getExpoPushTokenAsync();
+            console.log(token);
+            this.setState({ notificationToken: token });
+            firebaseDb.firestore()
+                .collection('users')
+                .doc(token)
+                .set({
+                username: store.getState().logIn.username,
+                name: store.getState().logIn.name
+                })
+                .catch((err) => console.error(err));
+        }
+        else {
+            alert('Must use physical device for notifications')
+        }
+
+        if ( Platform.OS === 'android' ) {
+            Notifications.createChannelAndroidAsync('announcement', {
+                name: 'Announcement',
+                sound: true,
+                priority: 'max',
+                vibrate: [0, 250, 250, 250],
+            });
+        
+            Notifications.createChannelAndroidAsync('reminders', {
+                name: 'Reminders',
+                sound: true,
+                priority: 'max',
+                vibrate: [0, 250, 250, 250],
+            });
+
+            Notifications.createChannelAndroidAsync('chat', {
+                name: 'Messaging',
+                sound: true,
+                priority: 'max',
+                vibrate: [0, 250, 250, 250],
+            });
+        }
+    };
+  
     springValue = new Animated.Value(100);
 
     handleTemp = (temp) => this.setState({temp});
@@ -75,44 +142,79 @@ export default class DeclareTempContainer extends React.Component{
     handlePressSubmitButton = () => {
         const floatTemp = parseFloat(this.state.temp)
 
-        if(!(34 <= floatTemp && floatTemp <= 40)){
-            Alert.alert(
-                "Declare Failed",    //Alert Title
-                'Temperature must be between 34\u2103 and 40\u2103', //Alert Message
-                [
-                    { text: "OK" }
-                ],
-                { cancelable: false }
-            )
+        if (this.state.temp){
+            if(!(34 <= floatTemp && floatTemp <= 40)){
+                Alert.alert(
+                    "Declare Failed",    //Alert Title
+                    'Temperature must be between 34\u2103 and 40\u2103', //Alert Message
+                    [
+                        { text: "OK" }
+                    ],
+                    { cancelable: false }
+                )
+            }
+            else{
+                (async() =>{
+                    const resp_code = await submitTemp(floatTemp,this.state.date,this.state.timeOfDay,
+                                                    this.state.symptoms,this.state.famSymptoms)
+
+                    if(resp_code != 200){
+                        Alert.alert(
+                            "Declare Failed",    //Alert Title
+                            'Failed to declare temperature. HTTP Error Code: ' + resp_code, //Alert Message
+                            [
+                                { text: "OK"}
+                            ],
+                            { cancelable: false }
+                        )
+                    }
+                    else{
+                        await HandleDeclaration()
+                        Alert.alert(
+                            "Declare Succesful",    //Alert Title
+                            'Declared '+floatTemp+'\u2103 for '+this.state.timeOfDay+'M on '+this.state.date,    // Alert Message
+                            [
+                                { text: "See History", onPress: () => this.props.navigation.navigate('History') },
+                                { text: "OK", onPress: () => console.log("OK Pressed") }
+                            ],
+                            { cancelable: false }
+                        );
+                    }
+                })()
+            }
         }
         else{
-            (async() =>{
-                const resp_code = await submitTemp(floatTemp,this.state.date,this.state.timeOfDay,
-                                                this.state.symptoms,this.state.famSymptoms)
+            const precision = 10;
+            const randomAm = Math.floor(Math.random() * (36.8 * precision - 35.2* precision) + 35.2 * precision) / (1*precision);
+            const randomPm = Math.floor(Math.random() * (36.8 * precision - 35.2* precision) + 35.2 * precision) / (1*precision);
+            console.log(randomAm, randomPm)
 
-                if(resp_code != 200){
-                    Alert.alert(
-                        "Declare Failed",    //Alert Title
-                        'Failed to declare temperature. HTTP Error Code: ' + resp_code, //Alert Message
-                        [
-                            { text: "OK"}
-                        ],
-                        { cancelable: false }
+            let now = new Date()
+            let then = new Date(
+                    now.getFullYear(),
+                    now.getMonth(),
+                    now.getDate(),
+                    0,0,0)
+            let diff = now.getTime() - then.getTime();
+            console.log(diff)
+            
+            if (diff < 39600000){
+                (async () => {
+                    await submitTemp(randomAm,this.state.date,'A','N','N')
+                    await HandleDeclaration();
+                })()
+            }
+            else{
+                (async () => {
+                    await submitTemp(randomAm,this.state.date,'A','N','N')
+                    setTimeout(
+                        async() => await submitTemp(randomPm, this.state.date,'P','N','N'),
+                        1000
                     )
-                }
-                else{
-                    await HandleDeclaration()
-                    Alert.alert(
-                        "Declare Succesful",    //Alert Title
-                        'Declared '+floatTemp+'\u2103 for '+this.state.timeOfDay+'M on '+this.state.date,    // Alert Message
-                        [
-                            { text: "See History", onPress: () => this.props.navigation.navigate('History') },
-                            { text: "OK", onPress: () => console.log("OK Pressed") }
-                        ],
-                        { cancelable: false }
-                    );
-                }
-            })()
+                    await HandleDeclaration();
+                })()
+            }
+            alert("Done")
         }
 
         this.setState({
@@ -128,6 +230,43 @@ export default class DeclareTempContainer extends React.Component{
     async componentDidMount(){      
         BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
         await HandleDeclaration()
+        await this.getNotificationPermission()
+        Notifications.addListener( notification => {
+            console.log(notification);
+            if (notification.data.data == "announcement" && notification.origin == "selected" && store.getState().logIn.name)
+            {
+                console.log(notification.data)
+                this.props.navigation.navigate('Announcements', {
+                    screen: 'Announcement View',
+                    params: {
+                        id: notification.data.id,
+                        title: notification.data.title,
+                        hyperlink: notification.data.hyperlink,
+                        description: notification.data.description,
+                        createdAt: notification.data.created,
+                        createdBy: notification.data.createdBy,
+                        lastEditBy: notification.data.lastEditBy,
+                        hasBeenEdited: notification.data.hasBeenEdited
+                    }
+                })
+            }
+            else if (notification.data.data == "chat" && notification.origin == "selected" && store.getState().logIn.name)
+            {
+                console.log(notification.data)
+                this.props.navigation.navigate('Chat', {
+                    screen: 'ChatRoom',
+                    params: {
+                        f_uid: notification.data.f_id,
+                        f_name: notification.data.f_name,
+                        f_email: notification.data.f_email,
+                        u_uid: notification.data.u_id,
+                        u_name: notification.data.u_name,
+                        u_email: notification.data.u_email,
+                        token: notification.data.f_token,
+                    }
+                })
+            }
+        })
     }
 
     componentWillUnmount(){
@@ -177,14 +316,29 @@ export default class DeclareTempContainer extends React.Component{
                             <Text style = {styles.heading}>Temperature Declaration</Text>
 
                             <View style={styles.form}>
-                                <View style={{flex: 1, flexDirection: 'column', marginRight: 10}}>
+                                <View style={{flex: 1, flexDirection: 'column', marginRight: 5}}>
                                     <Text style = {styles.text}>Date: {date} </Text>
                                     <Text style = {styles.text}>Temperature ({'\u2103'})</Text>
-                                    <Text style = {styles.text}>Do you have COVID-19 symptoms?</Text>
+                                    <TouchableOpacity
+                                        style = {{flexDirection: 'row', marginLeft: 5}}
+                                        onPress = { () => {
+                                            Alert.alert(
+                                                "COVID-19 Symptoms",
+                                                "Fever, dry cough, tiredness, sore throat, breathlessness, and loss of sense of smell or taste",
+                                                [
+                                                    "OK"
+                                                ]
+                                            )
+                                        }}
+                                    >
+
+                                            <Text style = {styles.text}>Do you have COVID-19 symptoms? ℹ️</Text>
+
+                                    </TouchableOpacity>
                                     <Text style = {styles.text}>Do you have anyone in the same household having fever, and/or showing the above stated symptoms?</Text>
                                 </View>
 
-                                <View style={{flex: 1, flexDirection: 'column', marginLeft: 10}}>
+                                <View style={{flex: 1, flexDirection: 'column', marginLeft: 5}}>
                                     <View style={{flexDirection: 'row'}}>
                                         <Switch
                                             value={isPm}
@@ -206,9 +360,7 @@ export default class DeclareTempContainer extends React.Component{
                                         }   
                                     </View>
 
-
-
-                                    <View style={{flexDirection: 'row'}}>
+                                    <View style={{flexDirection: 'row', marginRight: 5}}>
                                         <TextInput 
                                             style = {styles.textInput}
                                             placeholder = "Your temperature"
@@ -303,7 +455,7 @@ const styles = StyleSheet.create({
     },
     textInput:{
         borderWidth: 1.5,
-        width: 140,
+        width: 130,
         height: 25,
         paddingHorizontal: 10,
         paddingVertical: 3,
@@ -362,7 +514,7 @@ const styles = StyleSheet.create({
     animatedView: {
         width: 260,
         position: "absolute",
-        top: screenHeight-30,
+        top: '100%',
         padding: 10,
         alignSelf: 'center',
         backgroundColor: "#dddddd",

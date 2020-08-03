@@ -8,7 +8,7 @@ import getHistoryHtml from './GetHistoryHtml';
 
 
 const reminderMessage = {
-    title: 'Temperature Declaration Time',
+    title: 'Temperature Declaration Time 🔔',
     body: "Time to declare your temperature",
     android: {
         channelId: 'reminders',

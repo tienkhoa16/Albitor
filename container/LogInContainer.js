@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, View, Keyboard, TouchableWithoutFeedback, 
-    Switch } from 'react-native';   
+    Switch, YellowBox } from 'react-native';   
 import { CheckBox } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 
@@ -12,6 +12,8 @@ import Spinner from '../component/SpinningComponent';
 
 import store from '../store';
 import base64 from 'Base64';
+
+import _ from 'lodash';
 
 
 async function auth(prefix, username, password){
@@ -74,16 +76,26 @@ function getName(data){
 }
 
 export default class LogInContainer extends React.Component{
-    state = {
-        prefix: 'nusstu\\',
-        optionStu: true,
-        optionStf: false,
-        optionExt: false,
-        username: '',
-        password: '',
-        authenticating: false,
-        rememberMe: false,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            prefix: 'nusstu\\',
+            optionStu: true,
+            optionStf: false,
+            optionExt: false,
+            username: '',
+            password: '',
+            authenticating: false,
+            rememberMe: false,
+        };
+        YellowBox.ignoreWarnings(['Setting a timer']);
+        const _console = _.clone(console);
+        console.warn = message => {
+            if (message.indexOf('Setting a timer') <= -1) {
+                _console.warn(message);
+            }
+        };
+    }
 
     async componentDidMount() {
         await this.read();
@@ -109,6 +121,7 @@ export default class LogInContainer extends React.Component{
                             updateName: getName(resp.data),
                             updateCookie: resp.headers['set-cookie'][0].split(";")[0],
                             updateUsername: username.toUpperCase(),
+                            updatePrefix: prefix,
                         }
                     })
 

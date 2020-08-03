@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Dimensions, Image, Text, Alert, View, SafeAreaView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Dimensions, Image, Text, Alert, View, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
 
@@ -9,7 +9,7 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 export default class MoreScreenContainer extends React.Component{
     render(){
         return(
-            <SafeAreaView style = {{flex: 1}}>
+            <ScrollView style = {{flex: 1}}>
                 <View style = {{width: screenWidth, height: 35, backgroundColor: 'orange'}} />
                 <Image
                     style = {{
@@ -102,7 +102,7 @@ export default class MoreScreenContainer extends React.Component{
                     <AntDesign name="logout" size={24} color='black' />
                     <Text style = {styles.text}>Log out</Text>
                 </TouchableOpacity>
-            </SafeAreaView>
+            </ScrollView>
         );
     }
 }

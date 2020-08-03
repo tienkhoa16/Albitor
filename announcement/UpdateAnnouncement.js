@@ -70,15 +70,6 @@ export default class UpdateAnnouncement extends Component {
     else {
       alert('Must use physical device for notifications')
     }
-
-    if ( Platform.OS === 'android' ) {
-      Notifications.createChannelAndroidAsync('default', {
-        name: 'default',
-        sound: true,
-        priority: 'max',
-        vibrate: [0, 250, 250, 250],
-      });
-    }
   };
 
   handleSetTitle = (title) => this.setState({title});
@@ -98,6 +89,7 @@ export default class UpdateAnnouncement extends Component {
         created: getDateTime(),
         lastEditedBy: store.getState().logIn.name,
         hasBeenEdited: true,
+        createdAtFirebaseTimeStamp: firebaseDb.firestore.FieldValue.serverTimestamp()
       })
       .then(() => {
         if (this.state.checked) {
@@ -119,6 +111,7 @@ export default class UpdateAnnouncement extends Component {
       cancellable: true
     })
   }
+
   handleUpdateInfo = (title, hyperlink, description) => {
     this.handleSetTitle(title);
     this.handleSetDescription(description);
@@ -131,7 +124,10 @@ export default class UpdateAnnouncement extends Component {
   }
 
   sendPushNotification = async () => {
+    const { itemid, title, hyperlink, description } = this.props.route.params;
     const name = store.getState().logIn.name
+    const des = this.state.description
+    const _hyperlink = this.state.hyperlink
     const ids = this.state.userList.map(item => item.id)
     const subject = this.state.title
     ids.forEach(async function(id, index) {
@@ -139,7 +135,22 @@ export default class UpdateAnnouncement extends Component {
         to: id,
         sound: 'default',
         title: 'New announcement updated',
+        data: {
+          data: 'announcement',
+          id: itemid,
+          title: subject,
+          hyperlink: _hyperlink,
+          description: des,
+          created: getDateTime(),
+          createdBy: '',
+          lastEditedBy: store.getState().logIn.name,
+          hasBeenEdited: true,
+        },
         body: `${name} has updated ${subject}`,
+        android: {
+          channelId: 'announcement',
+          icon: "../assets/thermometer.png",
+        },
         _displayInForeground: true,
       };
       const response = await fetch('https://exp.host/--/api/v2/push/send', {
@@ -201,7 +212,8 @@ export default class UpdateAnnouncement extends Component {
                   <Text style={styles.alertText}>* Required field must not be left blank</Text>
                 ) : null
               }
-              <Text style = {styles.HyperlinkText}>PDF file: *</Text>
+              <Text style = {styles.HyperlinkText}>PDF file:</Text>
+              <Text style = {styles.note}>Fill in NA if no PDF is required</Text>
               <ExpandingTextInput
                 multiline
                 style = {styles.Box}
@@ -303,6 +315,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 15,
+  },
+  note: {
+    fontSize: 14,
+    textAlign: 'left',
+    marginBottom: 10,
   },
   UDButton: {
     alignSelf: "center",

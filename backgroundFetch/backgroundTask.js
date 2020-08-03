@@ -122,8 +122,8 @@ async function initBackgroundFetch(taskName,
         }
         const options = {
             minimumInterval: interval, // in seconds
-            // stopOnTerminate: false,
-            // startOnBoot: true,
+            stopOnTerminate: false,
+            startOnBoot: true,
         };
         await BackgroundFetch.registerTaskAsync(taskName, options);
     } catch (err) {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { UIManager, Platform, Alert } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+import { Notifications } from 'expo';
 
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -27,6 +28,13 @@ import AnnouncementListContainer from './announcement/AnnouncementList';
 import UpdateAnnouncement from './announcement/UpdateAnnouncement';
 import AnnouncementView from './announcement/AnnouncementView';
 
+import SignUpScreen from './chat/SignUpScreen';
+import SignInScreen from './chat/SignInScreen';
+import LoadScreen from './chat/LoadScreen';
+import ChatListScreen from './chat/ChatListScreen';
+import ChatRoom from './chat/ChatRoom';
+import VerificationScreen from './chat/VerificationScreen';
+
 import CameraUI from './camera/camera_ui';
 
 import { Provider } from 'react-redux';
@@ -47,7 +55,7 @@ const AnnouncementStackScreen = createStackNavigator();
 
 function AnnouncementScreen({ navigation }) {
   return (
-      <AnnouncementStackScreen.Navigator initialRouteName='Announcement list'>
+      <AnnouncementStackScreen.Navigator initialRouteName='Announcement List'>
         <AnnouncementStackScreen.Screen
           name='Announcement List'
           component={AnnouncementListContainer}
@@ -111,6 +119,7 @@ function MainScreenTab() {
         activeBackgroundColor: 'black',
         inactiveBackgroundColor: 'black',
         labelStyle: {fontWeight: 'bold'},
+        showLabel: false,
       }}
     >
       <Tab.Screen 
@@ -134,11 +143,35 @@ function MainScreenTab() {
       />
       <Tab.Screen 
         name='Announcements' 
-        component={AnnouncementScreen} 
+        component={AnnouncementScreen}
+        listeners={({ navigation }) => ({
+          tabPress: e => {
+            e.preventDefault();
+            console.log("Announcement tab bar button pressed")
+            navigation.navigate('Announcements', {screen: 'Announcement List'})
+          },
+        })}
         options={{
           tabBarIcon: ({ color }) => (
             <Entypo name="bell" size={24} color={color} />
           ),  
+          unmountOnBlur: true,
+         }}
+      />
+      <Tab.Screen
+        name='Chat'
+        component={ChatComponent}
+        listeners={({ navigation }) => ({
+          tabPress: e => {
+            e.preventDefault();
+            console.log("Chat tab bar button pressed")
+            navigation.navigate('Chat', {screen: 'LoadScreen'})
+          },
+        })}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="message1" size={24} color={color} />
+          ),
           unmountOnBlur: true,
          }}
       />
@@ -153,6 +186,46 @@ function MainScreenTab() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+const ChatStack = createStackNavigator();
+
+function ChatComponent({ navigation }) {
+  return (
+    <ChatStack.Navigator
+      initialRouteName='LoadScreen'
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <ChatStack.Screen
+        name='LoadScreen'
+        component={LoadScreen}
+      />
+      <ChatStack.Screen
+        name='SignUpScreen'
+        component={SignUpScreen}
+      />
+      <ChatStack.Screen
+        name='VerificationScreen'
+        component={VerificationScreen}
+      />
+      <ChatStack.Screen
+        name='SignInScreen'
+        component={SignInScreen}
+      />
+      <ChatStack.Screen
+        name='ChatListScreen'
+        component={ChatListScreen}
+      />
+      <ChatStack.Screen
+        name='ChatRoom'
+        component={ChatRoom}
+        initialParams={{ f_uid: '', f_name: '', f_email: '', u_uid: '', u_name: '', u_email: '', token: '' }}
+        options={({ route }) => ({ title: route.params.f_name })}
+      />
+    </ChatStack.Navigator>
   );
 }
 
@@ -213,7 +286,7 @@ export default function App() {
       alert('Please turn on Wifi/Mobile Data')
   });
 
-  backgroundTask('printRandom')
+  backgroundTask('printRandom');
   
   return (
     <Provider store = {store}>
