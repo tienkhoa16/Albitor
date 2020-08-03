@@ -183,39 +183,6 @@ export default class DeclareTempContainer extends React.Component{
                 })()
             }
         }
-        else{
-            const precision = 10;
-            const randomAm = Math.floor(Math.random() * (36.8 * precision - 35.2* precision) + 35.2 * precision) / (1*precision);
-            const randomPm = Math.floor(Math.random() * (36.8 * precision - 35.2* precision) + 35.2 * precision) / (1*precision);
-            console.log(randomAm, randomPm)
-
-            let now = new Date()
-            let then = new Date(
-                    now.getFullYear(),
-                    now.getMonth(),
-                    now.getDate(),
-                    0,0,0)
-            let diff = now.getTime() - then.getTime();
-            console.log(diff)
-            
-            if (diff < 39600000){
-                (async () => {
-                    await submitTemp(randomAm,this.state.date,'A','N','N')
-                    await HandleDeclaration();
-                })()
-            }
-            else{
-                (async () => {
-                    await submitTemp(randomAm,this.state.date,'A','N','N')
-                    setTimeout(
-                        async() => await submitTemp(randomPm, this.state.date,'P','N','N'),
-                        1000
-                    )
-                    await HandleDeclaration();
-                })()
-            }
-            alert("Done")
-        }
 
         this.setState({
             temp: ''
