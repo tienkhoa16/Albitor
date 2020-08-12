@@ -205,15 +205,6 @@ export default class LogInContainer extends React.Component{
         } catch (e) {
             console.log(e);
         }
-        store.dispatch({
-            type: 'UPDATE',
-            payload: {
-                updateName: '',
-                updateCookie: '',
-                updateUsername: '',
-                updatePrefix: '',
-            }
-        })
     };
 
     handlePressStu = () => {
