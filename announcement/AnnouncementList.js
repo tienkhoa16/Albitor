@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, FlatList, ActivityIndicator, Text, StyleSheet, Alert,
+import { View, FlatList, ActivityIndicator, Text, StyleSheet, Alert, SafeAreaView,
          TouchableOpacity, YellowBox } from 'react-native';
 import { BottomSheet } from 'react-native-btr';
 import firebaseDb from '../firebaseDb';
