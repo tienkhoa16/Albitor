@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {ScrollView, StyleSheet, Alert, View, Dimensions, Text, Image,
+import {ScrollView, StyleSheet, View, Dimensions, Text, Image,
     KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, TextInput, TouchableOpacity } from 'react-native';
 import firebaseDb from '../firebaseDb';
 import * as ImagePicker from 'expo-image-picker';

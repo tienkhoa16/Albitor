@@ -4,15 +4,9 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Image,
-  Keyboard,
-  Alert,
   ScrollView,
   Dimensions,
   TextInput,
-  FlatList,
-  Button,
-  AsyncStorage,
   KeyboardAvoidingView,
   BackHandler
 } from 'react-native';
@@ -22,7 +16,6 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';
-import Constants from 'expo-constants';
 import store from '../store';
 import base64 from 'Base64';
 

@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet, Dimensions, Image, Text, Alert, View, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Dimensions, Image, Text, Alert, View, TouchableOpacity, ScrollView } from 'react-native';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
-import * as SecureStore from 'expo-secure-store';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);

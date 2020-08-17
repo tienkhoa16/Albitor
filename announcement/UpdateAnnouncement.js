@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { View, FlatList, ActivityIndicator, Text,
+import { View, Text,
          ScrollView, StyleSheet, Alert,
-         TouchableOpacity, KeyboardAvoidingView,
+         KeyboardAvoidingView,
          TouchableWithoutFeedback, Keyboard, YellowBox,
-         TextInput, Button, Vibration } from 'react-native';
+         Vibration } from 'react-native';
 import firebaseDb from '../firebaseDb';
-import { NavigationContainer } from '@react-navigation/native';
 import { CheckBox } from 'react-native-elements';
 import store from '../store';
 import * as Permissions from 'expo-permissions';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, SafeAreaView, TouchableOpacity, Dimensions, Text } from 'react-native';
+import { View, SafeAreaView, Dimensions } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import LoadingImage from '../component/LoadingImage'

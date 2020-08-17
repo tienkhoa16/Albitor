@@ -1,13 +1,12 @@
 import React from 'react';
-import { UIManager, Platform, Alert } from 'react-native';
+import { UIManager, Platform } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { Notifications } from 'expo';
 
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MaterialIcons, AntDesign, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign, Entypo } from '@expo/vector-icons';
 
 import LogInContainer from './container/LogInContainer';
 import LogOutContainer from './container/LogOutContainer';

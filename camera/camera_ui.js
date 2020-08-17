@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, PermissionsAndroid, Alert, BackHandler } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Alert, BackHandler } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 import { MaterialCommunityIcons } from '@expo/vector-icons';

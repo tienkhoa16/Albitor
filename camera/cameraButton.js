@@ -1,10 +1,6 @@
-import React, { Component } from 'react';
-import { Image, AppRegistry, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Camera } from 'expo-camera';
-import * as Permissions from 'expo-permissions';
+import React from 'react';
+import { AppRegistry, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 function CameraButton ( { navigation } ) {
     return (

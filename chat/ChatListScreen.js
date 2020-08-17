@@ -5,17 +5,13 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
-  ScrollView,
   Dimensions,
-  AsyncStorage,
-  Image,
-  TextInput,
   BackHandler,
   FlatList,
   Button } from 'react-native';
 import firebaseDb from '../firebaseDb';
 import store from '../store';
-import { Entypo, Feather } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';
 import Constants from 'expo-constants';

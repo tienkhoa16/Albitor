@@ -3,7 +3,7 @@ import querystring from 'querystring';
 import React from 'react';
 import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, 
     Keyboard, TouchableWithoutFeedback, ScrollView, Image, Switch, BackHandler, Animated, YellowBox } from 'react-native';
-import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';
 import Constants from 'expo-constants';
@@ -14,6 +14,7 @@ import RedButton from '../component/RedButton';
 
 import store from '../store';
 
+import getHistory from './GetHistoryHtml';
 import HandleDeclaration from './HandleDeclaration';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -184,37 +185,75 @@ export default class DeclareTempContainer extends React.Component{
             }
         }
         else{
-            const precision = 10;
-            const randomAm = Math.floor(Math.random() * (36.8 * precision - 35.2* precision) + 35.2 * precision) / (1*precision);
-            const randomPm = Math.floor(Math.random() * (36.8 * precision - 35.2* precision) + 35.2 * precision) / (1*precision);
-            console.log(randomAm, randomPm)
+            (async() => {
+                const precision = 10;
+                const randomAm = Math.floor(Math.random() * (36.6 * precision - 35.2* precision) + 35.2 * precision) / (1*precision);
+                const randomPm = Math.floor(Math.random() * (36.6 * precision - 35.2* precision) + 35.2 * precision) / (1*precision);
+                console.log(randomAm, randomPm)
 
-            let now = new Date()
-            let then = new Date(
-                    now.getFullYear(),
-                    now.getMonth(),
-                    now.getDate(),
-                    0,0,0)
-            let diff = now.getTime() - then.getTime();
-            console.log(diff)
-            
-            if (diff < 39600000){
-                (async () => {
+                let now = new Date()
+                let then = new Date(
+                        now.getFullYear(),
+                        now.getMonth(),
+                        now.getDate(),
+                        0,0,0)
+                let diff = now.getTime() - then.getTime();
+                console.log(diff)
+
+                let history = await getHistory(store.getState().logIn.cookie)
+
+                const day = paddingZeros(new Date().getDate())
+                const month = paddingZeros(new Date().getMonth() + 1)
+                const today = day + '/' +  month
+
+                const todayIndex = history.indexOf(today)
+                let countCenter = 0
+                
+                if (todayIndex >= 0){
+                    history = history.substr(todayIndex)
+
+                    const beginIndex = history.indexOf('</td>')
+                    history = history.substr(beginIndex + 5)
+
+                    const endIndex = history.indexOf('</tr>')
+                    history = history.substr(0, endIndex)
+
+                    countCenter = (history.match(/<td align="center">/g) || []).length
+                }
+
+                if (diff < 39600000 && todayIndex < 0){
                     await submitTemp(randomAm,this.state.date,'A','N','N')
-                    await HandleDeclaration();
-                })()
-            }
-            else{
-                (async () => {
-                    await submitTemp(randomAm,this.state.date,'A','N','N')
-                    setTimeout(
-                        async() => await submitTemp(randomPm, this.state.date,'P','N','N'),
-                        1000
-                    )
-                    await HandleDeclaration();
-                })()
-            }
-            alert("Done")
+                    await HandleDeclaration()
+                    alert("Done AM")
+                }
+                else if (diff < 39600000){
+                    alert("Declared for AM already")
+                }
+                else{
+                    if (countCenter == 6) {
+                        alert("Declared twice for today already")
+                    }
+                    else if (countCenter == 3){
+                        await submitTemp(randomAm,this.state.date,'P','N','N')
+                        await HandleDeclaration()
+                        alert("Done PM")
+                    }
+                    else if (todayIndex < 0) {
+                        await submitTemp(randomAm,this.state.date,'A','N','N')
+                        setTimeout(
+                            await submitTemp(randomPm, this.state.date,'P','N','N'),
+                            1000
+                        )
+                        setTimeout(
+                            async () => {
+                                await HandleDeclaration()
+                                alert("Done AM & PM")
+                            },
+                            2000
+                        )
+                    }
+                }
+            })()
         }
 
         this.setState({

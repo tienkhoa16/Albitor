@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Dimensions, StyleSheet, Linking } from 'react-native';
+import { View, Text, ScrollView, Dimensions, StyleSheet, Linking } from 'react-native';
 import BlueButton from '../component/BlueButton';
 
 const screenWidth = Math.round(Dimensions.get('window').width);

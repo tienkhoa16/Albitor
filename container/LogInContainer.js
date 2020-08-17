@@ -1,6 +1,5 @@
 import React from 'react';
-import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, View, Keyboard, TouchableWithoutFeedback, 
-    Switch, YellowBox } from 'react-native';   
+import { TextInput, StyleSheet, Image, KeyboardAvoidingView, Alert, View, Keyboard, TouchableWithoutFeedback, YellowBox } from 'react-native';   
 import { CheckBox } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 

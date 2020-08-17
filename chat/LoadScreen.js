@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ActivityIndicator, StyleSheet, Text, BackHandler } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, BackHandler } from 'react-native';
 import firebaseDb from '../firebaseDb';
 import store from '../store';
 

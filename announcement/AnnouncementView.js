@@ -1,14 +1,10 @@
-import React, { Component, useEffect } from 'react';
-import { View, FlatList, ActivityIndicator, Text, StyleSheet, Alert,
-         TouchableOpacity, Button, SafeAreaView, YellowBox, Linking, BackHandler } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React, { Component } from 'react';
+import { View, Text, StyleSheet, Alert,
+        YellowBox, Linking, BackHandler } from 'react-native';
 import firebaseDb from '../firebaseDb';
 import HeaderDeleteButton from './Header_DeleteButton';
 import HeaderEditButton from './Header_EditButton';
-import { AntDesign } from '@expo/vector-icons';
 import store from '../store';
-import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';
 
 

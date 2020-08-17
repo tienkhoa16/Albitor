@@ -1,12 +1,6 @@
 import 'react-native-gesture-handler';
-import React, { Component } from 'react';
-import { View,
-         Text,
-         StyleSheet,
-         TouchableOpacity
-       } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
+import { TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
 const HeaderDeleteButton = props => {
