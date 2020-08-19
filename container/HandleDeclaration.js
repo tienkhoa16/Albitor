@@ -4,7 +4,6 @@ import { Notifications } from 'expo';
 import store from '../store';
 
 import getHistory from './GetHistoryHtml';
-import getHistoryHtml from './GetHistoryHtml';
 
 
 const reminderMessage = {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput, StyleSheet, Image, Text, KeyboardAvoidingView, Alert, View, Keyboard, TouchableWithoutFeedback, 
-    Switch, BackHandler, Animated, Dimensions } from 'react-native';
+    BackHandler, Animated, Dimensions } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 
@@ -205,15 +205,6 @@ export default class LogInContainer extends React.Component{
         } catch (e) {
             console.log(e);
         }
-        store.dispatch({
-            type: 'UPDATE',
-            payload: {
-                updateName: '',
-                updateCookie: '',
-                updateUsername: '',
-                updatePrefix: '',
-            }
-        })
     };
 
     handlePressStu = () => {

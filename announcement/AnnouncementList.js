@@ -1,10 +1,7 @@
-import React, { Component, useEffect } from 'react';
-import { View, FlatList, ActivityIndicator, Text, StyleSheet, Alert,
-         TouchableOpacity, Button, SafeAreaView, YellowBox, Linking, Vibration } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React, { Component } from 'react';
+import { View, FlatList, ActivityIndicator, Text, StyleSheet, Alert, SafeAreaView,
+         TouchableOpacity, YellowBox } from 'react-native';
 import { BottomSheet } from 'react-native-btr';
-import { Entypo, Feather, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import firebaseDb from '../firebaseDb';
 import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';

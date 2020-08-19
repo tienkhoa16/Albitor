@@ -3,7 +3,7 @@ import querystring from 'querystring';
 import React from 'react';
 import { TouchableOpacity, View, TextInput, StyleSheet, Text, KeyboardAvoidingView, Dimensions, Alert, 
     Keyboard, TouchableWithoutFeedback, ScrollView, Image, Switch, BackHandler, Animated, YellowBox } from 'react-native';
-import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';
 import Constants from 'expo-constants';

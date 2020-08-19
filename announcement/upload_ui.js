@@ -2,19 +2,13 @@ import React, { Component } from 'react';
 import { Text,
          StyleSheet,
          View,
-         TouchableOpacity,
-         Button,
-         Image,
-         TextInput,
          KeyboardAvoidingView,
          ScrollView,
-         Platform,
          TouchableWithoutFeedback,
          Keyboard,
          YellowBox,
          Vibration
          } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo';
 import moment from 'moment';
