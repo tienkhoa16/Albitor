@@ -1,6 +1,7 @@
 import React from 'react';
-import { Text, View, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, Slider, TouchableWithoutFeedback } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { Camera } from 'expo-camera';
 import { WebView } from 'react-native-webview';
 
 import LoadingImage from '../component/LoadingImage'
@@ -10,8 +11,9 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 export default class QRScanner extends React.Component {
     state = {
         hasPermission: null,
-        scanned: false,
         url: '',
+        zoomRatio: 0,
+        showSlider: false,
     }
 
     async componentDidMount() {
@@ -19,16 +21,15 @@ export default class QRScanner extends React.Component {
         this.setState({hasPermission: status === 'granted'})
     }
 
-    handleBarCodeScanned = ({ type, data }) => {
+    handleBarCodeScanned = ( type, data ) => {
         this.setState({
-            scanned: true,
             url: data,
         })
-        alert(`Bar code with data ${data} has been scanned!`);
     };
 
     render(){
         const { url } = this.state
+
         return (
             <View
                 style={{
@@ -47,24 +48,52 @@ export default class QRScanner extends React.Component {
                             />
                         ) : 
                         (
-                            <>                              
-                                <Text
-                                    style = {{
-                                        fontSize: 25,
-                                        color: '#e32012',
-                                        marginTop: 15,
-                                        textAlign: 'center',
-                                        fontFamily: 'PlayfairDisplay_700Bold',
+                            <TouchableWithoutFeedback
+                                onPress = {() => this.setState({showSlider: !this.state.showSlider})}
+                            >
+                                <Camera 
+                                    style={{ flex: 1 }} 
+                                    zoom={this.state.zoomRatio}
+                                    barCodeScannerSettings={{
+                                        barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
                                     }}
+                                    onBarCodeScanned={({type, data}) => {
+                                        if (!this.state.url){
+                                            this.handleBarCodeScanned(type, data)
+                                        }
+                                    }}
+                                    ratio='16:9'
                                 >
-                                    Scanning QR Code
-                                </Text>
-                                <BarCodeScanner
-                                    barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
-                                    onBarCodeScanned={this.state.scanned ? undefined : this.handleBarCodeScanned}
-                                    style={StyleSheet.absoluteFillObject}
-                                />
-                            </>      
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            backgroundColor: 'transparent',
+                                            flexDirection: 'column',
+                                            justifyContent: 'flex-end',
+                                        }}
+                                    >
+                                        {
+                                            this.state.showSlider ? 
+                                            (
+                                                <Slider
+                                                    value={this.state.zoomRatio}
+                                                    maximumValue={1}
+                                                    minimumValue={0}
+                                                    onValueChange={(val) => this.setState({zoomRatio: val})}
+                                                    style={{
+                                                        width: 250,
+                                                        alignSelf: 'center',
+                                                        marginBottom: 50,
+                                                        transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }]
+                                                    }}
+                                                    thumbTintColor={'white'}
+                                                    minimumTrackTintColor={'white'}
+                                                />
+                                            ): null
+                                        }
+                                    </View>
+                                </Camera>
+                            </TouchableWithoutFeedback>
                         )
                 }
             </View>
