@@ -20,6 +20,7 @@ import AboutContainer from './container/AboutContainer';
 import ExemptionContainer from './container/ExemptionContainer';
 import EmergencyInfoContainer from './container/EmergencyInfoContainer';
 import SettingsContainer from './container/SettingsContainer';
+import QRScanner from './container/QRScanner';
 
 import AnnouncementForm from './announcement/upload_ui';
 import AnnouncementButton from './announcement/announcement_button';
@@ -263,6 +264,10 @@ function MoreStack(){
       <Stack.Screen
         name="Settings"
         component={SettingsContainer}
+      />
+      <Stack.Screen
+        name="QRScanner"
+        component={QRScanner}
       />
     </Stack.Navigator>
   )

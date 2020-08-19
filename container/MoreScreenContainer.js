@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Dimensions, Image, Text, Alert, View, TouchableOpacity, ScrollView } from 'react-native';
-import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -68,6 +68,16 @@ export default class MoreScreenContainer extends React.Component{
                 >
                     <AntDesign name="team" size={24} color="black" />
                     <Text style = {styles.text}>About Us</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style = {styles.option}
+                    onPress = {() => {
+                        this.props.navigation.navigate('QRScanner')
+                    }}
+                >
+                    <Ionicons name="ios-qr-scanner" size={24} color="black" />
+                    <Text style = {styles.text}> Scan QR Code</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
