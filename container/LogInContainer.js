@@ -23,7 +23,7 @@ async function auth(prefix, username, password){
     }
 
     // Basic check first
-    if (prefix == 'nusstu\\' && username[0] != 'E' && username[0] != 'e' || username.length != 8)
+    if (prefix == 'nusstu\\' && (username[0] != 'E' && username[0] != 'e' || username.length != 8))
         return resp
     
     // Log out url
