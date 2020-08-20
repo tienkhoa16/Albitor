@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet, Dimensions, Slider, TouchableWithoutFeedback } from 'react-native';
+import { View, Dimensions, Slider, TouchableWithoutFeedback } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera } from 'expo-camera';
 import { WebView } from 'react-native-webview';
